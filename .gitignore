@@ -23,10 +23,6 @@
 hs_err_pid*
 
 .idea
-.target
-
-./.idea
-./.target
+/.idea/
 /.target/
-/target
 /target/
