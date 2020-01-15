@@ -5,7 +5,7 @@ import com.muzzy.service.BlockService;
 
 import java.util.Set;
 
-public class BlockMapService extends AbstractMapService<Block,Long> implements BlockService {
+public class BlockMapService extends AbstractBlockMapService<Block,Long> implements BlockService {
     @Override
     public Set<Block> getBlocks() {
         return null;

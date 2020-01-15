@@ -21,7 +21,13 @@ import java.net.*;
  * <p>
  * Napewno serwery będą musiały miec jakiś status ( ready, busy, in-synced )
  * Wydaje się ze trzeba podzielić na dwa etapy. Po starcie:
- * Szukam serwerów, pobieram listę
+ * Próbuje nawiązać połączenie z serwerami.
+ *
+ *
+ *
+ *
+ *
+ *
  */
 
 public class Node implements Runnable {

@@ -4,7 +4,7 @@ import com.muzzy.domain.Block;
 
 import java.util.*;
 
-public abstract class AbstractBlockService<T extends Block,ID extends Long> {
+public abstract class AbstractBlockMapService<T extends Block,ID extends Long> {
     private Map<Long,T> map = new HashMap<>();
     Set<T> findAll(){
         return new HashSet<>(map.values());

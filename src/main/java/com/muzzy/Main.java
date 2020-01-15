@@ -2,9 +2,16 @@ package com.muzzy;
 
 import com.muzzy.cipher.CipherTest;
 import com.muzzy.cipher.Cipherable;
+import com.muzzy.configuration.ConfigLoader;
+import com.muzzy.roles.Node;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import java.net.InetSocketAddress;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.time.Duration;
 import java.time.LocalTime;
 import java.util.Arrays;
@@ -17,23 +24,53 @@ import java.util.Set;
  * 14.01.2020
  */
 
-//@SpringBootApplication
-public class Main {
+@SpringBootApplication
+public class Main implements CommandLineRunner {
+    @Autowired
+    private ConfigLoader configLoader;
+
+
+
+
     public static void main(String[] args) {
-//        SpringApplication.run(Main.class, args);
+        SpringApplication.run(Main.class, args);
+    }
+
+    @Override
+    public void run(String... args) throws Exception {
+        final InetSocketAddress inetSocketAddress = new InetSocketAddress("0.0.0.0", configLoader.getPort());
+        ServerSocket serverSocket = null;
+        Socket socket = null;
+
+        //run server connector
+
+
+        //run server listener
+
+        while (true) {
+            socket = serverSocket.accept();
+            new Thread(new Node()).start();
+        }
+
+
+
+
+
 
         for (int i = 0; i < 100; i++) {
             long startTime = System.nanoTime();
             LocalTime start = LocalTime.now();
 //            getLongStream();
 //            luckyNumber();
-            getEncode();
+//            getEncode();
             System.out.println(System.nanoTime() - startTime);
             LocalTime stop = LocalTime.now();
             System.out.println(Duration.between(start, stop).toString());
-
+            System.out.println(Arrays.toString(configLoader.getAddresses().toArray()));
         }
     }
+
+
 
     public static Set<byte[]> getLongStream() {
         Set<Long> doubles = new HashSet<Long>();
