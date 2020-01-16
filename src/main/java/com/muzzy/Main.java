@@ -4,6 +4,7 @@ import com.muzzy.cipher.CipherTest;
 import com.muzzy.cipher.Cipherable;
 import com.muzzy.configuration.ConfigLoader;
 import com.muzzy.roles.Node;
+import com.muzzy.roles.TestThread;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -30,53 +31,46 @@ public class Main implements CommandLineRunner {
     private ConfigLoader configLoader;
 
 
-
-
     public static void main(String[] args) {
         SpringApplication.run(Main.class, args);
+
     }
 
     @Override
     public void run(String... args) throws Exception {
-        final InetSocketAddress inetSocketAddress = new InetSocketAddress("0.0.0.0", configLoader.getPort());
-        ServerSocket serverSocket = null;
-        Socket socket = null;
-
-        //run server connector
-
-
-        //run server listener
-
-        while (true) {
-            socket = serverSocket.accept();
-            new Thread(new Node()).start();
-        }
-
-
+//        final InetSocketAddress inetSocketAddress = new InetSocketAddress("0.0.0.0", configLoader.getPort());
+//        ServerSocket serverSocket = new ServerSocket(configLoader.getPort());
+//        Socket socket = null;
+//
+//        //run server connector
+//        new Thread(new TestThread()).start();
+//
+//        //run server listener
+//
+//        while (true) {
+//            socket = serverSocket.accept();
+//            new Thread(new Node(socket)).start();
+//        }
 
 
-
-
-        for (int i = 0; i < 100; i++) {
-            long startTime = System.nanoTime();
-            LocalTime start = LocalTime.now();
+//        for (int i = 0; i < 100; i++) {
+//            long startTime = System.nanoTime();
+//            LocalTime start = LocalTime.now();
 //            getLongStream();
 //            luckyNumber();
 //            getEncode();
-            System.out.println(System.nanoTime() - startTime);
-            LocalTime stop = LocalTime.now();
-            System.out.println(Duration.between(start, stop).toString());
-            System.out.println(Arrays.toString(configLoader.getAddresses().toArray()));
-        }
+//            System.out.println(System.nanoTime() - startTime);
+//            LocalTime stop = LocalTime.now();
+//            System.out.println(Duration.between(start, stop).toString());
+//            System.out.println(Arrays.toString(configLoader.getAddresses().toArray()));
+//        }
     }
-
 
 
     public static Set<byte[]> getLongStream() {
         Set<Long> doubles = new HashSet<Long>();
         Set<byte[]> byteSet = new HashSet<>();
         new Random().longs(10).forEach(e1 -> {
-//            System.out.println(e1);
             doubles.add(e1);
         });
 

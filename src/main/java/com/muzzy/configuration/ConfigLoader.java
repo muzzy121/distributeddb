@@ -11,7 +11,7 @@ import java.util.List;
 
 @Configuration
 @EnableConfigurationProperties
-@ConfigurationProperties
+@ConfigurationProperties(prefix = "develop")
 @Getter
 @Setter
 public class ConfigLoader {

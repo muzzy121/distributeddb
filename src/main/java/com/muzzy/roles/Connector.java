@@ -1,26 +1,48 @@
 package com.muzzy.roles;
 
 import com.muzzy.configuration.ConfigLoader;
+import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.util.HashSet;
+import java.util.Set;
 
+@Component
+@Scope("prototype")
+@NoArgsConstructor
 public class Connector {
-    @Autowired
+
     private ConfigLoader configLoader;
+    private Set<Socket> sockets;
+    private Socket socket;
 
-    private Socket Connect(){
-        configLoader.getAddresses().forEach(address -> {
-                InetSocketAddress inetSocketAddress = new InetSocketAddress(address, configLoader.getPort());
-            try {
-                Socket socket = new Socket().connect(inetSocketAddress);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        });
+    @Autowired
+    public Connector(ConfigLoader configLoader) {
+        this.configLoader = configLoader;
 
+    }
+
+   public Set<Socket> connect(){
+        sockets = new HashSet<>();
+       System.out.println(configLoader.getPort());
+//        configLoader.getAddresses().forEach(address -> {
+//                InetSocketAddress inetSocketAddress = new InetSocketAddress(address, configLoader.getPort());
+//            try {
+//                socket = new Socket();
+//                socket.connect(inetSocketAddress);
+//                sockets.add(socket);
+//
+//            } catch (IOException e) {
+//                System.out.println("Unable to connect with: " + address);
+//                e.printStackTrace();
+//            }
+//        });
+        return null;
     }
 
 

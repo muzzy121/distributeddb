@@ -5,6 +5,12 @@ import com.muzzy.service.TransactionService;
 
 import java.util.Set;
 
+/**
+ * Created by Paweł Mazur
+ * 14.01.2020
+ */
+
+
 public class TransactionMapService extends AbstractTransactionMapService<Transaction, Long> implements TransactionService {
     @Override
     public Set getBlocks() {
@@ -23,7 +29,6 @@ public class TransactionMapService extends AbstractTransactionMapService<Transac
 
     @Override
     public void delete(Object o) {
-
     }
 
     @Override

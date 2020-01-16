@@ -4,7 +4,12 @@ import com.muzzy.domain.Transaction;
 
 import java.util.*;
 
-public class AbstractTransactionMapService<T extends Transaction, ID extends Long> {
+/**
+ * Created by Paweł Mazur
+ * 14.01.2020
+ */
+
+public abstract class AbstractTransactionMapService<T extends Transaction, ID extends Long> {
 
     private Map<Long, T> map = new HashMap<>();
 
