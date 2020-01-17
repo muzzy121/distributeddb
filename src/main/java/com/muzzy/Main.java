@@ -2,19 +2,24 @@ package com.muzzy;
 
 import com.muzzy.cipher.CipherTest;
 import com.muzzy.cipher.Cipherable;
+import com.muzzy.clientaccess.controller.IndexController;
 import com.muzzy.configuration.ConfigLoader;
+import com.muzzy.domain.Client;
+import com.muzzy.domain.Transaction;
+
 import com.muzzy.roles.Node;
-import com.muzzy.roles.TestThread;
+import com.muzzy.service.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ApplicationContext;
+import org.springframework.core.task.TaskExecutor;
+import org.springframework.stereotype.Controller;
 
-import java.net.InetSocketAddress;
+import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.time.Duration;
-import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Random;
@@ -30,6 +35,16 @@ public class Main implements CommandLineRunner {
     @Autowired
     private ConfigLoader configLoader;
 
+    @Autowired
+    private TransactionService transactionService;
+
+    @Autowired
+    private ApplicationContext applicationContext;
+
+    private TaskExecutor taskExecutor;
+    private ServerSocket serverSocket;
+    private Socket socket;
+
 
     public static void main(String[] args) {
         SpringApplication.run(Main.class, args);
@@ -38,32 +53,35 @@ public class Main implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-//        final InetSocketAddress inetSocketAddress = new InetSocketAddress("0.0.0.0", configLoader.getPort());
-//        ServerSocket serverSocket = new ServerSocket(configLoader.getPort());
-//        Socket socket = null;
-//
-//        //run server connector
-//        new Thread(new TestThread()).start();
-//
-//        //run server listener
-//
-//        while (true) {
-//            socket = serverSocket.accept();
-//            new Thread(new Node(socket)).start();
-//        }
+        Client client = new Client();
+        client.setId(1L);
+        client.setNickName("Muzzy");
+
+        Client client2 = new Client();
+        client2.setId(2L);
+        client2.setNickName("Marcin");
 
 
-//        for (int i = 0; i < 100; i++) {
-//            long startTime = System.nanoTime();
-//            LocalTime start = LocalTime.now();
-//            getLongStream();
-//            luckyNumber();
-//            getEncode();
-//            System.out.println(System.nanoTime() - startTime);
-//            LocalTime stop = LocalTime.now();
-//            System.out.println(Duration.between(start, stop).toString());
-//            System.out.println(Arrays.toString(configLoader.getAddresses().toArray()));
-//        }
+        Transaction transaction = new Transaction();
+        transaction.setId(1L);
+        transaction.setFrom(client);
+        transaction.setWhere(client2);
+
+        transactionService.save(transaction);
+
+        System.out.println("\nNode Started");
+        serverSocket = new ServerSocket(configLoader.getPort());
+        while (true) {
+            try {
+
+                socket = serverSocket.accept();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            Node node = applicationContext.getBean(Node.class).setSocket(socket);
+            taskExecutor.execute(node);
+        }
+
     }
 
 
@@ -107,3 +125,30 @@ public class Main implements CommandLineRunner {
 
 
 }
+
+//        final InetSocketAddress inetSocketAddress = new InetSocketAddress("0.0.0.0", configLoader.getPort());
+//        ServerSocket serverSocket = new ServerSocket(configLoader.getPort());
+//        Socket socket = null;
+//
+//        //run server connector
+//        new Thread(new TestThread()).start();
+//
+//        //run server listener
+//
+//        while (true) {
+//            socket = serverSocket.accept();
+//            new Thread(new Node(socket)).start();
+//        }
+
+
+//        for (int i = 0; i < 100; i++) {
+//            long startTime = System.nanoTime();
+//            LocalTime start = LocalTime.now();
+//            getLongStream();
+//            luckyNumber();
+//            getEncode();
+//            System.out.println(System.nanoTime() - startTime);
+//            LocalTime stop = LocalTime.now();
+//            System.out.println(Duration.between(start, stop).toString());
+//            System.out.println(Arrays.toString(configLoader.getAddresses().toArray()));
+//        }

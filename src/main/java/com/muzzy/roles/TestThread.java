@@ -1,6 +1,7 @@
 package com.muzzy.roles;
 
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -8,7 +9,7 @@ import java.net.Socket;
 import java.util.HashSet;
 import java.util.Scanner;
 import java.util.Set;
-k
+
 @Component
 @Scope("prototype")
 public class TestThread implements Runnable {
@@ -16,9 +17,9 @@ public class TestThread implements Runnable {
     private Set<Socket> connectedSockets = new HashSet<>();
     private Scanner scanner = new Scanner(System.in);
 
-
-    public TestThread() {
-        this.connector = new Connector();
+    @Autowired
+    public TestThread(Connector connector) {
+        this.connector = connector;
     }
 
     @Override

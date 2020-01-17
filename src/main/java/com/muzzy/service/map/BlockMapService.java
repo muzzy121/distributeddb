@@ -7,14 +7,12 @@ import java.util.Set;
 
 public class BlockMapService extends AbstractBlockMapService<Block,Long> implements BlockService {
     @Override
-    public Set<Block> getBlocks() {
+    public Set<Block> getAll() {
         return null;
     }
 
     @Override
-    public void deleteById(Long id) {
-
-    }
+    public void deleteById(Long id) {}
 
     @Override
     public void delete(Block t) {}
@@ -25,7 +23,7 @@ public class BlockMapService extends AbstractBlockMapService<Block,Long> impleme
     }
 
     @Override
-    public Block getBlockById(Long aLong) {
+    public Block getById(Long aLong) {
         return null;
     }
 

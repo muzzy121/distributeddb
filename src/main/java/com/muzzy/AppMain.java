@@ -18,7 +18,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 @Component
-@PropertySource("application.yml")
+//@PropertySource("application.yml")
 public class AppMain implements ApplicationListener<ContextRefreshedEvent> {
 
     @Autowired
@@ -38,24 +38,10 @@ public class AppMain implements ApplicationListener<ContextRefreshedEvent> {
     public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
 
         if (contextRefreshedEvent.getApplicationContext().getParent() == null) {
-            try {
-                serverSocket = new ServerSocket(configLoader.getPort());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            System.out.println("\nTestThread Started");
-            taskExecutor.execute(context.getBean(TestThread.class));
 
-            System.out.println("\nNode Started");
-            while (true) {
-                try {
-                    socket = serverSocket.accept();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                Node node = context.getBean(Node.class).setSocket(socket);
-                taskExecutor.execute(node);
-            }
+//            System.out.println("\nTestTask Started");
+//            taskExecutor.execute(context.getBean(TestThread.class));
+//            context.getBean(Main.class).getEncode();
 
         }
     }

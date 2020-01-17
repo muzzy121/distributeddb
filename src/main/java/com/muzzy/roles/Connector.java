@@ -29,19 +29,20 @@ public class Connector {
 
    public Set<Socket> connect(){
         sockets = new HashSet<>();
-       System.out.println(configLoader.getPort());
-//        configLoader.getAddresses().forEach(address -> {
-//                InetSocketAddress inetSocketAddress = new InetSocketAddress(address, configLoader.getPort());
-//            try {
-//                socket = new Socket();
-//                socket.connect(inetSocketAddress);
-//                sockets.add(socket);
-//
-//            } catch (IOException e) {
-//                System.out.println("Unable to connect with: " + address);
+
+        configLoader.getAddresses().forEach(address -> {
+                System.out.println("Looking up for: " + address);
+                InetSocketAddress inetSocketAddress = new InetSocketAddress(address, configLoader.getPort());
+            try {
+                socket = new Socket();
+                socket.connect(inetSocketAddress);
+                sockets.add(socket);
+
+            } catch (IOException e) {
+                System.out.println("Unable to connect with: " + address);
 //                e.printStackTrace();
-//            }
-//        });
+            }
+        });
         return null;
     }
 

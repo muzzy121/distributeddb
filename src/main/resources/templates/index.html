@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Index Page</title>
+</head>
+<body>
+    <table>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>From</th>
+            <th>Where</th>
+        </tr>
+        <!--/*@thymesVar id="transaction" type="com.muzzy.domain.Transaction"*/-->
+        <tr th:each="transaction: ${transactions}">
+            <td th:text="${transaction.id}"></td>
+            <td th:text="${transaction.from.nickName}"></td>
+            <td th:text="${transaction.where.nickName}"></td>
+        </tr>
+        </thead>
+    </table>
+    <form class="button" th:action="@{/add}" method="POST">
+        <input type="submit" value="Add new transaction"/>
+    </form>
+</body>
+</html>

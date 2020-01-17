@@ -8,8 +8,8 @@ import java.util.Set;
  */
 
 public interface CrudService<T,ID> {
-    Set<T> getBlocks();
-    T getBlockById(ID id);
+    Set<T> getAll();
+    T getById(ID id);
     T save(T t);
     void delete(T t);
     void deleteById(ID id);
