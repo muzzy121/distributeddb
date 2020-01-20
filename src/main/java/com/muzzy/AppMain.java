@@ -3,6 +3,7 @@ package com.muzzy;
 import com.muzzy.configuration.ConfigLoader;
 import com.muzzy.roles.Node;
 import com.muzzy.roles.TestThread;
+import com.muzzy.service.controllerservice.test.RsaKeyGen;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationContext;
@@ -34,13 +35,19 @@ public class AppMain implements ApplicationListener<ContextRefreshedEvent> {
     private ServerSocket serverSocket;
     private Socket socket;
 
+    @Autowired
+    private RsaKeyGen rsaKeyGen;
+
+
     @Override
     public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
 
         if (contextRefreshedEvent.getApplicationContext().getParent() == null) {
+            rsaKeyGen.createKeys();
 
-//            System.out.println("\nTestTask Started");
-//            taskExecutor.execute(context.getBean(TestThread.class));
+
+            System.out.println("\nTestTask Started");
+            taskExecutor.execute(context.getBean(TestThread.class));
 //            context.getBean(Main.class).getEncode();
 
         }

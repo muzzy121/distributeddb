@@ -8,8 +8,7 @@ import com.muzzy.service.controllerservice.test.RsaKeyGen;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @Scope("prototype")
@@ -27,8 +26,6 @@ public class IndexController {
     @GetMapping({"/","index"})
     public String getIndexPage(Model model){
             model.addAttribute("transactions", transactionService.getAll());
-            model.addAttribute("pubKey", rsaKeyGen.getPubKey());
-            model.addAttribute("prvKey", rsaKeyGen.getPrvKey());
 
         return "index";
     }
@@ -41,5 +38,18 @@ public class IndexController {
         transactionSet.sendAllTransaction();
         model.addAttribute("transactions", transactionService.getAll());
         return "index";
+    }
+
+    @GetMapping("/keys")
+    public String KeyTest(Model model){
+        model.addAttribute("pubKey", rsaKeyGen.getPubKey());
+        model.addAttribute("prvKey", rsaKeyGen.getPrvKey());
+        return "keys";
+    }
+
+    @RequestMapping(value = "/keys/submited", method= RequestMethod.POST)
+    public String processForm(@ModelAttribute(value="pubKey") String pubKey) {
+        System.out.println(pubKey);
+        return "keys";
     }
 }

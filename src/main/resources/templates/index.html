@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>Index Page</title>
 </head>
+<!--/*@thymesVar id="transaction" type="com.muzzy.domain.Transaction"*/-->
 <body>
     <table>
         <thead>
@@ -12,7 +13,7 @@
             <th>From</th>
             <th>Where</th>
         </tr>
-        <!--/*@thymesVar id="transaction" type="com.muzzy.domain.Transaction"*/-->
+
         <tr th:each="transaction: ${transactions}">
             <td th:text="${transaction.id}"></td>
             <td th:text="${transaction.from.nickName}"></td>
@@ -23,14 +24,6 @@
     <form class="button" th:action="@{/add}" method="POST">
         <input type="submit" value="Add new transaction"/>
     </form>
-
-    <h2>Pair of keys</h2>
-    <p><h3>Private Key</h3>
-        <code th:text="${prvKey}"></code>
-    </p>
-      <p><h3>Public Key</h3>
-        <code th:text="${pubKey}"></code>
-    </p>
 
 </body>
 </html>

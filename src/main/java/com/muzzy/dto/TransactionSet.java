@@ -2,11 +2,13 @@ package com.muzzy.dto;
 
 import com.muzzy.domain.Transaction;
 import com.muzzy.roles.Connector;
+import com.muzzy.roles.TestThread;
 import com.muzzy.service.TransactionService;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -32,6 +34,11 @@ public class TransactionSet implements Serializable {
     @Autowired
     private TransactionService transactionService;
 
+    @Autowired
+    private ApplicationContext applicationContext;
+
+    @Autowired
+    private TestThread testThread;
 
     private Set<Transaction> transactions;
     private ObjectOutputStream objectOutputStream;
@@ -43,9 +50,12 @@ public class TransactionSet implements Serializable {
     public void sendAllTransaction() {
         transactions.addAll(transactionService.getAll());
 
-        Set<Socket> socketSet = connector.connect();
+//        Set<Socket> socketSet = connector.connect();
+        Set<Socket> socketSet = testThread.getConnectedSockets();
+        System.out.println("Before list");
         socketSet.forEach(socket -> {
             try {
+                System.out.println("After list");
                 objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
             } catch (IOException e) {
                 e.printStackTrace();

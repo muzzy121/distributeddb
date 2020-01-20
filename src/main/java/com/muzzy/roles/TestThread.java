@@ -1,6 +1,8 @@
 package com.muzzy.roles;
 
 
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -12,6 +14,8 @@ import java.util.Set;
 
 @Component
 @Scope("prototype")
+@Getter
+@Setter
 public class TestThread implements Runnable {
     private Connector connector;
     private Set<Socket> connectedSockets = new HashSet<>();
@@ -24,19 +28,19 @@ public class TestThread implements Runnable {
 
     @Override
     public void run() {
-        int s;
-        do {
-            System.out.println("1. Test connection with servers");
-            s = scanner.nextInt();
-        } while (s < 1 && s > 2);
-
-        switch (s) {
-            case 1: {
-                System.out.println("Running test...");
-                connectedSockets = connector.connect();
-                break;
-            }
-        }
-
+//        int s;
+//        do {
+//            System.out.println("1. Test connection with servers");
+//            s = scanner.nextInt();
+//        } while (s < 1 && s > 2);
+//
+//        switch (s) {
+//            case 1: {
+//                System.out.println("Running test...");
+//                connectedSockets = connector.connect();
+//                break;
+//            }
+//        }
+         connectedSockets = connector.connect();
     }
 }

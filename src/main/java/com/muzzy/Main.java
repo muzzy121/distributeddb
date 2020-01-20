@@ -9,6 +9,7 @@ import com.muzzy.domain.Transaction;
 
 import com.muzzy.roles.Node;
 import com.muzzy.service.TransactionService;
+import com.muzzy.service.controllerservice.test.RsaKeyGen;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -45,7 +46,6 @@ public class Main implements CommandLineRunner {
     private ServerSocket serverSocket;
     private Socket socket;
 
-
     public static void main(String[] args) {
         SpringApplication.run(Main.class, args);
 
@@ -73,13 +73,12 @@ public class Main implements CommandLineRunner {
         serverSocket = new ServerSocket(configLoader.getPort());
         while (true) {
             try {
-
                 socket = serverSocket.accept();
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            Node node = applicationContext.getBean(Node.class).setSocket(socket);
-            taskExecutor.execute(node);
+//            Node node = applicationContext.getBean(Node.class).setSocket(socket);
+//            taskExecutor.execute(node);
         }
 
     }
