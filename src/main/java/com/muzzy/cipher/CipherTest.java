@@ -4,14 +4,13 @@ import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
 import java.security.Key;
 
-public class CipherTest implements Cipherable {
+public class CipherTest implements Cipherable<byte[]> {
 
     @Override
     public byte[] Encode(byte[] plainBytes) {
         try {
-//            byte[] plainBytes = "HELLO JCE".getBytes();
-
-            // Generate the key first
+//
+//          Generate the key first
             KeyGenerator keyGen = KeyGenerator.getInstance("AES");
             keyGen.init(128);  // Key size
             Key key = keyGen.generateKey();
@@ -24,7 +23,7 @@ public class CipherTest implements Cipherable {
             byte[] cipherBytes = cipher.doFinal(plainBytes);
             return cipherBytes;
 
-//            // Reinitialize the Cipher to decryption mode
+//            Reinitialize the Cipher to decryption mode
 //            cipher.init(Cipher.DECRYPT_MODE, key, cipher.getParameters());
 //            byte[] plainBytesDecrypted = cipher.doFinal(cipherBytes);
 //

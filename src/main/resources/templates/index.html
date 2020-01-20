@@ -23,5 +23,14 @@
     <form class="button" th:action="@{/add}" method="POST">
         <input type="submit" value="Add new transaction"/>
     </form>
+
+    <h2>Pair of keys</h2>
+    <p><h3>Private Key</h3>
+        <code th:text="${prvKey}"></code>
+    </p>
+      <p><h3>Public Key</h3>
+        <code th:text="${pubKey}"></code>
+    </p>
+
 </body>
 </html>

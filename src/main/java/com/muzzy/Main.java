@@ -97,7 +97,7 @@ public class Main implements CommandLineRunner {
     }
 
     public static void getEncode() {
-        Cipherable cipherTest = new CipherTest();
+        CipherTest cipherTest = new CipherTest();
         Set<byte[]> bytes = getLongStream();
         Set<byte[]> encryptedBytes = new HashSet<>();
         bytes.forEach(x -> encryptedBytes.add(cipherTest.Encode(x)));
