@@ -17,7 +17,7 @@ public class RsaKeyGen {
 
     public RsaKeyGen() throws NoSuchAlgorithmException {
         this.rsaKeyGen = KeyPairGenerator.getInstance("RSA");
-        this.rsaKeyGen.initialize(1024);
+        this.rsaKeyGen.initialize(2048);
     }
 
     public void createKeys() {

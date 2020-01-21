@@ -14,8 +14,8 @@
     </p>
 
     <h2>Test Pair</h2>
-    <form action="#" th:action="@{/keys/submited}" th:object="${String}" method="post">
-        <input type="text" th:field="*{pubKey}"/>
+    <form action="#" th:action="@{/keys/submited}" method="post">
+        <input type="text" th:value="${pubKey}" name="pubKey"/>
         <input type="submit" value="Check keys"/>
     </form>
 

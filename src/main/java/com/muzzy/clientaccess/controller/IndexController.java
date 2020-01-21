@@ -48,8 +48,8 @@ public class IndexController {
     }
 
     @RequestMapping(value = "/keys/submited", method= RequestMethod.POST)
-    public String processForm(@ModelAttribute(value="pubKey") String pubKey) {
-        System.out.println(pubKey);
+    public String processForm(Model model, @RequestParam String pubKey) {
+        System.out.println("Key: " + pubKey);
         return "keys";
     }
 }
