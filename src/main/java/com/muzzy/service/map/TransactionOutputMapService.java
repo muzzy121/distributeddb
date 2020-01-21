@@ -1,6 +1,8 @@
 package com.muzzy.service.map;
 
-import com.muzzy.domain.Transaction;
+import com.muzzy.domain.TransactionOutput;
+import com.muzzy.domain.TransactionOutput;
+import com.muzzy.service.TransactionOutputService;
 import com.muzzy.service.TransactionService;
 import org.springframework.stereotype.Service;
 
@@ -11,19 +13,20 @@ import java.util.Set;
  * 14.01.2020
  */
 @Service
-public class TransactionMapService extends AbstractTransactionMapService<Transaction, String> implements TransactionService {
+public class TransactionOutputMapService extends AbstractTransactionOutputMapService<TransactionOutput, String> implements TransactionOutputService {
+
     @Override
-    public Set<Transaction> getAll() {
+    public Set<TransactionOutput> getAll() {
         return super.findAll();
     }
 
     @Override
-    public Transaction getById(String id) {
+    public TransactionOutput getById(String id) {
         return super.findById(id);
     }
 
     @Override
-    public Transaction save(Transaction t) {
+    public TransactionOutput save(TransactionOutput t) {
 
         //    public void addTransaction(Transaction transaction, HashMap<String, TransactionOutput> map) {
 //        if(transaction == null) return;
@@ -42,7 +45,7 @@ public class TransactionMapService extends AbstractTransactionMapService<Transac
     }
 
     @Override
-    public void delete(Transaction t) {
+    public void delete(TransactionOutput t) {
         super.delete(t);
     }
 

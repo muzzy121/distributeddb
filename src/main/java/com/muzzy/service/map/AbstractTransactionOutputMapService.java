@@ -1,15 +1,19 @@
 package com.muzzy.service.map;
 
 import com.muzzy.domain.Transaction;
+import com.muzzy.domain.TransactionOutput;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by Paweł Mazur
  * 14.01.2020
  */
 
-public abstract class AbstractTransactionMapService<T extends Transaction, ID extends String> {
+public abstract class AbstractTransactionOutputMapService<T extends TransactionOutput, ID extends String> {
 
     private Map<String, T> map = new HashMap<>();
 

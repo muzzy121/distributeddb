@@ -1,13 +1,13 @@
 package com.muzzy.domain;
 
-import com.muzzy.cipher.Code;
+import com.muzzy.cipher.StringUtil;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.io.Serializable;
 import java.time.ZonedDateTime;
-import java.util.HashMap;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -23,28 +23,34 @@ public abstract class Block implements Serializable {
 
     private Long Id;
     private ZonedDateTime timestamp;
-    private Long nonce;
+    private Long nonce = 0L;
     private List<Transaction> transactions;
     private String hash;
     private String previousHash;
 //    private long generatingTime;
 
+    public Block(String previousHash) {
+        this.previousHash = previousHash;
+        this.timestamp = ZonedDateTime.now();  // NAPRAWIC STREFE CZASOWA
+    }
 
     /**
-     * Hash block with given difficulty
+     * Method can hash block with given difficulty
      *
      * @param difficulty
      */
     public void mine(int difficulty) {
-        String toHash = previousHash + timestamp + transactions;
+        String toHash = this.previousHash + this.timestamp + this.transactions;
         do {
-            nonce ++;
-            this.hash = Code.applySha256(toHash + nonce);
+            this.nonce ++;
+            this.hash = StringUtil.applySha256(toHash + this.nonce);
         } while (!hash.substring(0, difficulty).matches("[0]{" + difficulty + "}"));
     }
 
 
     //Method depends on some map, look it should be in other place!
+
+
 //    public void addTransaction(Transaction transaction, HashMap<String, TransactionOutput> map) {
 //        if(transaction == null) return;
 //        if((!previousHash.equals("0"))) {

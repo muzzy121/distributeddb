@@ -1,10 +1,12 @@
 package com.muzzy.cipher;
 
+import java.security.Key;
 import java.security.MessageDigest;
+import java.util.Base64;
 
-public class Code {
+public class StringUtil {
 
-    private Code(){};
+    private StringUtil(){};
 
     public static String applySha256(String input){
 
@@ -24,5 +26,8 @@ public class Code {
         } catch (Exception e){
             throw new RuntimeException(e);
         }
+    }
+    public static String getStringFromKey(Key key) {
+        return Base64.getEncoder().encodeToString(key.getEncoded());
     }
 }
