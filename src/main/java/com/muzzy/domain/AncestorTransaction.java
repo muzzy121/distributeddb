@@ -11,8 +11,7 @@ public class AncestorTransaction extends Transaction {
         super();
     }
 
-    public Transaction init(Wallet receiver, float value, HashMap map) {
-
+    public Transaction init(Wallet receiver, float value) {
         super.sender = ancestorWallet.publicKey;
         super.receiver = receiver.publicKey;
         super.value = value;
@@ -20,8 +19,6 @@ public class AncestorTransaction extends Transaction {
         super.generateSignature(ancestorWallet.privateKey);
         super.transactionId = "0";
         super.outputs.add(new TransactionOutput(super.receiver, super.value, super.transactionId));
-        map.put(super.outputs.get(0).id, super.outputs.get(0));
-
         return this;
     }
 }

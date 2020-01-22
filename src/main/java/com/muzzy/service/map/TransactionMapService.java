@@ -10,6 +10,7 @@ import java.util.Set;
  * Created by Paweł Mazur
  * 14.01.2020
  */
+
 @Service
 public class TransactionMapService extends AbstractTransactionMapService<Transaction, String> implements TransactionService {
     @Override

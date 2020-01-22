@@ -26,7 +26,7 @@ public class TransactionOutputMapService extends AbstractTransactionOutputMapSer
     }
 
     @Override
-    public TransactionOutput save(TransactionOutput t) {
+    public TransactionOutput save(String id, TransactionOutput t) {
 
         //    public void addTransaction(Transaction transaction, HashMap<String, TransactionOutput> map) {
 //        if(transaction == null) return;
@@ -41,7 +41,7 @@ public class TransactionOutputMapService extends AbstractTransactionOutputMapSer
 //        System.out.println("Transaction Successfully added to Block");
 //    }
 
-        return super.save(t);
+        return super.save(id, t);
     }
 
     @Override

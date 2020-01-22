@@ -1,22 +1,17 @@
 package com.muzzy;
 
 import com.muzzy.cipher.CipherTest;
-import com.muzzy.cipher.Cipherable;
-import com.muzzy.clientaccess.controller.IndexController;
 import com.muzzy.configuration.ConfigLoader;
 import com.muzzy.domain.Client;
 import com.muzzy.domain.Transaction;
 
-import com.muzzy.roles.Node;
 import com.muzzy.service.TransactionService;
-import com.muzzy.service.controllerservice.test.RsaKeyGen;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.task.TaskExecutor;
-import org.springframework.stereotype.Controller;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -53,21 +48,6 @@ public class Main implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        Client client = new Client();
-        client.setId(1L);
-        client.setNickName("Muzzy");
-
-        Client client2 = new Client();
-        client2.setId(2L);
-        client2.setNickName("Marcin");
-
-
-        Transaction transaction = new Transaction();
-        transaction.setId(1L);
-        transaction.setFrom(client);
-        transaction.setWhere(client2);
-
-        transactionService.save(transaction);
 
         System.out.println("\nNode Started");
         serverSocket = new ServerSocket(configLoader.getPort());

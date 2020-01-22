@@ -9,6 +9,9 @@ import java.io.Serializable;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * Created by Paweł Mazur
@@ -45,15 +48,84 @@ public class Transaction implements Serializable {
         );
     }
 
+
+    /**
+     * Generate this Transaction signature using privateKey, (sender, reciver publicKeys and Value of transaction as data)
+     * @param privateKey
+     */
     public void generateSignature(PrivateKey privateKey) {
         String data = StringUtil.getStringFromKey(sender) + StringUtil.getStringFromKey(receiver) + value;
         this.signature = Validation.confirm(privateKey, data);
     }
 
+    /**
+     * Checks if signature was create with proper key pair and proper data
+     * @return boolean
+     */
     public boolean verifiySignature() {
         String data = StringUtil.getStringFromKey(sender) + StringUtil.getStringFromKey(receiver) + value;
         return Validation.verifySignature(sender, data, signature);
     }
 
+
+    public boolean processTransaction(HashMap<String, TransactionOutput> map) {
+
+        // Verify transaction
+
+        if (!verifiySignature()) {
+            System.out.println("Wrong Signature");
+            return false;
+        }
+
+        // biere transakcje z listy inputs, jeżeli coś w niej jest to z Repo wszystkich transakcji wybieram taką transakcje,
+        // która ma id takie jak id obiektu z listy input i przypisuje do pola UTXO tego obiektu -- nie wiem co tu sie dzieje!
+//        for (TransactionInput i : inputs) {
+//            i.UTXO = map.get(i.transactionOutputId);  // te public-i jeszcze w mapie to masakra
+//        }
+        inputs.stream().forEach(i -> i.UTXO = map.get(i.transactionOutputId));
+
+
+        // Róznica miedzy wartością transakcji Input, a waroscią tej transackji w której jestem
+        float change = getInputsValue() - value;
+
+        transactionId = calculateHash();  // licze hash transakcji
+
+        outputs.add(new TransactionOutput(this.receiver, value, transactionId)); //dodaje transakcje output do listy outputs w transakcji
+        outputs.add(new TransactionOutput(this.sender, change, transactionId)); //dodaje transakcje output do listy outputs w transakcji
+
+        for (TransactionOutput o : outputs) {
+            map.put(o.id, o);
+        }
+
+        for (TransactionInput i : inputs) {
+            if (i.UTXO == null) continue;
+            map.remove(i.UTXO.id);
+        }
+
+        return true;
+    }
+
+    public float getInputsValue() {
+//        float total = 0;
+//        for (TransactionInput i : inputs) {
+//            if (i.UTXO == null) continue;
+//            total += i.UTXO.value;
+//        }
+
+        double total = inputs.stream()
+                .filter(input -> input.UTXO!=null)
+                .collect(Collectors.summingDouble(x -> x.UTXO.value));
+        return (float) total;
+    }
+
+    public float getOutputsValue() {
+//        float total = 0;
+//        for (TransactionOutput o : outputs) {
+//            total += o.value;
+//        }
+
+        double total = outputs.stream().collect(Collectors.summingDouble(x->x.value));
+        return (float) total;
+    }
 
 }

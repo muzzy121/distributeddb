@@ -32,6 +32,7 @@ public abstract class Block implements Serializable {
     public Block(String previousHash) {
         this.previousHash = previousHash;
         this.timestamp = ZonedDateTime.now();  // NAPRAWIC STREFE CZASOWA
+
     }
 
     /**

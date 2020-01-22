@@ -25,8 +25,8 @@ public abstract class AbstractTransactionOutputMapService<T extends TransactionO
         return map.get(id);
     }
 
-    T save(T object) {
-//        map.put(id, object);
+    T save(ID id, T object) {
+        map.put(id, object);
         return object;
     }
 

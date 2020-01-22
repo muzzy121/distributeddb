@@ -1,10 +1,10 @@
 package com.muzzy.clientaccess.controller;
 
-import com.muzzy.domain.Client;
-import com.muzzy.domain.Transaction;
+import com.muzzy.cipher.StringUtil;
 import com.muzzy.dto.TransactionSet;
 import com.muzzy.service.TransactionService;
 import com.muzzy.service.controllerservice.test.RsaKeyGen;
+import com.muzzy.service.controllerservice.test.Validation;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -31,25 +31,25 @@ public class IndexController {
     }
     @PostMapping("/add")
     public String doAdd(Model model){
-        Transaction transaction = new Transaction();
-        transaction.setFrom(new Client().builder().id(4L).nickName("Janusz").build());
-        transaction.setWhere(new Client().builder().id(3L).nickName("Andrzej").build());
-        transactionService.save(transaction);
-        transactionSet.sendAllTransaction();
+//        transactionService.save(transaction);
+//        transactionSet.sendAllTransaction();
         model.addAttribute("transactions", transactionService.getAll());
         return "index";
     }
 
     @GetMapping("/keys")
     public String KeyTest(Model model){
-        model.addAttribute("pubKey", rsaKeyGen.getPubKey());
-        model.addAttribute("prvKey", rsaKeyGen.getPrvKey());
+        model.addAttribute("pubKey", StringUtil.getStringFromKey(rsaKeyGen.getPubKey()));
+        model.addAttribute("prvKey", StringUtil.getStringFromKey(rsaKeyGen.getPrvKey()));
         return "keys";
     }
 
     @RequestMapping(value = "/keys/submited", method= RequestMethod.POST)
     public String processForm(Model model, @RequestParam String pubKey) {
-        System.out.println("Key: " + pubKey);
+        String data = StringUtil.getStringFromKey(rsaKeyGen.getPubKey()) + pubKey;
+        byte[] signature = Validation.confirm(rsaKeyGen.getPrvKey(), data);
+        System.out.println("Signature: " + signature);
+        System.out.println("Signature validation: " + Validation.verifySignature(rsaKeyGen.getPubKey(),data,signature));
         return "keys";
     }
 }
