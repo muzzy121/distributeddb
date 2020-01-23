@@ -1,9 +1,12 @@
 package com.muzzy.domain;
 
 import com.muzzy.cipher.StringUtil;
+import com.muzzy.service.TransactionOutputService;
+import com.muzzy.service.TransactionService;
 import com.muzzy.service.controllerservice.test.Validation;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.Serializable;
 import java.security.PrivateKey;
@@ -21,15 +24,18 @@ import java.util.stream.Collectors;
 @Getter
 @Setter
 public class Transaction implements Serializable {
-    public String transactionId;
-    public PublicKey sender;
-    public PublicKey receiver;
-    public float value;
-    public byte[] signature;
+    private String transactionId;
+    private PublicKey sender;
+    private PublicKey receiver;
+    private float value;
+    private byte[] signature;
+    private ArrayList<TransactionInput> inputs;
+    private ArrayList<TransactionOutput> outputs = new ArrayList<>();
+
+    @Autowired
+    private TransactionOutputService transactionService;
 
 
-    public ArrayList<TransactionInput> inputs;
-    public ArrayList<TransactionOutput> outputs = new ArrayList<>();
     public Transaction(PublicKey sender, PublicKey reciever, float value, ArrayList<TransactionInput> inputs) {
         this.sender = sender;
         this.receiver = reciever;
@@ -54,6 +60,7 @@ public class Transaction implements Serializable {
      * @param privateKey
      */
     public void generateSignature(PrivateKey privateKey) {
+        // TODO: 2020-01-23 Czy sygnatura nie powinna być z datą?
         String data = StringUtil.getStringFromKey(sender) + StringUtil.getStringFromKey(receiver) + value;
         this.signature = Validation.confirm(privateKey, data);
     }
@@ -68,9 +75,9 @@ public class Transaction implements Serializable {
     }
 
 
-    public boolean processTransaction(HashMap<String, TransactionOutput> map) {
+    public boolean processTransaction() {
 
-        // Verify transaction
+        // Verify transaction signature
 
         if (!verifiySignature()) {
             System.out.println("Wrong Signature");
@@ -82,10 +89,12 @@ public class Transaction implements Serializable {
 //        for (TransactionInput i : inputs) {
 //            i.UTXO = map.get(i.transactionOutputId);  // te public-i jeszcze w mapie to masakra
 //        }
-        inputs.stream().forEach(i -> i.UTXO = map.get(i.transactionOutputId));
+
+        //Dlaczego połowa operacji została zrobiona tam a druga jest robiona tu!?
+//        inputs.stream().forEach(i -> i.setUtxo(transactionService.getById(i.getTransactionOutputId())));
 
 
-        // Róznica miedzy wartością transakcji Input, a waroscią tej transackji w której jestem
+        // Reszta
         float change = getInputsValue() - value;
 
         transactionId = calculateHash();  // licze hash transakcji
@@ -93,14 +102,18 @@ public class Transaction implements Serializable {
         outputs.add(new TransactionOutput(this.receiver, value, transactionId)); //dodaje transakcje output do listy outputs w transakcji
         outputs.add(new TransactionOutput(this.sender, change, transactionId)); //dodaje transakcje output do listy outputs w transakcji
 
-        for (TransactionOutput o : outputs) {
-            map.put(o.id, o);
-        }
+//        for (TransactionOutput o : outputs) {
+////            map.put(o.id, o);
+//            transactionService.save(o.id,o);
+//        }
+        outputs.forEach(o -> transactionService.save(o.getId(),o));
+        inputs.stream().filter(i -> i.getUtxo() != null).forEach(y -> transactionService.deleteById(y.getUtxo().getId()));
 
-        for (TransactionInput i : inputs) {
-            if (i.UTXO == null) continue;
-            map.remove(i.UTXO.id);
-        }
+//        for (TransactionInput i : inputs) {
+//            if (i.getUtxo() == null) continue;
+////            map.remove(i.UTXO.id);
+//            transactionService.deleteById(i.getUtxo().getId());
+//        }
 
         return true;
     }
@@ -113,8 +126,8 @@ public class Transaction implements Serializable {
 //        }
 
         double total = inputs.stream()
-                .filter(input -> input.UTXO!=null)
-                .collect(Collectors.summingDouble(x -> x.UTXO.value));
+                .filter(input -> input.getUtxo()!=null) //Kiedy może dojść do sytuacji kiedy utxo będzie null!?
+                .collect(Collectors.summingDouble(x -> x.getUtxo().value));
         return (float) total;
     }
 

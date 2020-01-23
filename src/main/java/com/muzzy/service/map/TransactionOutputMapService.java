@@ -6,7 +6,9 @@ import com.muzzy.service.TransactionOutputService;
 import com.muzzy.service.TransactionService;
 import org.springframework.stereotype.Service;
 
+import java.security.PublicKey;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Created by Paweł Mazur
@@ -52,5 +54,11 @@ public class TransactionOutputMapService extends AbstractTransactionOutputMapSer
     @Override
     public void deleteById(String id) {
         super.deleteById(id);
+    }
+
+    @Override
+    public Set<TransactionOutput> getTransctionByPublicKey(PublicKey publicKey) {
+        Set<TransactionOutput> transactionOutputs = getAll();
+        return transactionOutputs.stream().filter(txos -> txos.receiver.equals(publicKey)).collect(Collectors.toSet());
     }
 }

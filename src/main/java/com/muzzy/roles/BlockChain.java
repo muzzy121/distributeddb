@@ -25,8 +25,6 @@ public class BlockChain implements ApplicationListener<ContextRefreshedEvent> {
 
     public static HashMap<String, TransactionOutput> UTXOs = new HashMap<>();  //Ta lista nie moze działać w ten sposób, to musi być serwis
 
-
-
     private final TransactionOutputService transactionOutputService;
 
 
@@ -49,8 +47,8 @@ public class BlockChain implements ApplicationListener<ContextRefreshedEvent> {
         walletB = new Wallet();
         walletC = new Wallet();
 
-        ancestorTransaction = new AncestorTransaction().init(walletA.publicKey, 100F); // tworze transakcje (z pierdoł poprawić wysyłanie tylko adresu portfela)
-        transactionOutputService.save(ancestorTransaction.outputs.get(0).id,ancestorTransaction.outputs.get(0)); //oraz dodaje ta transakcje do UTXOs
+        ancestorTransaction = new AncestorTransaction().init(walletA.getPublicKey(), 100F); // tworze transakcje (z pierdoł poprawić wysyłanie tylko adresu portfela)
+        transactionOutputService.save(ancestorTransaction.getOutputs().get(0).id,ancestorTransaction.getOutputs().get(0)); //oraz dodaje ta transakcje do UTXOs
 
         System.out.println("Creating and Mining first block... ");
 
@@ -63,8 +61,8 @@ public class BlockChain implements ApplicationListener<ContextRefreshedEvent> {
 //
 //        Block block1 = new Block(blockchain.get(blockchain.size() - 1).hash);
 //        System.out.println("\nWalletA's balance is: " + walletA.getBalance());
-//
-//        block1.addTransaction(walletA.sendFunds(walletB.publicKey, 40f), UTXOs);
+//        walletA = walletA.sendFunds(walletB.publicKey, 40f);
+//        block1.addTransaction(walletA, UTXOs);
 //        addBlock(block1);
 //        System.out.println("\nWalletA's balance is: " + walletA.getBalance());
 //        System.out.println("WalletB's balance is: " + walletB.getBalance());
