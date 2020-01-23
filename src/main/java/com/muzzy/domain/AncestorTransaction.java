@@ -2,6 +2,7 @@ package com.muzzy.domain;
 
 import com.muzzy.service.controllerservice.test.Wallet;
 
+import java.security.PublicKey;
 import java.util.HashMap;
 
 public class AncestorTransaction extends Transaction {
@@ -11,9 +12,9 @@ public class AncestorTransaction extends Transaction {
         super();
     }
 
-    public Transaction init(Wallet receiver, float value) {
+    public Transaction init(PublicKey receiver, float value) {
         super.sender = ancestorWallet.publicKey;
-        super.receiver = receiver.publicKey;
+        super.receiver = receiver;
         super.value = value;
         super.inputs = null;
         super.generateSignature(ancestorWallet.privateKey);

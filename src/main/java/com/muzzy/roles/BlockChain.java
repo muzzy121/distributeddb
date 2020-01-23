@@ -38,7 +38,7 @@ public class BlockChain implements ApplicationListener<ContextRefreshedEvent> {
     public static int difficulty = 4;
     public static Wallet walletA;
     public static Wallet walletB;
-    public static Wallet walletc;
+    public static Wallet walletC;
     public static Transaction ancestorTransaction;
 
     @Override
@@ -47,9 +47,9 @@ public class BlockChain implements ApplicationListener<ContextRefreshedEvent> {
 
         walletA = new Wallet();
         walletB = new Wallet();
-        walletc = new Wallet();
+        walletC = new Wallet();
 
-        ancestorTransaction = new AncestorTransaction().init(walletA, 100F); // tworze transakcje (
+        ancestorTransaction = new AncestorTransaction().init(walletA.publicKey, 100F); // tworze transakcje (z pierdoł poprawić wysyłanie tylko adresu portfela)
         transactionOutputService.save(ancestorTransaction.outputs.get(0).id,ancestorTransaction.outputs.get(0)); //oraz dodaje ta transakcje do UTXOs
 
         System.out.println("Creating and Mining first block... ");

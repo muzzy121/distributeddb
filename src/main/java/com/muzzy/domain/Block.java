@@ -53,7 +53,7 @@ public abstract class Block implements Serializable {
 
 
 //    public void addTransaction(Transaction transaction, HashMap<String, TransactionOutput> map) {
-//        if(transaction == null) return;
+//        if(transaction == null) return;  // to raczej nie zadziała bo nie ma nawet equals więc bedzie procesować błędne transakcje
 //        if((!previousHash.equals("0"))) {
 //            if((!transaction.processTransaction(map))) {
 //                System.out.println("Transaction failed to process. Discarded.");
