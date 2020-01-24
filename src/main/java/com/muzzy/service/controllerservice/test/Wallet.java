@@ -7,6 +7,7 @@ import com.muzzy.service.TransactionOutputService;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
@@ -16,18 +17,22 @@ import java.util.*;
 import java.util.stream.Collectors;
 @Getter
 @Setter
+@Component
 public class Wallet {
     private PrivateKey privateKey;
     private PublicKey publicKey;
 
     // When you call getBalance create local transaction table with this wallet transactions
 
-    @Autowired
-    private TransactionOutputService transactionService;
+    private final TransactionOutputService transactionOutputService;
 
-    public Wallet() {
+    @Autowired
+    public Wallet(TransactionOutputService transactionOutputService) {
+        this.transactionOutputService = transactionOutputService;
         generateKeyPair();
     }
+
+//    public Wallet(){  generateKeyPair(); };
 
     private void generateKeyPair() {
         try {
@@ -42,7 +47,8 @@ public class Wallet {
     }
 
     public float getBalance() {
-        Set<TransactionOutput> transactionOutputSet = transactionService.getAll();
+
+        Set<TransactionOutput> transactionOutputSet = transactionOutputService.getAll();
         double total = transactionOutputSet.stream()
                 .filter(utxo -> utxo.isMine(publicKey))
 //                .map(y -> localUTXOs.put(y.id,y)) //To jest mega dziwne rozwiązanie ... bo getBalance robi wydaje mi się dwie różne rzeczy, nie tylko Balance
@@ -60,7 +66,7 @@ public class Wallet {
         }
 
         // Needed obj.
-        Set<TransactionOutput> transactionOutputSet = transactionService.getTransctionByPublicKey(publicKey);
+        Set<TransactionOutput> transactionOutputSet = transactionOutputService.getTransctionByPublicKey(publicKey);
 //        HashMap<String, TransactionOutput> localUTXOs = new HashMap<>();
         ArrayList<TransactionInput> inputs = new ArrayList<>();
         float total = 0F;
@@ -82,7 +88,8 @@ public class Wallet {
 //            inputs.add(new TransactionInput(UTXO.id));
 //
 //        }
-        Transaction transaction = new Transaction(publicKey, receiver, value, inputs);
+//        Transaction transaction = new Transaction(publicKey, receiver, value, inputs);
+        Transaction transaction = new Transaction().builder().sender(publicKey).reciever(receiver).value(value).inputs(inputs).transactionOutputService(transactionOutputService).build();
         transaction.generateSignature(privateKey);
 
 

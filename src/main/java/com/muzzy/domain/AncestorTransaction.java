@@ -5,13 +5,13 @@ import com.muzzy.service.controllerservice.test.Wallet;
 import java.security.PublicKey;
 
 public class AncestorTransaction extends Transaction {
-    private Wallet ancestorWallet = new Wallet();
+
 
     public AncestorTransaction() {
         super();
     }
 
-    public Transaction init(PublicKey receiver, float value) {
+    public Transaction init(Wallet ancestorWallet, PublicKey receiver, float value) {
         super.setSender(ancestorWallet.getPublicKey());
         super.setReceiver(receiver);
         super.setValue(value);

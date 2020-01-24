@@ -2,9 +2,10 @@ package com.muzzy.domain;
 
 import com.muzzy.cipher.StringUtil;
 import com.muzzy.service.TransactionOutputService;
-import com.muzzy.service.TransactionService;
 import com.muzzy.service.controllerservice.test.Validation;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -12,8 +13,6 @@ import java.io.Serializable;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -23,6 +22,8 @@ import java.util.stream.Collectors;
 
 @Getter
 @Setter
+
+@NoArgsConstructor
 public class Transaction implements Serializable {
     private String transactionId;
     private PublicKey sender;
@@ -32,19 +33,18 @@ public class Transaction implements Serializable {
     private ArrayList<TransactionInput> inputs;
     private ArrayList<TransactionOutput> outputs = new ArrayList<>();
 
-    @Autowired
-    private TransactionOutputService transactionService;
 
+    private TransactionOutputService transactionOutputService;
 
-    public Transaction(PublicKey sender, PublicKey reciever, float value, ArrayList<TransactionInput> inputs) {
+    @Builder
+    public Transaction(PublicKey sender, PublicKey reciever, float value, ArrayList<TransactionInput> inputs,TransactionOutputService transactionOutputService) {
         this.sender = sender;
         this.receiver = reciever;
         this.value = value;
         this.inputs = inputs;
+        this.transactionOutputService = transactionOutputService;
     }
 
-    public Transaction() {
-    }
 
     private String calculateHash() {
         return StringUtil.applySha256(
@@ -106,8 +106,8 @@ public class Transaction implements Serializable {
 ////            map.put(o.id, o);
 //            transactionService.save(o.id,o);
 //        }
-        outputs.forEach(o -> transactionService.save(o.getId(),o));
-        inputs.stream().filter(i -> i.getUtxo() != null).forEach(y -> transactionService.deleteById(y.getUtxo().getId()));
+        outputs.forEach(o -> transactionOutputService.save(o.getId(),o));
+        inputs.stream().filter(i -> i.getUtxo() != null).forEach(y -> transactionOutputService.deleteById(y.getUtxo().getId()));
 
 //        for (TransactionInput i : inputs) {
 //            if (i.getUtxo() == null) continue;

@@ -34,56 +34,56 @@ public class BlockChain implements ApplicationListener<ContextRefreshedEvent> {
     }
 
     public static int difficulty = 4;
-    public static Wallet walletA;
-    public static Wallet walletB;
-    public static Wallet walletC;
+    private Wallet walletA;
+    private Wallet walletB;
+    private Wallet walletC;
+    private Wallet ancestorWallet;
+
     public static Transaction ancestorTransaction;
 
     @Override
     public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
 
 
-        walletA = new Wallet();
-        walletB = new Wallet();
-        walletC = new Wallet();
+        walletA = new Wallet(transactionOutputService);
+        walletB = new Wallet(transactionOutputService);
+        walletC = new Wallet(transactionOutputService);
+        ancestorWallet = new Wallet(transactionOutputService);
 
-        ancestorTransaction = new AncestorTransaction().init(walletA.getPublicKey(), 100F); // tworze transakcje (z pierdoł poprawić wysyłanie tylko adresu portfela)
+        ancestorTransaction = new AncestorTransaction().init(ancestorWallet, walletA.getPublicKey(), 100F); // tworze transakcje (z pierdoł poprawić wysyłanie tylko adresu portfela)
         transactionOutputService.save(ancestorTransaction.getOutputs().get(0).id,ancestorTransaction.getOutputs().get(0)); //oraz dodaje ta transakcje do UTXOs
 
         System.out.println("Creating and Mining first block... ");
 
         Block genesis = new BlockVerified("0");  //tworze blok i minuje
 
+        genesis.addTransaction(ancestorTransaction); //dodaje do bloku transakcje!?
+        addBlock(genesis);
 
+        Block block1 = new BlockVerified(blockchain.get(blockchain.size() - 1).getHash());
+        System.out.println("\nWalletA's balance is: " + walletA.getBalance());
+        block1.addTransaction(walletA.sendFunds(walletB.getPublicKey(), 40f));
+        addBlock(block1);
+        System.out.println("\nWalletA's balance is: " + walletA.getBalance());
+        System.out.println("WalletB's balance is: " + walletB.getBalance());
 
-//        genesis.addTransaction(ancestorTransaction, UTXOs); //dodaje do bloku transakcje!?
-//        addBlock(genesis);
-//
-//        Block block1 = new Block(blockchain.get(blockchain.size() - 1).hash);
-//        System.out.println("\nWalletA's balance is: " + walletA.getBalance());
-//        walletA = walletA.sendFunds(walletB.publicKey, 40f);
-//        block1.addTransaction(walletA, UTXOs);
-//        addBlock(block1);
-//        System.out.println("\nWalletA's balance is: " + walletA.getBalance());
-//        System.out.println("WalletB's balance is: " + walletB.getBalance());
-//
-//        Block block2 = new Block(blockchain.get(blockchain.size() - 1).hash);
-//        block2.addTransaction(walletA.sendFunds(walletc.publicKey, 40f), UTXOs);
-//        addBlock(block2);
-//        System.out.println("\nWalletA's balance is: " + walletA.getBalance());
-//        System.out.println("WalletC's balance is: " + walletc.getBalance());
-//
-//        Block block3 = new Block(blockchain.get(blockchain.size() - 1).hash);
-//        block3.addTransaction(walletB.sendFunds(walletc.publicKey, 20f), UTXOs);
-//        addBlock(block3);
-//        System.out.println("\nWalletC's balance is: " + walletc.getBalance());
-//        System.out.println("WalletB's balance is: " + walletB.getBalance());
-//
-//        Block block4 = new Block(blockchain.get(blockchain.size() - 1).hash);
-//        block4.addTransaction(walletc.sendFunds(walletB.publicKey, 60f), UTXOs);
-//        addBlock(block4);
-//        System.out.println("\nWalletC's balance is: " + walletc.getBalance());
-//        System.out.println("WalletB's balance is: " + walletB.getBalance());
+        Block block2 = new BlockVerified(blockchain.get(blockchain.size() - 1).getHash());
+        block2.addTransaction(walletA.sendFunds(walletC.getPublicKey(), 40f));
+        addBlock(block2);
+        System.out.println("\nWalletA's balance is: " + walletA.getBalance());
+        System.out.println("WalletC's balance is: " + walletC.getBalance());
+
+        Block block3 = new BlockVerified(blockchain.get(blockchain.size() - 1).getHash());
+        block3.addTransaction(walletB.sendFunds(walletC.getPublicKey(), 20f));
+        addBlock(block3);
+        System.out.println("\nWalletC's balance is: " + walletC.getBalance());
+        System.out.println("WalletB's balance is: " + walletB.getBalance());
+
+        Block block4 = new BlockVerified(blockchain.get(blockchain.size() - 1).getHash());
+        block4.addTransaction(walletC.sendFunds(walletB.getPublicKey(), 60f));
+        addBlock(block4);
+        System.out.println("\nWalletC's balance is: " + walletC.getBalance());
+        System.out.println("WalletB's balance is: " + walletB.getBalance());
 //
 //        Validation.isChainValid(ancestorTransaction, difficulty, blockchain);
 

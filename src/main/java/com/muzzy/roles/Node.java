@@ -56,26 +56,26 @@ public class Node implements Runnable {
 
     @Override
     public void run() {
-        System.out.println("Waiting for data...");
-        try {
-            InputStream inputStream = socket.getInputStream();
-            objectInputStream = new ObjectInputStream(inputStream);
-
-        } catch (IOException e) {
-            System.out.println("Unable to get input stream");
-            e.printStackTrace();
-        }
-
-        while (isStart) {
-            try {
-                Object object = objectInputStream.readObject();
-            } catch (IOException e) {
-                e.printStackTrace();
-                System.out.println("Unknown object");
-            } catch (ClassNotFoundException e) {
-                System.out.println("Unknown object");
-                e.printStackTrace();
-            }
-        }
+//        System.out.println("Waiting for data...");
+//        try {
+//            InputStream inputStream = socket.getInputStream();
+//            objectInputStream = new ObjectInputStream(inputStream);
+//
+//        } catch (IOException e) {
+//            System.out.println("Unable to get input stream");
+//            e.printStackTrace();
+//        }
+//
+//        while (isStart) {
+//            try {
+//                Object object = objectInputStream.readObject();
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//                System.out.println("Unknown object");
+//            } catch (ClassNotFoundException e) {
+//                System.out.println("Unknown object");
+//                e.printStackTrace();
+//            }
+//        }
     }
 }

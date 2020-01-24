@@ -41,6 +41,6 @@ public class TestThread implements Runnable {
 //                break;
 //            }
 //        }
-         connectedSockets = connector.connect();
+//         connectedSockets = connector.connect();
     }
 }
