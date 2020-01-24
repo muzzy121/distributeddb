@@ -11,6 +11,6 @@ import java.util.Set;
  * 14.01.2020
  */
 @Service
-public interface TransactionOutputService extends TransactionOutputCrudService<TransactionOutput,String> {
+public interface TransactionOutputService extends CrudService<TransactionOutput,String> {
     Set<TransactionOutput> getTransctionByPublicKey(PublicKey publicKey);
 }

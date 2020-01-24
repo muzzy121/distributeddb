@@ -1,9 +1,7 @@
 package com.muzzy.service.map;
 
 import com.muzzy.domain.TransactionOutput;
-import com.muzzy.domain.TransactionOutput;
 import com.muzzy.service.TransactionOutputService;
-import com.muzzy.service.TransactionService;
 import org.springframework.stereotype.Service;
 
 import java.security.PublicKey;
@@ -28,7 +26,7 @@ public class TransactionOutputMapService extends AbstractTransactionOutputMapSer
     }
 
     @Override
-    public TransactionOutput save(String id, TransactionOutput t) {
+    public TransactionOutput save(TransactionOutput t) {
 
         //    public void addTransaction(Transaction transaction, HashMap<String, TransactionOutput> map) {
 //        if(transaction == null) return;
@@ -43,7 +41,7 @@ public class TransactionOutputMapService extends AbstractTransactionOutputMapSer
 //        System.out.println("Transaction Successfully added to Block");
 //    }
 
-        return super.save(id, t);
+        return super.save(t);
     }
 
     @Override

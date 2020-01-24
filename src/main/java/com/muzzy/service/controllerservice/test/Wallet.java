@@ -22,8 +22,6 @@ public class Wallet {
     private PrivateKey privateKey;
     private PublicKey publicKey;
 
-    // When you call getBalance create local transaction table with this wallet transactions
-
     private final TransactionOutputService transactionOutputService;
 
     @Autowired
@@ -31,8 +29,6 @@ public class Wallet {
         this.transactionOutputService = transactionOutputService;
         generateKeyPair();
     }
-
-//    public Wallet(){  generateKeyPair(); };
 
     private void generateKeyPair() {
         try {
@@ -65,9 +61,8 @@ public class Wallet {
             return null;
         }
 
-        // Needed obj.
+        // Mandatory obj.
         Set<TransactionOutput> transactionOutputSet = transactionOutputService.getTransctionByPublicKey(publicKey);
-//        HashMap<String, TransactionOutput> localUTXOs = new HashMap<>();
         ArrayList<TransactionInput> inputs = new ArrayList<>();
         float total = 0F;
 
@@ -78,26 +73,8 @@ public class Wallet {
             if (total > value) break;
         }
 
-
-
-
-//        for (Map.Entry<String, TransactionOutput> item : localUTXOs.entrySet()) {
-//
-//            TransactionOutput UTXO = item.getValue();
-//            total += UTXO.value;
-//            inputs.add(new TransactionInput(UTXO.id));
-//
-//        }
-//        Transaction transaction = new Transaction(publicKey, receiver, value, inputs);
         Transaction transaction = new Transaction().builder().sender(publicKey).reciever(receiver).value(value).inputs(inputs).transactionOutputService(transactionOutputService).build();
         transaction.generateSignature(privateKey);
-
-
-        // Co tak naprawdę to robi!?
-//        for (TransactionInput input : inputs) {
-//            localUTXOs.remove(input.transactionOutputId);
-//        }
-//        localUTXOs.clear();
         return transaction;
     }
 }

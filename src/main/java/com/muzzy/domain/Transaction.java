@@ -22,7 +22,6 @@ import java.util.stream.Collectors;
 
 @Getter
 @Setter
-
 @NoArgsConstructor
 public class Transaction implements Serializable {
     private String transactionId;
@@ -33,11 +32,10 @@ public class Transaction implements Serializable {
     private ArrayList<TransactionInput> inputs;
     private ArrayList<TransactionOutput> outputs = new ArrayList<>();
 
-
     private TransactionOutputService transactionOutputService;
 
     @Builder
-    public Transaction(PublicKey sender, PublicKey reciever, float value, ArrayList<TransactionInput> inputs,TransactionOutputService transactionOutputService) {
+    public Transaction(PublicKey sender, PublicKey reciever, float value, ArrayList<TransactionInput> inputs, TransactionOutputService transactionOutputService) {
         this.sender = sender;
         this.receiver = reciever;
         this.value = value;
@@ -45,7 +43,10 @@ public class Transaction implements Serializable {
         this.transactionOutputService = transactionOutputService;
     }
 
-
+    /**
+     * Generates Hash using Public Keys and transaction value
+     * @return Hash
+     */
     private String calculateHash() {
         return StringUtil.applySha256(
                 StringUtil.getStringFromKey(this.sender) +
@@ -54,9 +55,9 @@ public class Transaction implements Serializable {
         );
     }
 
-
     /**
      * Generate this Transaction signature using privateKey, (sender, reciver publicKeys and Value of transaction as data)
+     *
      * @param privateKey
      */
     public void generateSignature(PrivateKey privateKey) {
@@ -67,77 +68,46 @@ public class Transaction implements Serializable {
 
     /**
      * Checks if signature was create with proper key pair and proper data
+     *
      * @return boolean
      */
     public boolean verifiySignature() {
         String data = StringUtil.getStringFromKey(sender) + StringUtil.getStringFromKey(receiver) + value;
         return Validation.verifySignature(sender, data, signature);
     }
-
-
+    /**
+     * Werify if Signature is proper
+     * Calculate transaction Hash
+     * Creates and adds TransctionOutputs to List
+     * Adds new TransactionOutputs to UTXOs
+     *
+     * @return true when transaction was proceeded success
+     */
     public boolean processTransaction() {
-
         // Verify transaction signature
-
         if (!verifiySignature()) {
             System.out.println("Wrong Signature");
             return false;
         }
 
-        // biere transakcje z listy inputs, jeżeli coś w niej jest to z Repo wszystkich transakcji wybieram taką transakcje,
-        // która ma id takie jak id obiektu z listy input i przypisuje do pola UTXO tego obiektu -- nie wiem co tu sie dzieje!
-//        for (TransactionInput i : inputs) {
-//            i.UTXO = map.get(i.transactionOutputId);  // te public-i jeszcze w mapie to masakra
-//        }
-
-        //Dlaczego połowa operacji została zrobiona tam a druga jest robiona tu!?
-//        inputs.stream().forEach(i -> i.setUtxo(transactionService.getById(i.getTransactionOutputId())));
-
-
-        // Reszta
         float change = getInputsValue() - value;
-
-        transactionId = calculateHash();  // licze hash transakcji
-
-        outputs.add(new TransactionOutput(this.receiver, value, transactionId)); //dodaje transakcje output do listy outputs w transakcji
-        outputs.add(new TransactionOutput(this.sender, change, transactionId)); //dodaje transakcje output do listy outputs w transakcji
-
-//        for (TransactionOutput o : outputs) {
-////            map.put(o.id, o);
-//            transactionService.save(o.id,o);
-//        }
-        outputs.forEach(o -> transactionOutputService.save(o.getId(),o));
+        transactionId = calculateHash();
+        outputs.add(new TransactionOutput(this.receiver, value, transactionId));
+        outputs.add(new TransactionOutput(this.sender, change, transactionId));
+        outputs.forEach(o -> transactionOutputService.save(o));
         inputs.stream().filter(i -> i.getUtxo() != null).forEach(y -> transactionOutputService.deleteById(y.getUtxo().getId()));
-
-//        for (TransactionInput i : inputs) {
-//            if (i.getUtxo() == null) continue;
-////            map.remove(i.UTXO.id);
-//            transactionService.deleteById(i.getUtxo().getId());
-//        }
-
         return true;
     }
 
     public float getInputsValue() {
-//        float total = 0;
-//        for (TransactionInput i : inputs) {
-//            if (i.UTXO == null) continue;
-//            total += i.UTXO.value;
-//        }
-
         double total = inputs.stream()
-                .filter(input -> input.getUtxo()!=null) //Kiedy może dojść do sytuacji kiedy utxo będzie null!?
+                .filter(input -> input.getUtxo() != null) //Kiedy może dojść do sytuacji kiedy utxo będzie null!?
                 .collect(Collectors.summingDouble(x -> x.getUtxo().value));
         return (float) total;
     }
 
     public float getOutputsValue() {
-//        float total = 0;
-//        for (TransactionOutput o : outputs) {
-//            total += o.value;
-//        }
-
-        double total = outputs.stream().collect(Collectors.summingDouble(x->x.value));
+        double total = outputs.stream().collect(Collectors.summingDouble(x -> x.value));
         return (float) total;
     }
 

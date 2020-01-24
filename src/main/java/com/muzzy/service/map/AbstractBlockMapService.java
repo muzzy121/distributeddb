@@ -4,8 +4,8 @@ import com.muzzy.domain.Block;
 
 import java.util.*;
 
-public abstract class AbstractBlockMapService<T extends Block,ID extends Long> {
-    private Map<Long,T> map = new HashMap<>();
+public abstract class AbstractBlockMapService<T extends Block,ID extends String> {
+    private Map<String,T> map = new LinkedHashMap<>();
     Set<T> findAll(){
         return new HashSet<>(map.values());
     }
@@ -13,15 +13,8 @@ public abstract class AbstractBlockMapService<T extends Block,ID extends Long> {
         return map.get(id);
     }
     T save(T object){
-        if(object != null){
-            if(object.getId() == null) {
-                object.setId(getNextId());
-            }
-            map.put(object.getId(), object);
-            return object;
-        } else {
-            throw new RuntimeException("Object cannot be null");
-        }
+        map.put(object.getHash(), object);
+        return map.get(object.getHash());
     }
 
     void deleteById(ID id){
@@ -31,12 +24,17 @@ public abstract class AbstractBlockMapService<T extends Block,ID extends Long> {
         map.entrySet().removeIf(x -> x.getValue().equals(object));
     }
 
-    private Long getNextId(){
-        if(map.isEmpty()) {
-            return 1L;
-        } else {
-            return Collections.max(map.keySet()) + 1;
-        }
+    T getLastBlock(){
+        ArrayList<String> hashList = new ArrayList<>(map.keySet());
+        return map.get(hashList.get(hashList.size()-1));
     }
+
+//    private Long getNextId(){
+//        if(map.isEmpty()) {
+//            return 1L;
+//        } else {
+//            return Collections.max(map.keySet()) + 1;
+//        }
+//    }
 
 }

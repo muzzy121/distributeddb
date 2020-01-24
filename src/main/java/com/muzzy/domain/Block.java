@@ -22,7 +22,7 @@ import java.util.List;
 public abstract class Block implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    private Long Id;
+//    private Long Id;
     private ZonedDateTime timestamp;
     private Long nonce = 0L;
     private List<Transaction> transactions = new ArrayList<>();
@@ -38,7 +38,6 @@ public abstract class Block implements Serializable {
 
     /**
      * Method can hash block with given difficulty
-     *
      * @param difficulty
      */
     public void mine(int difficulty) {
@@ -49,9 +48,7 @@ public abstract class Block implements Serializable {
         } while (!hash.substring(0, difficulty).matches("[0]{" + difficulty + "}"));
     }
 
-
     //Method depends on some map, look it should be in other place!
-
 
     public void addTransaction(Transaction transaction) {
         if(transaction == null) return;  // to raczej nie zadziała bo nie ma nawet equals więc bedzie procesować błędne transakcje
@@ -61,8 +58,8 @@ public abstract class Block implements Serializable {
                 return;
             }
         }
-        System.out.println("\n"+transaction.getSender().toString().substring(40,194)+"\nis Attempting to send funds ("+transaction.getValue()+") to "+"\n"+transaction.getReceiver().toString().substring(40,194)+"\n...");
+//        System.out.println("\n"+transaction.getSender().toString().substring(40,194)+"\nis Attempting to send funds ("+transaction.getValue()+") to "+"\n"+transaction.getReceiver().toString().substring(40,194)+"\n...");
         transactions.add(transaction);
-        System.out.println("Transaction Successfully added to Block");
+//        System.out.println("Transaction Successfully added to Block");
     }
 }

@@ -1,6 +1,5 @@
 package com.muzzy.service.map;
 
-import com.muzzy.domain.Transaction;
 import com.muzzy.domain.TransactionOutput;
 
 import java.util.HashMap;
@@ -25,9 +24,9 @@ public abstract class AbstractTransactionOutputMapService<T extends TransactionO
         return map.get(id);
     }
 
-    T save(ID id, T object) {
-        map.put(id, object);
-        return object;
+    T save(T object) {
+        map.put(object.getId(), object);
+        return map.get(object.getId());
     }
 
     void deleteById(ID id) {

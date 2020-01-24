@@ -8,6 +8,6 @@ import org.springframework.stereotype.Service;
  * 14.01.2020
  */
 @Service
-public interface BlockService extends CrudService<Block,Long> {
-
+public interface BlockService extends CrudService<Block,String> {
+    Block getLastBlock();
 }
