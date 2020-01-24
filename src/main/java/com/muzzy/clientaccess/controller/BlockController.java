@@ -22,7 +22,7 @@ public class BlockController {
         this.blockMapService = blockMapService;
     }
 
-    @GetMapping({"/blockall"})
+    @GetMapping({"/all"})
     public String getIndexPage(Model model) {
         model.addAttribute("chain", blockMapService.getAll());
 
@@ -30,9 +30,17 @@ public class BlockController {
     }
     @RequestMapping(value = {"/block/details"}, method = RequestMethod.GET)
     public String getBlockInfo(@RequestParam("id") String id, Model model){
+        System.out.println(blockMapService);
         model.addAttribute("block", blockMapService.getById(id));
         return "block/detail";
     }
+
+    @RequestMapping(value = {"/transaction/details"}, method = RequestMethod.GET)
+    public String getTransactionById(@RequestParam("id") String id, Model model){
+        model.addAttribute("transaction", blockMapService.getById(id));
+        return "transact/detail";
+    }
+
     // Use for nothing
 //    @PostMapping("/addBlock")
 //    public String doAdd(Model model) {

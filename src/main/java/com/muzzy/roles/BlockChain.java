@@ -68,6 +68,7 @@ public class BlockChain implements ApplicationListener<ContextRefreshedEvent> {
 
         System.out.println("\nWalletA's balance is: " + walletA.getBalance());
         block1.addTransaction(walletA.sendFunds(walletB.getPublicKey(), 40f));
+        block1.addTransaction(walletA.sendFunds(walletC.getPublicKey(), 10f));
         addBlock(block1);
         System.out.println("\nWalletA's balance is: " + walletA.getBalance());
         System.out.println("WalletB's balance is: " + walletB.getBalance());

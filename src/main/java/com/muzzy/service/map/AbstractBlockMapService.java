@@ -6,8 +6,8 @@ import java.util.*;
 
 public abstract class AbstractBlockMapService<T extends Block,ID extends String> {
     private Map<String,T> map = new LinkedHashMap<>();
-    Set<T> findAll(){
-        return new HashSet<>(map.values());
+    LinkedHashSet<T> findAll(){
+        return new LinkedHashSet<>(map.values());
     }
     T findById(ID id){
         return map.get(id);

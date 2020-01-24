@@ -5,12 +5,13 @@ import com.muzzy.service.BlockService;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 @Service
 public class BlockMapService extends AbstractBlockMapService<Block,String> implements BlockService {
     @Override
-    public Set<Block> getAll() {
+    public LinkedHashSet<Block> getAll() {
         return super.findAll();
     }
 
@@ -27,7 +28,7 @@ public class BlockMapService extends AbstractBlockMapService<Block,String> imple
 
     @Override
     public Block getById(String id) {
-        return null;
+        return super.findById(id);
     }
 
     @Override

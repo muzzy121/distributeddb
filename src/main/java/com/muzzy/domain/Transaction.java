@@ -61,7 +61,7 @@ public class Transaction implements Serializable {
      * @param privateKey
      */
     public void generateSignature(PrivateKey privateKey) {
-        // TODO: 2020-01-23 Czy sygnatura nie powinna być z datą?
+        // TODO: 2020-01-23 Czy sygnatura nie powinna być z datą? Może dodać Pole daty do transakcji, jej utworzenia
         String data = StringUtil.getStringFromKey(sender) + StringUtil.getStringFromKey(receiver) + value;
         this.signature = Validation.confirm(privateKey, data);
     }

@@ -1,9 +1,7 @@
 package com.muzzy.clientaccess.controller;
 
-import com.muzzy.cipher.StringUtil;
 import com.muzzy.dto.TransactionSet;
 import com.muzzy.service.TransactionOutputService;
-import com.muzzy.service.controllerservice.test.Validation;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -25,8 +23,10 @@ public class IndexController {
     public String getIndexPage(Model model){
             model.addAttribute("transactions", transactionOutputService.getAll());
 
-        return "index";
+        return "transact/index";
     }
+
+
     @PostMapping("/add")
     public String doAdd(Model model){
 //        transactionService.save(transaction);
