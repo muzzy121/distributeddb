@@ -1,9 +1,12 @@
 package com.muzzy.roles;
 
+import com.muzzy.clientaccess.controller.TransactionController;
 import com.muzzy.domain.*;
 import com.muzzy.service.TransactionOutputService;
 import com.muzzy.service.controllerservice.test.Wallet;
 import com.muzzy.service.map.BlockMapService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
@@ -23,6 +26,7 @@ public class BlockChain implements ApplicationListener<ContextRefreshedEvent> {
     //DLA USPOKOJENIA KOMPILATORA
     public static ArrayList<Block> blockchain = new ArrayList<>();
 
+    final static Logger LOG = LoggerFactory.getLogger(BlockChain.class);
 
     private final BlockMapService blockMapService;
     private final TransactionOutputService transactionOutputService;
@@ -53,55 +57,56 @@ public class BlockChain implements ApplicationListener<ContextRefreshedEvent> {
         ancestorTransaction = new AncestorTransaction().init(ancestorWallet, walletA.getPublicKey(), 100F); // tworze transakcje (z pierdoł poprawić wysyłanie tylko adresu portfela)
         transactionOutputService.save(ancestorTransaction.getOutputs().get(0)); //oraz dodaje ta transakcje do UTXOs
 
-        System.out.println("Creating and Mining first block... ");
+        LOG.info("Creating and Mining first block... ");
 
         Block genesis = new BlockVerified("0");  //tworze blok i minuje
 
         genesis.addTransaction(ancestorTransaction); //dodaje do bloku transakcje!?
+        genesis.addTransaction(walletA.sendFunds(walletC.getPublicKey(), 10f));
         addBlock(genesis);
 
         if(!blockchain.get(blockchain.size() - 1).getHash().equals(blockMapService.getLastBlock().getHash())) {
-            System.out.println("ERROR!!!");
+            LOG.error("ERROR!!!");
         }
 
         Block block1 = new BlockVerified(blockMapService.getLastBlock().getHash());
 
-        System.out.println("\nWalletA's balance is: " + walletA.getBalance());
+        LOG.info("\nWalletA's balance is: " + walletA.getBalance());
         block1.addTransaction(walletA.sendFunds(walletB.getPublicKey(), 40f));
         block1.addTransaction(walletA.sendFunds(walletC.getPublicKey(), 10f));
         addBlock(block1);
-        System.out.println("\nWalletA's balance is: " + walletA.getBalance());
-        System.out.println("WalletB's balance is: " + walletB.getBalance());
+        LOG.info("\nWalletA's balance is: " + walletA.getBalance());
+        LOG.info("WalletB's balance is: " + walletB.getBalance());
 
         if(!blockchain.get(blockchain.size() - 1).getHash().equals(blockMapService.getLastBlock().getHash())) {
-            System.out.println("ERROR!!!");
+            LOG.error("ERROR!!!");
         }
         Block block2 = new BlockVerified(blockMapService.getLastBlock().getHash());
 
         block2.addTransaction(walletA.sendFunds(walletC.getPublicKey(), 40f));
         addBlock(block2);
-        System.out.println("\nWalletA's balance is: " + walletA.getBalance());
-        System.out.println("WalletC's balance is: " + walletC.getBalance());
+        LOG.info("\nWalletA's balance is: " + walletA.getBalance());
+        LOG.info("WalletC's balance is: " + walletC.getBalance());
 
         if(!blockchain.get(blockchain.size() - 1).getHash().equals(blockMapService.getLastBlock().getHash())) {
-            System.out.println("ERROR!!!");
+            LOG.error("ERROR!!!");
         }
 
         Block block3 = new BlockVerified(blockMapService.getLastBlock().getHash());
         block3.addTransaction(walletB.sendFunds(walletC.getPublicKey(), 20f));
         addBlock(block3);
-        System.out.println("\nWalletC's balance is: " + walletC.getBalance());
-        System.out.println("WalletB's balance is: " + walletB.getBalance());
+        LOG.info("\nWalletC's balance is: " + walletC.getBalance());
+        LOG.info("WalletB's balance is: " + walletB.getBalance());
 
         if(!blockchain.get(blockchain.size() - 1).getHash().equals(blockMapService.getLastBlock().getHash())) {
-            System.out.println("ERROR!!!");
+            LOG.error("ERROR!!!");
         }
 
         Block block4 = new BlockVerified(blockMapService.getLastBlock().getHash());
         block4.addTransaction(walletC.sendFunds(walletB.getPublicKey(), 60f));
         addBlock(block4);
-        System.out.println("\nWalletC's balance is: " + walletC.getBalance());
-        System.out.println("WalletB's balance is: " + walletB.getBalance());
+        LOG.info("\nWalletC's balance is: " + walletC.getBalance());
+        LOG.info("WalletB's balance is: " + walletB.getBalance());
 //
 //        Validation.isChainValid(ancestorTransaction, difficulty, blockchain);
 

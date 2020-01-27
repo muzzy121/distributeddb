@@ -1,0 +1,68 @@
+<!DOCTYPE html >
+<html lang="en" th:fragment="layout (template, menu)" xmlns:th="https://www.thymeleaf.org">
+
+<head>
+
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Blockchain :: a School Implementation </title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+            integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+            crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+            integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+            crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+            integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+            crossorigin="anonymous"></script>
+
+</head>
+<body>
+<!--<script th:src="@{/webjars/jquery/jquery.min.js}"></script>-->
+<!--<script th:src="@{/webjars/jquery-ui/jquery-ui.min.js}"></script>-->
+<!--<script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>-->
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="#">The Project</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup"
+            aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+        <div class="navbar-nav">
+            <a class="nav-item nav-link active" th:href="@{/}">Home <span class="sr-only">(current)</span></a>
+            <a class="nav-item nav-link" th:href="@{/}">UTXO List</a>
+            <a class="nav-item nav-link" th:href="@{/all}">Blockchain</a>
+        </div>
+
+    </div>
+    <form autocomplete="off" id="search" class="form-inline my-5 my-lg-0" th:action="@{/transactions(id=${transactionId})}">
+        <input aria-autocomplete="none" autocomplete="off" class="form-control mr-lg-2" type="search" placeholder="Search" aria-label="Search" th:value="${transactionId}" name="id">
+        <button class="btn btn-outline-success my-2 my-sm-0" type="submit" onclick="submit()">Search</button>
+    </form>
+</nav>
+
+<div class="container-fluid align-center">
+
+    <th:block th:include="${template}"/>
+
+    <footer class="py-4 bg-light text-grey-50 fixed-bottom">
+        <div class="container text-right">
+            <small>Copyright &copy; Paweł Mazur, Bartłomiej Rzymski, Marcin Grychoł</small>
+        </div>
+    </footer>
+</div>
+<script>
+    function submit() {
+        document.getElementById("search").reset();
+    }
+</script>
+
+</body>
+</html>

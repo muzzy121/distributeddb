@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="https://www.thymeleaf.org" th:replace="~{fragments/layout :: layout (~{::body},'home')}">
+<html lang="en" xmlns:th="https://www.thymeleaf.org" th:replace="~{fragments/layout :: layout (~{::body},'blockchain')}">
 <head>
     <meta charset="UTF-8"/>
     <title>UTXO page</title>
@@ -16,29 +16,14 @@
             integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
             crossorigin="anonymous"></script>
 </head>
-<!--/*@thymesVar id="transaction" type="com.muzzy.domain.TransactionOutput"*/-->
+<!--/*@thymesVar id="block" type="com.muzzy.domain.BlockVerified"*/-->
 <body>
+<div class="jumbotron jumbotron-fluid mt-5">
+    <div class="container">
+        <h1 class="display-3">Error occurred!</h1>
+        <p class="lead">Please check data and try to use it again, probably id information is missing!</p>
+    </div>
+</div>
 
-<h2>Unspend Transaction Outputs</h2>
-
-<table class="table table-striped">
-    <thead class="thead-light">
-    <tr>
-        <th>Transaction ID</th>
-        <th>Reciver</th>
-        <th>Amount</th>
-    </tr>
-    </thead>
-    <tr th:each="transaction: ${transactions}">
-        <td><a th:href="@{/transaction/details(id=${transaction.id})}" th:text="${transaction.id}">x</td>
-        <!--/*@thymesVar id="getStringFromKey" type="com.muzzy.cipher"*/-->
-        <td th:text="${T(com.muzzy.cipher.StringUtil).getStringFromKey(transaction.getReceiver())}">x</td>
-        <td><b th:text="${transaction.value}">x</b></td>
-    </tr>
-</table>
-
-<form class="button" th:action="@{/add}" method="POST">
-    <input type="submit" value="Add new transaction"/>
-</form>
 </body>
 </html>

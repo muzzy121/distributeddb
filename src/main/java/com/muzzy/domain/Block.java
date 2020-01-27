@@ -62,4 +62,7 @@ public abstract class Block implements Serializable {
         transactions.add(transaction);
 //        System.out.println("Transaction Successfully added to Block");
     }
+    public Transaction getTransactionById(String hash){
+        return transactions.stream().filter(t -> t.getTransactionId().equals(hash)).findFirst().orElse(null);
+    }
 }

@@ -47,7 +47,6 @@ public class Wallet {
         Set<TransactionOutput> transactionOutputSet = transactionOutputService.getAll();
         double total = transactionOutputSet.stream()
                 .filter(utxo -> utxo.isMine(publicKey))
-//                .map(y -> localUTXOs.put(y.id,y)) //To jest mega dziwne rozwiązanie ... bo getBalance robi wydaje mi się dwie różne rzeczy, nie tylko Balance
                 .collect(Collectors.summingDouble(TransactionOutput::getValue));
         return (float) total;
     }

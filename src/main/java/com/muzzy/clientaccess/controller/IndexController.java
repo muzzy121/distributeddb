@@ -23,7 +23,7 @@ public class IndexController {
     public String getIndexPage(Model model){
             model.addAttribute("transactions", transactionOutputService.getAll());
 
-        return "transact/index";
+        return "transaction/index";
     }
 
 

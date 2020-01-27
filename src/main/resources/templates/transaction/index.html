@@ -18,28 +18,27 @@
 </head>
 <!--/*@thymesVar id="transaction" type="com.muzzy.domain.TransactionOutput"*/-->
 <body>
-<div class="container-fluid">
-    <div></div>
-    <h2>Unspend Transaction Outputs</h2>
-    <table class="table table-dark table-striped">
-        <thead>
-        <tr>
-            <th>Transaction ID</th>
-            <th>Reciver</th>
-            <th>Amount</th>
-        </tr>
 
-        <tr th:each="transaction: ${transactions}">
-            <td><a th:href="@{/transaction/details(id=${transaction.id})}" th:text="${transaction.id}">x</td>
-            <!--/*@thymesVar id="getStringFromKey" type="com.muzzy.cipher"*/-->
-            <td th:text="${T(com.muzzy.cipher.StringUtil).getStringFromKey(transaction.getReceiver())}">x</td>
-            <td><b th:text="${transaction.value}">x</b></td>
-        </tr>
-        </thead>
-    </table>
-    <form class="button" th:action="@{/add}" method="POST">
-        <input type="submit" value="Add new transaction"/>
-    </form>
-</div>
+<h1><span class="badge badge-secondary">Unspend Transaction Outputs</span></h1>
+
+<table class="table table-striped">
+    <thead class="thead-light">
+    <tr>
+        <th>Transaction ID</th>
+        <th>Reciver</th>
+        <th>Amount</th>
+    </tr>
+    </thead>
+    <tr th:each="transaction: ${transactions}">
+        <td><a th:href="@{/transactions(id=${transaction.parentTransactionId})}" th:text="${transaction.id}">x</td>
+        <!--/*@thymesVar id="getStringFromKey" type="com.muzzy.cipher"*/-->
+        <td th:text="${T(com.muzzy.cipher.StringUtil).getStringFromKey(transaction.getReceiver())}">x</td>
+        <td th:text="${transaction.value}">x</td>
+    </tr>
+</table>
+
+<form class="button" th:action="@{/add}" method="POST">
+    <input type="submit" value="Add new transaction"/>
+</form>
 </body>
 </html>

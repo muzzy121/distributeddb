@@ -1,13 +1,16 @@
 package com.muzzy.clientaccess.controller;
 
+import com.muzzy.domain.Block;
+import com.muzzy.domain.Transaction;
 import com.muzzy.dto.TransactionSet;
 import com.muzzy.service.TransactionOutputService;
-import com.muzzy.service.controllerservice.test.RsaKeyGen;
 import com.muzzy.service.map.BlockMapService;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import javax.swing.text.BadLocationException;
 
 @Controller
 @Scope("prototype")
@@ -36,9 +39,16 @@ public class BlockController {
     }
 
     @RequestMapping(value = {"/transaction/details"}, method = RequestMethod.GET)
-    public String getTransactionById(@RequestParam("id") String id, Model model){
-        model.addAttribute("transaction", blockMapService.getById(id));
-        return "transact/detail";
+    public String getTransactionById(@RequestParam("blockid") String blockId , @RequestParam("id") String id, Model model){
+        Block block = blockMapService.getById(blockId);
+        Transaction ts = block.getTransactionById(id);
+        System.out.println(block.getHash());
+        System.out.println(ts.getValue());
+        model.addAttribute("transactionInputs", ts.getInputs());
+        model.addAttribute("transactionOutputs", ts.getOutputs());
+        model.addAttribute("block", blockMapService.getById(blockId));
+        model.addAttribute("transactionId", id);
+        return "transaction/detail";
     }
 
     // Use for nothing

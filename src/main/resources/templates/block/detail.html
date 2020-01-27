@@ -19,12 +19,12 @@
 <!--/*@thymesVar id="block" type="com.muzzy.domain.BlockVerified"*/-->
 <body>
 <div class="container-fluid">
-    <h2>Block Details</h2>
+    <h1><span class="badge badge-secondary">Block Details</span></h1>
     <table class="table table-striped">
         <tbody>
         <tr>
             <th>Block ID</th>
-            <td th:text="${block.getHash()}">x</td>
+            <td><b th:text="${block.getHash()}">x</b></td>
             <td></td>
         </tr>
         <tr>
@@ -33,18 +33,18 @@
         </tr>
         <tr>
             <th>Locktime</th>
-            <td><b th:text="${block.getTimestamp()}">x</b></td>
+            <td th:text="${block.getTimestamp()}">x</td>
         </tr><br/>
         </tbody>
 
 
     </table>
-    <h3>Transction List in Block:</h3>
+    <h3>Transctions in Block:</h3>
     <table class="table table-striped">
         <tbody th:each="transaction: ${block.getTransactions()}">
         <tr>
             <th>Transaction ID</th>
-            <td><a href="#" th:href="@{/transaction/details(id=${transaction.getTransactionId()})}" th:text="${transaction.getTransactionId()}"/>x</td>
+            <td><a href="#" th:href="@{/transaction/details(blockid=${block.getHash()},id=${transaction.getTransactionId()})}" th:text="${transaction.getTransactionId()}"/></td>
         </tr>
         <tr>
             <th>Sender</th>
