@@ -29,6 +29,8 @@ public class IndexController {
 
     @PostMapping("/add")
     public String doAdd(Model model){
+
+
 //        transactionService.save(transaction);
 //        transactionSet.sendAllTransaction();
         model.addAttribute("transactions", transactionOutputService.getAll());

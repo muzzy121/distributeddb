@@ -9,12 +9,10 @@ import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.security.KeyPair;
-import java.security.KeyPairGenerator;
-import java.security.PrivateKey;
-import java.security.PublicKey;
+import java.security.*;
 import java.util.*;
 import java.util.stream.Collectors;
+
 @Getter
 @Setter
 @Component
@@ -22,11 +20,10 @@ public class Wallet {
     private PrivateKey privateKey;
     private PublicKey publicKey;
 
-    private final TransactionOutputService transactionOutputService;
-
     @Autowired
-    public Wallet(TransactionOutputService transactionOutputService) {
-        this.transactionOutputService = transactionOutputService;
+    private TransactionOutputService transactionOutputService;
+
+    public Wallet(){
         generateKeyPair();
     }
 
@@ -66,7 +63,7 @@ public class Wallet {
         float total = 0F;
 
         for (TransactionOutput utxo: transactionOutputSet
-             ) {
+        ) {
             inputs.add(new TransactionInput(utxo.getId(),utxo));
             total += utxo.getValue();
             if (total > value) break;
@@ -75,5 +72,10 @@ public class Wallet {
         Transaction transaction = new Transaction().builder().sender(publicKey).reciever(receiver).value(value).inputs(inputs).transactionOutputService(transactionOutputService).build();
         transaction.generateSignature(privateKey);
         return transaction;
+
+    }
+        // TODO: 2020-01-27 Czy nie lepiej by było aby wiciąganie string-a z PubKey-a było tutaj? Czy jest to nam potrzebne gdzie indziej?
+    public String getStringFromKey(Key key) {
+        return Base64.getEncoder().encodeToString(key.getEncoded());
     }
 }

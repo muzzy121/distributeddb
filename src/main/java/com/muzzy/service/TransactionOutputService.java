@@ -13,4 +13,5 @@ import java.util.Set;
 @Service
 public interface TransactionOutputService extends CrudService<TransactionOutput,String> {
     Set<TransactionOutput> getTransctionByPublicKey(PublicKey publicKey);
+    float getBalance(PublicKey publicKey);
 }
