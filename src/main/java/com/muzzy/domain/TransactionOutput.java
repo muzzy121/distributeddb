@@ -8,7 +8,7 @@ import java.security.PublicKey;
 
 @Getter
 @Setter
-public class TransactionOutput {
+public class TransactionOutput implements Comparable<TransactionOutput>{
 
     public String id;
     public PublicKey receiver;
@@ -29,4 +29,8 @@ public class TransactionOutput {
     }
 
 
+    @Override
+    public int compareTo(TransactionOutput o) {
+        return Float.compare(this.value, o.value);
+    }
 }

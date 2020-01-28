@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="https://www.thymeleaf.org" th:replace="~{fragments/layout :: layout (~{::body},'home')}">
+<html lang="en" xmlns:th="https://www.thymeleaf.org" th:replace="~{fragments/layout :: layout (~{::body},'wallet_detail')}">
 <head>
     <meta charset="UTF-8"/>
     <title>UTXO page</title>
@@ -19,22 +19,22 @@
 <!--/*@thymesVar id="transaction" type="com.muzzy.domain.TransactionOutput"*/-->
 <body>
 
-<h1><span class="badge badge-secondary">Unspend Transaction Outputs</span></h1>
-
+<h1><span class="badge badge-secondary">Wallet detail</span></h1>
+<h2 th:text="${request}">x</h2>
 <table class="table table-striped">
     <thead class="thead-light">
-    <tr>
-        <th>Transaction ID</th>
-        <th>Reciver</th>
-        <th>Amount</th>
-    </tr>
+
     </thead>
-    <tr th:each="transaction: ${transactions}">
-        <td><a th:href="@{/transactions(id=${transaction.parentTransactionId})}" th:text="${transaction.id}">x</td>
-        <!--/*@thymesVar id="getStringFromKey" type="com.muzzy.cipher"*/-->
-        <td th:text="${T(com.muzzy.cipher.StringUtil).getStringFromKey(transaction.getReceiver())}">x</td>
-        <td th:text="${transaction.value}">x</td>
-    </tr>
+    <!--/*@thymesVar id="wallet" type="com.muzzy.domain.Wallet"*/-->
+    <tbody th:object="${wallet}">
+    <tr><th>Public Key</th><td th:text="*{getStringFromPubKey()}"></td>
+    <tr><th>Private Key</th><td th:text="*{getStringFromPrvKey()}"></td>
+    <tr><th>Public Key</th><td th:text="${balance}"></td>
+    </tbody>
 </table>
+
+<form class="button" th:action="@{/add}" method="POST">
+    <input type="submit" value="Add new transaction"/>
+</form>
 </body>
 </html>

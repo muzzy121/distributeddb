@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org" th:replace="~{fragments/layout :: layout (~{::body},'wallet')}">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Add transaction</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+            integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+            crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+            integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+            crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+            integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+            crossorigin="anonymous"></script>
+</head>
+<!--/*@thymesVar id="wallet" type="com.muzzy.domain.Wallet"*/-->
+<body>
+<h1><span class="badge badge-secondary">Wallet View Test</span></h1>
+
+<!--<h2><span class="badge badge-secondary"></span></h2>-->
+
+<div class="container-fluid align-center">
+    <form th:action="@{/wallet/detail}" id="wallet_form" method="post">
+        <div class="form-row align-items-center">
+            <div class="col-auto my-1">
+                <label class="mr-sm-2" for="inlineFormCustomSelect">Select wallet</label>
+                <select class="custom-select mr-sm-2" id="inlineFormCustomSelect" name="selected_Wallet">
+                    <option selected>Choose...</option>
+                    <option th:each="wallet: ${wallets}"
+                            th:value="${wallet.getStringFromPubKey()}"
+                            th:utext="${wallet.getStringFromPubKey()}" />
+
+<!--                    <option th:remove="option" value="1">One</option>-->
+                </select>
+            </div>
+        </div>
+        <div class="form-row align-items-center">
+                    <div class="col-auto my-1">
+                        <div class="custom-control custom-checkbox mr-sm-2">
+                            <input type="checkbox" class="custom-control-input" id="customControlAutosizing">
+                            <label class="custom-control-label" for="customControlAutosizing">Remember my preference</label>
+                        </div>
+                    </div>
+            <div class="col-auto my-2">
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+</body>
+</html>

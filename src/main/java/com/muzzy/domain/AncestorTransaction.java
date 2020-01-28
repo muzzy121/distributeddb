@@ -1,9 +1,6 @@
 package com.muzzy.domain;
 
-import com.muzzy.service.controllerservice.test.Wallet;
-
 import java.security.PublicKey;
-import java.sql.ResultSet;
 
 public class AncestorTransaction extends Transaction {
 

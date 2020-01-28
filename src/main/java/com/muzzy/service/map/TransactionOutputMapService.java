@@ -59,6 +59,7 @@ public class TransactionOutputMapService extends AbstractTransactionOutputMapSer
         Set<TransactionOutput> transactionOutputs = getAll();
         return transactionOutputs.stream().filter(txos -> txos.receiver.equals(publicKey)).collect(Collectors.toSet());
     }
+
     @Override
     public float getBalance(PublicKey publicKey) {
         Set<TransactionOutput> transactionOutputSet = this.getAll();

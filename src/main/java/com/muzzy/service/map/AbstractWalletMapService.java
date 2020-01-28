@@ -1,7 +1,7 @@
 package com.muzzy.service.map;
 
 import com.muzzy.cipher.StringUtil;
-import com.muzzy.service.controllerservice.test.Wallet;
+import com.muzzy.domain.Wallet;
 
 import java.util.HashMap;
 import java.util.HashSet;

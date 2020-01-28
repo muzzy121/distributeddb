@@ -1,10 +1,11 @@
 package com.muzzy.service.map;
 
 import com.muzzy.service.WalletService;
-import com.muzzy.service.controllerservice.test.Wallet;
+import com.muzzy.domain.Wallet;
+import org.springframework.stereotype.Service;
 
 import java.util.Set;
-
+@Service
 public class WalletMapService extends AbstractWalletMapService<Wallet, String> implements WalletService {
 
     @Override
@@ -29,7 +30,6 @@ public class WalletMapService extends AbstractWalletMapService<Wallet, String> i
 
     @Override
     public Wallet getById(String s) {
-
         return super.findById(s);
     }
 }

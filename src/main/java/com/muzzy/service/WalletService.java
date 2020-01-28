@@ -6,7 +6,7 @@ package com.muzzy.service;
  * Temporary service for Wallets
  */
 
-import com.muzzy.service.controllerservice.test.Wallet;
+import com.muzzy.domain.Wallet;
 import org.springframework.stereotype.Component;
 
 @Component

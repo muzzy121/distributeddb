@@ -2,12 +2,11 @@ package com.muzzy.domain;
 
 import com.muzzy.cipher.StringUtil;
 import com.muzzy.service.TransactionOutputService;
-import com.muzzy.service.controllerservice.test.Validation;
+import com.muzzy.service.controllerservice.Validation;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.Serializable;
 import java.security.PrivateKey;
