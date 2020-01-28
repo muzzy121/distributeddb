@@ -33,7 +33,6 @@ public class BlockController {
     }
     @RequestMapping(value = {"/block/details"}, method = RequestMethod.GET)
     public String getBlockInfo(@RequestParam("id") String id, Model model){
-        System.out.println(blockMapService);
         model.addAttribute("block", blockMapService.getById(id));
         return "block/detail";
     }
@@ -42,8 +41,6 @@ public class BlockController {
     public String getTransactionById(@RequestParam("blockid") String blockId , @RequestParam("id") String id, Model model){
         Block block = blockMapService.getById(blockId);
         Transaction ts = block.getTransactionById(id);
-        System.out.println(block.getHash());
-        System.out.println(ts.getValue());
         model.addAttribute("transactionInputs", ts.getInputs());
         model.addAttribute("transactionOutputs", ts.getOutputs());
         model.addAttribute("block", blockMapService.getById(blockId));

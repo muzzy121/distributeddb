@@ -1,13 +1,16 @@
 package com.muzzy.service.factory;
 
+import com.muzzy.cipher.StringUtil;
 import com.muzzy.domain.AncestorTransaction;
 import com.muzzy.domain.Transaction;
 import com.muzzy.domain.TransactionOutput;
 import com.muzzy.domain.Wallet;
 import com.muzzy.service.TransactionOutputService;
+import com.muzzy.service.controllerservice.Validation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.util.ArrayList;
 
@@ -17,7 +20,6 @@ public class AncestorTransactionFactory {
     private TransactionOutputService transactionOutputService;
 
     public Transaction getAncestorTransaction(Wallet ancestorWallet, PublicKey receiver, float value) {
-
 
 //        super.setSender(ancestorWallet.getPublicKey());
 //        super.setReceiver(receiver);
@@ -35,12 +37,14 @@ public class AncestorTransactionFactory {
                 .value(value)
                 .inputs(null)
                 .transactionId("0")
-                .outputs(transactionOutputs)
                 .build();
-
-//        ancestorTransaction.setOutputs(transactionOutputs);
-
+        ancestorTransaction.getOutputs().add(new TransactionOutput(receiver, value, "0"));
+        generateSignature(ancestorWallet.getPrivateKey(),ancestorTransaction);
         return ancestorTransaction;
-
+    }
+    public byte[] generateSignature(PrivateKey privateKey, Transaction t) {
+        // TODO: 2020-01-23 Czy sygnatura nie powinna być z datą? Może dodać Pole daty do transakcji, jej utworzenia
+        String data = StringUtil.getStringFromKey(t.getSender()) + StringUtil.getStringFromKey(t.getReceiver()) + t.getValue();
+        return Validation.confirm(privateKey, data);
     }
 }
