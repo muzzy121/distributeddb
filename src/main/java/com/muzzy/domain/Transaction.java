@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
 import java.io.Serializable;
 import java.security.PrivateKey;
@@ -34,12 +35,13 @@ public class Transaction implements Serializable {
     private TransactionOutputService transactionOutputService;
 
     @Builder
-    public Transaction(PublicKey sender, PublicKey reciever, float value, ArrayList<TransactionInput> inputs, TransactionOutputService transactionOutputService) {
+    public Transaction(PublicKey sender, PublicKey reciever, float value, ArrayList<TransactionInput> inputs, ArrayList<TransactionOutput> outputs, String transactionId) {
         this.sender = sender;
         this.receiver = reciever;
         this.value = value;
         this.inputs = inputs;
-        this.transactionOutputService = transactionOutputService;
+        this.outputs = outputs;
+        this.transactionId = transactionId;
     }
 
     /**

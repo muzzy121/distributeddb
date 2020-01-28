@@ -17,7 +17,7 @@ public class TransactionFactory {
     @Autowired
     private TransactionOutputService transactionOutputService;
 
-    public Transaction sendFunds(PrivateKey privateKey, PublicKey sender, PublicKey receiver, float value) {
+    public Transaction getTransaction(PrivateKey privateKey, PublicKey sender, PublicKey receiver, float value) {
         /**
          * Ten early exit także trzeba obgadać, chyba że poszukać transakcji która pozwoli zapłacić z całości!?
          * Co będzie wydajniejsze - czy lepiej eliminować małe transackcje z UTXO, czy lepiej wydawać z jednego inputa
@@ -46,7 +46,7 @@ public class TransactionFactory {
             if (total >= value) break;
         }
 
-        Transaction transaction = new Transaction().builder().sender(sender).reciever(receiver).value(value).inputs(inputs).transactionOutputService(transactionOutputService).build();
+        Transaction transaction = new Transaction().builder().sender(sender).reciever(receiver).value(value).inputs(inputs).build();
         transaction.generateSignature(privateKey);
         return transaction;
 
