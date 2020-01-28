@@ -20,15 +20,6 @@ public class AncestorTransactionFactory {
     private TransactionOutputService transactionOutputService;
 
     public Transaction getAncestorTransaction(Wallet ancestorWallet, PublicKey receiver, float value) {
-
-//        super.setSender(ancestorWallet.getPublicKey());
-//        super.setReceiver(receiver);
-//        super.setValue(value);
-//        super.setInputs(null);
-//        super.generateSignature(ancestorWallet.getPrivateKey());
-//        super.setTransactionId("0");
-//        super.getOutputs().add(new TransactionOutput(super.getReceiver(), super.getValue(), super.getTransactionId()));
-//        new AncestorTransaction()
         ArrayList<TransactionOutput> transactionOutputs = new ArrayList<>();
         transactionOutputs.add(new TransactionOutput(receiver, value, "0"));
         AncestorTransaction ancestorTransaction = AncestorTransaction.childBuilder()
