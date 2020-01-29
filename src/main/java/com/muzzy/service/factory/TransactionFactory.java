@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 
 @Component
 public class TransactionFactory {
-    private Transaction t;
+    private Transaction transaction;
     private TransactionOutputService transactionOutputService;
 
     @Autowired
@@ -53,19 +53,19 @@ public class TransactionFactory {
             if (total >= value) break;
         }
 
-        t = new Transaction().builder().sender(sender).reciever(receiver).value(value).inputs(inputs).build();
-        t.setSignature(generateSignature(privateKey));
+        transaction = new Transaction().builder().sender(sender).reciever(receiver).value(value).inputs(inputs).build();
+        transaction.setSignature(generateSignature(privateKey));
 //        if((!previousHash.equals("0"))) {
             float change = getInputsValue() - value;
-            t.setTransactionId(calculateHash());
-            t.getOutputs().add(new TransactionOutput(receiver, value, t.getTransactionId()));
-            t.getOutputs().add(new TransactionOutput(sender, change, t.getTransactionId()));
-            t.getOutputs().forEach(o -> transactionOutputService.save(o));
+            transaction.setTransactionId(calculateHash());
+            transaction.getOutputs().add(new TransactionOutput(receiver, value, transaction.getTransactionId()));
+            transaction.getOutputs().add(new TransactionOutput(sender, change, transaction.getTransactionId()));
+            transaction.getOutputs().forEach(o -> transactionOutputService.save(o));
             inputs.stream().filter(i -> i.getUtxo() != null).forEach(y -> transactionOutputService.deleteById(y.getUtxo().getId()));
 //        }
 
 //        return true;
-        return t;
+        return transaction;
     }
     /**
      * Generates Hash using Public Keys and transaction value
@@ -73,9 +73,9 @@ public class TransactionFactory {
      */
     private String calculateHash() {
         return StringUtil.applySha256(
-                StringUtil.getStringFromKey(t.getSender()) +
-                        StringUtil.getStringFromKey(t.getReceiver()) +
-                        t.getValue()
+                StringUtil.getStringFromKey(transaction.getSender()) +
+                        StringUtil.getStringFromKey(transaction.getReceiver()) +
+                        transaction.getValue()
         );
     }
 
@@ -86,7 +86,7 @@ public class TransactionFactory {
      */
     public byte[] generateSignature(PrivateKey privateKey) {
         // TODO: 2020-01-23 Czy sygnatura nie powinna być z datą? Może dodać Pole daty do transakcji, jej utworzenia
-        String data = StringUtil.getStringFromKey(t.getSender()) + StringUtil.getStringFromKey(t.getReceiver()) + t.getValue();
+        String data = StringUtil.getStringFromKey(transaction.getSender()) + StringUtil.getStringFromKey(transaction.getReceiver()) + transaction.getValue();
         return Validation.confirm(privateKey, data);
     }
 
@@ -96,8 +96,8 @@ public class TransactionFactory {
      * @return boolean
      */
     public boolean verifiySignature() {
-        String data = StringUtil.getStringFromKey(t.getSender()) + StringUtil.getStringFromKey(t.getReceiver()) + t.getValue();
-        return Validation.verifySignature(t.getSender(), data, t.getSignature());
+        String data = StringUtil.getStringFromKey(transaction.getSender()) + StringUtil.getStringFromKey(transaction.getReceiver()) + transaction.getValue();
+        return Validation.verifySignature(transaction.getSender(), data, transaction.getSignature());
     }
     /**
      * Werify if Signature is proper
@@ -113,14 +113,14 @@ public class TransactionFactory {
 //    }
 
     public float getInputsValue() {
-        double total = t.getInputs().stream()
+        double total = transaction.getInputs().stream()
                 .filter(input -> input.getUtxo() != null) //Kiedy może dojść do sytuacji kiedy utxo będzie null!?
                 .collect(Collectors.summingDouble(x -> x.getUtxo().value));
         return (float) total;
     }
 
     public float getOutputsValue() {
-        double total = t.getOutputs().stream().collect(Collectors.summingDouble(x -> x.value));
+        double total = transaction.getOutputs().stream().collect(Collectors.summingDouble(x -> x.value));
         return (float) total;
     }
 }

@@ -56,6 +56,11 @@ public class Node implements Runnable {
 
     @Override
     public void run() {
+
+
+
+
+
 //        System.out.println("Waiting for data...");
 //        try {
 //            InputStream inputStream = socket.getInputStream();

@@ -2,15 +2,11 @@ package com.muzzy;
 
 import com.muzzy.cipher.CipherTest;
 import com.muzzy.configuration.ConfigLoader;
-import com.muzzy.domain.Client;
-import com.muzzy.domain.Transaction;
-
-import com.muzzy.service.TransactionService;
+import com.muzzy.roles.Miner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.ApplicationContext;
 import org.springframework.core.task.TaskExecutor;
 
 import java.io.IOException;
@@ -28,14 +24,10 @@ import java.util.Set;
 
 @SpringBootApplication
 public class Main implements CommandLineRunner {
+    public static boolean isStart = false;
     @Autowired
     private ConfigLoader configLoader;
 
-    @Autowired
-    private TransactionService transactionService;
-
-    @Autowired
-    private ApplicationContext applicationContext;
 
     private TaskExecutor taskExecutor;
     private ServerSocket serverSocket;
@@ -50,16 +42,20 @@ public class Main implements CommandLineRunner {
     public void run(String... args) throws Exception {
 
         System.out.println("\nNode Started");
-        serverSocket = new ServerSocket(configLoader.getPort());
-        while (true) {
-            try {
-                socket = serverSocket.accept();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-//            Node node = applicationContext.getBean(Node.class).setSocket(socket);
-//            taskExecutor.execute(node);
-        }
+        Miner.getSystemInfo();
+
+
+
+        //        serverSocket = new ServerSocket(configLoader.getPort());
+//        while (true) {
+//            try {
+//                socket = serverSocket.accept();
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+////            Node node = applicationContext.getBean(Node.class).setSocket(socket);
+////            taskExecutor.execute(node);
+//        }
 
     }
 
