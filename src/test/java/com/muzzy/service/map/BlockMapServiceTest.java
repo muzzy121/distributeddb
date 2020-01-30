@@ -2,9 +2,11 @@ package com.muzzy.service.map;
 
 import com.muzzy.domain.Block;
 import com.muzzy.domain.BlockVerified;
+import com.muzzy.domain.Transaction;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -19,6 +21,9 @@ class BlockMapServiceTest {
         block = new BlockVerified();
         block.setHash("1");
         block.setPreviousHash("0");
+        ArrayList<Transaction> transactions = new ArrayList<>();
+        transactions.add(new Transaction().builder().transactionId("1").build());
+        block.setTransactions(transactions);
         blockMapService.save(block);
     }
 
@@ -66,9 +71,13 @@ class BlockMapServiceTest {
 
     @Test
     void getTransactionFromBlockById() {
+        assertNotNull(blockMapService.getTransactionFromBlockById("1"));
+        assertEquals("1", blockMapService.getTransactionFromBlockById("1").getTransactionId());
     }
 
     @Test
     void getBlockWithTransaction() {
+        assertNotNull(blockMapService.getBlockWithTransaction("1"));
+        assertEquals("1",blockMapService.getBlockWithTransaction("1").getHash());
     }
 }

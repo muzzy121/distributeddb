@@ -37,7 +37,7 @@ public class TransactionFactory {
          * Sortowanie listy, trzeba się zastanowić czy jest ono potrzebne i jak wpływana na wydajność
          */
         List<TransactionOutput> transactionOutputList = new ArrayList<TransactionOutput>();
-        transactionOutputService.getTransctionByPublicKey(sender).forEach(transactionOutput -> transactionOutputList.add(transactionOutput));
+        transactionOutputService.getTransctionByReciever(sender).forEach(transactionOutput -> transactionOutputList.add(transactionOutput));
         Collections.sort(transactionOutputList);
 
         // Mandatory obj.
@@ -115,12 +115,12 @@ public class TransactionFactory {
     public float getInputsValue() {
         double total = transaction.getInputs().stream()
                 .filter(input -> input.getUtxo() != null) //Kiedy może dojść do sytuacji kiedy utxo będzie null!?
-                .collect(Collectors.summingDouble(x -> x.getUtxo().value));
+                .collect(Collectors.summingDouble(x -> x.getUtxo().getValue()));
         return (float) total;
     }
 
     public float getOutputsValue() {
-        double total = transaction.getOutputs().stream().collect(Collectors.summingDouble(x -> x.value));
+        double total = transaction.getOutputs().stream().collect(Collectors.summingDouble(x -> x.getValue()));
         return (float) total;
     }
 }

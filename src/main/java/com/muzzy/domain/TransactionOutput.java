@@ -1,19 +1,23 @@
 package com.muzzy.domain;
 
 import com.muzzy.cipher.StringUtil;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.security.PublicKey;
 
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class TransactionOutput implements Comparable<TransactionOutput>{
 
-    public String id;
-    public PublicKey receiver;
-    public float value;
-    public String parentTransactionId;
+    private String id;
+    private PublicKey receiver;
+    private float value;
+    private String parentTransactionId;
 
 
     public TransactionOutput(PublicKey receiver, float value, String parentTransactionId) {
@@ -23,11 +27,9 @@ public class TransactionOutput implements Comparable<TransactionOutput>{
         this.id = StringUtil.applySha256(StringUtil.getStringFromKey(receiver)+ value +parentTransactionId);
     }
 
-
     public boolean isMine(PublicKey publicKey) {
         return publicKey == receiver;
     }
-
 
     @Override
     public int compareTo(TransactionOutput o) {
