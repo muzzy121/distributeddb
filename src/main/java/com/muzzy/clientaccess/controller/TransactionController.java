@@ -27,16 +27,15 @@ public class TransactionController {
             return "error/error";
         }
         String transactionId = id.trim();
-
         Transaction transaction = blockMapService.getTransactionFromBlockById(transactionId);
         Block block = blockMapService.getBlockWithTransaction(transactionId);
-//        LOG.debug(transaction.getSignature().toString());
+        LOG.debug(transaction.getSignature().toString());
         model.addAttribute("transactionInputs", transaction.getInputs());
         model.addAttribute("transactionOutputs", transaction.getOutputs());
         model.addAttribute("block", block);
         model.addAttribute("transactionId", transactionId);
-//        LOG.debug(block.getHash());
-//        LOG.debug(transactionId);
+        LOG.debug(block.getHash());
+        LOG.debug(transactionId);
         return "transaction/detail";
     }
 }

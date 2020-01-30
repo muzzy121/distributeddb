@@ -37,19 +37,4 @@ public class IndexController {
         return "index";
     }
 
-    @GetMapping("/keys")
-    public String KeyTest(Model model){
-//        model.addAttribute("pubKey", StringUtil.getStringFromKey(rsaKeyGen.getPubKey()));
-//        model.addAttribute("prvKey", StringUtil.getStringFromKey(rsaKeyGen.getPrvKey()));
-        return "keys";
-    }
-
-    @RequestMapping(value = "/keys/submited", method= RequestMethod.POST)
-    public String processForm(Model model, @RequestParam String pubKey) {
-//        String data = StringUtil.getStringFromKey(rsaKeyGen.getPubKey()) + pubKey;
-//        byte[] signature = Validation.confirm(rsaKeyGen.getPrvKey(), data);
-//        System.out.println("Signature: " + signature);
-//        System.out.println("Signature validation: " + Validation.verifySignature(rsaKeyGen.getPubKey(),data,signature));
-        return "keys";
-    }
 }

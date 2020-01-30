@@ -9,7 +9,6 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.core.task.TaskExecutor;
 
-import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Arrays;
@@ -42,7 +41,6 @@ public class Main implements CommandLineRunner {
     public void run(String... args) throws Exception {
 
         System.out.println("\nNode Started");
-        Miner.getSystemInfo();
 
 
 

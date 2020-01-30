@@ -48,6 +48,7 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
         Wallet walletC = new Wallet();
 
         Block genesis = new BlockVerified("0");
+        Miner.getSystemInfo();
         LOG.info("Creating and Mining first block... ");
 
 //------------------
@@ -109,15 +110,15 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
 
     public void addBlock(Block block) {
 //        long startTime= System.currentTimeMillis();
-//        block.mine(DIFFICULTY);
-        for(int cpu =0; cpu < Runtime.getRuntime().availableProcessors(); cpu++) {
-            new Thread(new Miner(cpu, block)).start();
-        }
-        try {
-            Thread.sleep(2*60*1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        block.mine(DIFFICULTY);
+//        for(int cpu =0; cpu < Runtime.getRuntime().availableProcessors(); cpu++) {
+//            new Thread(new Miner(cpu, block)).start();
+//        }
+//        try {
+//            Thread.sleep(2*60*1000);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
 //        long endTime = System.currentTimeMillis();
 //        if (endTime - startTime < 10000 ){
 //            difficulty++;

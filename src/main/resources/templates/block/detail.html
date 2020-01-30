@@ -44,7 +44,7 @@
         <tbody th:each="transaction: ${block.getTransactions()}">
         <tr>
             <th>Transaction ID</th>
-            <td><a href="#" th:href="@{/transaction/details(blockid=${block.getHash()},id=${transaction.getTransactionId()})}" th:text="${transaction.getTransactionId()}"/></td>
+            <td><a href="#" th:href="@{/transactions/detail(blockid=${block.getHash()},id=${transaction.getTransactionId()})}" th:text="${transaction.getTransactionId()}"/></td>
         </tr>
         <tr>
             <th>Sender</th>

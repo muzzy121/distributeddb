@@ -28,7 +28,7 @@
     </tr>
     </thead>
     <tr th:each="block: ${chain}">
-        <td><a th:href="@{/block/details(id=${block.getHash()})}" th:text="${block.getHash()}">x</td>
+        <td><a th:href="@{/blocks/detail(id=${block.getHash()})}" th:text="${block.getHash()}">x</td>
         <td th:text="${block.getPreviousHash()}">x</td>
         <td><b th:text="${block.getTimestamp()}">x</b></td>
     </tr>

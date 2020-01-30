@@ -31,13 +31,13 @@ public class BlockController {
 
         return "block/index";
     }
-    @RequestMapping(value = {"/block/details"}, method = RequestMethod.GET)
+    @RequestMapping(value = {"/blocks/detail"}, method = RequestMethod.GET)
     public String getBlockInfo(@RequestParam("id") String id, Model model){
         model.addAttribute("block", blockMapService.getById(id));
         return "block/detail";
     }
 
-    @RequestMapping(value = {"/transaction/details"}, method = RequestMethod.GET)
+    @RequestMapping(value = {"/transactions/detail"}, method = RequestMethod.GET)
     public String getTransactionById(@RequestParam("blockid") String blockId , @RequestParam("id") String id, Model model){
         Block block = blockMapService.getById(blockId);
         Transaction ts = block.getTransactionById(id);

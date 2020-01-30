@@ -17,10 +17,12 @@ public class BlockMapService extends AbstractBlockMapService<Block, String> impl
 
     @Override
     public void deleteById(String id) {
+        super.deleteById(id);
     }
 
     @Override
     public void delete(Block t) {
+        super.delete(t);
     }
 
     @Override

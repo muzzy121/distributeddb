@@ -28,6 +28,7 @@ public abstract class Block implements Serializable {
     private List<Transaction> transactions = new ArrayList<>();
     private String hash;
     private String previousHash;
+    private Long hashTime;
 //    private long generatingTime;
 
     public Block(String previousHash) {

@@ -1,7 +1,8 @@
-package com.muzzy.service.map;
+package com.muzzy.clientaccess.controller;
 
 import com.muzzy.domain.Wallet;
 import com.muzzy.service.TransactionOutputService;
+import com.muzzy.service.map.WalletMapService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,7 +24,7 @@ public class WalletController {
         model.addAttribute("wallets", walletMapService.getAll());
         return "wallet/index";
     }
-    @RequestMapping(value = "/wallet/detail", method = RequestMethod.POST)
+    @RequestMapping(value = "/wallets/detail", method = RequestMethod.POST)
     public String getWalletDetail(@RequestParam String selected_Wallet, Model model){
         Wallet wallet = walletMapService.getById(selected_Wallet);
         float balance = transactionOutputService.getBalance(wallet.getPublicKey());
