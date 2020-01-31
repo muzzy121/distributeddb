@@ -44,7 +44,12 @@ public class Wallet {
         return Base64.getEncoder().encodeToString(privateKey.getEncoded());
     }
 
-
+    @Override
+    public String toString() {
+        return "Wallet{" +
+                "publicKey=" + publicKey +
+                '}';
+    }
 
     /**
      * Moved to TransactionOutputService

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="https://www.thymeleaf.org" th:replace="~{fragments/layout :: layout (~{::body},'blockchain')}">
+<html lang="en" xmlns:th="https://www.thymeleaf.org"
+      th:replace="~{fragments/layout :: layout (~{::body},'blockchain')}">
 <head>
     <meta charset="UTF-8"/>
     <title>Add transaction</title>
@@ -19,7 +20,29 @@
 <!--/*@thymesVar id="block" type="com.muzzy.domain.BlockVerified"*/-->
 <body>
 <h1><span class="badge badge-secondary">New transaction</span></h1>
-
+<div class="container-fluid align-center">
+    <form>
+        <div class="form-group">
+            <label for="exampleFormControlInput1">Sender</label>
+            <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="" th:value="${sender}">
+        </div>
+        <div class="form-group">
+            <label for="exampleFormControlInput1">Value</label>
+            <input type="email" class="form-control" id="exampleFormControlInput2" placeholder="Value">
+        </div>
+        <div class="form-group">
+            <label for="exampleFormControlSelect1">Select reciever</label>
+            <select class="form-control" id="exampleFormControlSelect1">
+                <option selected>Choose...</option>
+                <option th:each="reciver : ${recivers}"
+                        th:value="${reciver.getStringFromPubKey()}"
+                        th:utext="${reciver.getStringFromPubKey()}"
+                />
+            </select>
+        </div>
+        <input type="submit" class="btn btn-outline-success my-2 my-sm-0" value="Send funds" />
+    </form>
+</div>
 
 </body>
 </html>

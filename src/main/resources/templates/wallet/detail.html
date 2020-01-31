@@ -20,7 +20,7 @@
 <body>
 
 <h1><span class="badge badge-secondary">Wallet detail</span></h1>
-<h2 th:text="${request}">x</h2>
+<!--<h2 th:text="${request}">x</h2>-->
 <table class="table table-striped" style="width:100%">
     <thead class="thead-light">
     </thead>
@@ -31,8 +31,9 @@
 <!--    <tr><th>Private Key</th><td style="text-overflow: ellipsis; max-width: 0px; overflow: hidden; white-space: nowrap;" th:text="*{getStringFromPrvKey()}"></td>-->
     <tr><th>Balance</th><td th:text="${balance}"></td>
     <tr><th></th><td class="text-right">
-        <form class="button" th:action="@{/transactions/add(id=1)}" method="POST" name="id" th:value="10">
-        <input class="btn btn-outline-success my-2 my-sm-0 " type="submit" name="1" value="Add new transaction"/>
+        <form class="button" th:action="@{/transactions/add}" method="POST">
+            <input type="hidden" name="id" th:value="*{getStringFromPubKey()}"/>
+        <input class="btn btn-outline-success my-2 my-sm-0" type="submit" value="Add new transaction"/>
     </form></td></tr>
     </tbody>
 </table>

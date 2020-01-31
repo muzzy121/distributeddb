@@ -4,7 +4,10 @@ import com.muzzy.service.WalletService;
 import com.muzzy.domain.Wallet;
 import org.springframework.stereotype.Service;
 
+import java.security.PublicKey;
 import java.util.Set;
+import java.util.stream.Collectors;
+
 @Service
 public class WalletMapService extends AbstractWalletMapService<Wallet, String> implements WalletService {
 
@@ -31,5 +34,10 @@ public class WalletMapService extends AbstractWalletMapService<Wallet, String> i
     @Override
     public Wallet getById(String s) {
         return super.findById(s);
+    }
+
+    @Override
+    public Set<Wallet> getAllExceptId(PublicKey publicKey) {
+        return getAll().stream().filter(wallet -> !wallet.getPublicKey().equals(publicKey)).collect(Collectors.toSet());
     }
 }

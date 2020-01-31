@@ -29,32 +29,38 @@ public class TransactionController {
     }
 
     @RequestMapping(value = {"/transactions"}, method = RequestMethod.GET)
-    public String findTransaction(@RequestParam(name = "id") String id, Model model){
-        if (id.trim() ==""){
+    public String findTransaction(@RequestParam(name = "id") String id, Model model) {
+        if (id.trim() == "") {
             return "error/error";
         }
         String transactionId = id.trim();
         Transaction transaction = blockMapService.getTransactionFromBlockById(transactionId);
         Block block = blockMapService.getBlockWithTransaction(transactionId);
-        LOG.debug(transaction.getSignature().toString());
         model.addAttribute("transactionInputs", transaction.getInputs());
         model.addAttribute("transactionOutputs", transaction.getOutputs());
         model.addAttribute("block", block);
         model.addAttribute("transactionId", transactionId);
+
+
+        LOG.debug(transaction.getSignature().toString());
         LOG.debug(block.getHash());
         LOG.debug(transactionId);
         return "transaction/detail";
     }
+
     @RequestMapping(value = "transactions/add", method = RequestMethod.POST)
-    public String addTransaction(@RequestParam String id, Model model){
-          Wallet sender = walletMapService.getById(id);
-          Set<Wallet> recivers = walletMapService.getAll();
-          Float value = 0F;
-          model.addAttribute("sender", sender);
-          model.addAttribute("recivers", recivers);
-          model.addAttribute(value);
+    public String addTransaction(@RequestParam String id, Model model) {
+        Wallet sender = walletMapService.getById(id);
+        Set<Wallet> allExceptId = walletMapService.getAllExceptId(sender.getPublicKey());
+        Float value = 0F;
+        model.addAttribute("sender", sender.getStringFromPubKey());
+        model.addAttribute("recivers", allExceptId);
+        model.addAttribute(value);
 //        transactionService.save(transaction);
 //        transactionSet.sendAllTransaction();
+
+        LOG.debug("Wallet PublicKey: " + id);
+        LOG.debug(allExceptId.toString());
         return "transaction/add";
     }
 }
