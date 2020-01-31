@@ -41,7 +41,7 @@ public class Wallet {
         return Base64.getEncoder().encodeToString(publicKey.getEncoded());
     }
     public String getStringFromPrvKey() {
-        return Base64.getEncoder().encodeToString(publicKey.getEncoded());
+        return Base64.getEncoder().encodeToString(privateKey.getEncoded());
     }
 
 

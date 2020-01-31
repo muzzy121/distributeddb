@@ -24,14 +24,4 @@ public class UtxoController {
             model.addAttribute("transactions", transactionOutputService.getAll());
         return "transaction/index";
     }
-
-
-    @PostMapping("/add")
-    public String doAdd(Model model){
-//        transactionService.save(transaction);
-//        transactionSet.sendAllTransaction();
-        model.addAttribute("transactions", transactionOutputService.getAll());
-        return "index";
-    }
-
 }

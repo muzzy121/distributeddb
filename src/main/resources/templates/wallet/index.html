@@ -20,8 +20,6 @@
 <body>
 <h1><span class="badge badge-secondary">Wallet View Test</span></h1>
 
-<!--<h2><span class="badge badge-secondary"></span></h2>-->
-
 <div class="container-fluid align-center">
     <form th:action="@{/wallets/detail}" id="wallet_form" method="post">
         <div class="form-row align-items-center">
@@ -32,7 +30,6 @@
                     <option th:each="wallet: ${wallets}"
                             th:value="${wallet.getStringFromPubKey()}"
                             th:utext="${wallet.getStringFromPubKey()}" />
-
 <!--                    <option th:remove="option" value="1">One</option>-->
                 </select>
             </div>
