@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+
 @Controller
 public class WalletController {
     private final WalletMapService walletMapService;
@@ -25,8 +26,8 @@ public class WalletController {
         return "wallet/index";
     }
     @RequestMapping(value = "/wallets/detail", method = RequestMethod.POST)
-    public String getWalletDetail(@RequestParam String selected_Wallet, Model model){
-        Wallet wallet = walletMapService.getById(selected_Wallet);
+    public String getWalletDetail(@RequestParam String id, Model model){
+        Wallet wallet = walletMapService.getById(id);
         float balance = transactionOutputService.getBalance(wallet.getPublicKey());
         model.addAttribute("wallet", wallet);
         model.addAttribute("balance", balance);
