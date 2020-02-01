@@ -36,7 +36,7 @@ public class TransactionFactory {
          * Co będzie wydajniejsze - czy lepiej eliminować małe transackcje z UTXO, czy lepiej wydawać z jednego inputa
          */
         if (transactionOutputService.getBalance(sender) < value) {
-            LOG.info("You don't have coins for this transaction");
+            LOG.error("You don't have coins for this transaction");
             return null;
         }
         /**
