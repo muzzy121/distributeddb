@@ -5,7 +5,10 @@ import com.muzzy.domain.Transaction;
 import com.muzzy.domain.TransactionInput;
 import com.muzzy.domain.TransactionOutput;
 import com.muzzy.service.TransactionOutputService;
+import com.muzzy.service.TransactionTemporarySet;
 import com.muzzy.service.controllerservice.Validation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -16,12 +19,15 @@ import java.util.stream.Collectors;
 
 @Component
 public class TransactionFactory {
+    private final Logger LOG = LoggerFactory.getLogger(TransactionFactory.class);
     private Transaction transaction;
     private TransactionOutputService transactionOutputService;
+    private TransactionTemporarySet transactionTemporarySet;
 
     @Autowired
-    public TransactionFactory(TransactionOutputService transactionOutputService) {
+    public TransactionFactory(TransactionOutputService transactionOutputService, TransactionTemporarySet transactionTemporarySet) {
         this.transactionOutputService = transactionOutputService;
+        this.transactionTemporarySet = transactionTemporarySet;
     }
 
     public Transaction getTransaction(PrivateKey privateKey, PublicKey sender, PublicKey receiver, float value) {
@@ -30,7 +36,7 @@ public class TransactionFactory {
          * Co będzie wydajniejsze - czy lepiej eliminować małe transackcje z UTXO, czy lepiej wydawać z jednego inputa
          */
         if (transactionOutputService.getBalance(sender) < value) {
-            System.out.println("You don't have coins for this transaction");
+            LOG.info("You don't have coins for this transaction");
             return null;
         }
         /**
@@ -60,7 +66,15 @@ public class TransactionFactory {
             transaction.setTransactionId(calculateHash());
             transaction.getOutputs().add(new TransactionOutput(receiver, value, transaction.getTransactionId()));
             transaction.getOutputs().add(new TransactionOutput(sender, change, transaction.getTransactionId()));
-            transaction.getOutputs().forEach(o -> transactionOutputService.save(o));
+
+        // TODO: 2020-02-01 To miejsce jest do zmiany, dodaje do UTXO transakcje które nie zostały jeszcze dodane do bloku
+            // można stworzyć małe listy które będą przechowywać poza klasą takie dane
+
+            //Test ficzera, zamieniam UTXO na tymczasową listę, którą przepiszę do właściwej listy po dodaniu bloku do łańcucha
+
+//            transaction.getOutputs().forEach(o -> transactionOutputService.save(o));
+            transaction.getOutputs().forEach(transactionOutput -> transactionTemporarySet.addTransaction(transactionOutput));
+           //Kasowanie starych wejść? Kasowanie bloku ze względu na np. jedną nieprawidłową transakcję spowoduje fraud środków
             inputs.stream().filter(i -> i.getUtxo() != null).forEach(y -> transactionOutputService.deleteById(y.getUtxo().getId()));
 //        }
 

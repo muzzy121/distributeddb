@@ -4,6 +4,7 @@ import com.muzzy.domain.*;
 import com.muzzy.roles.Miner;
 import com.muzzy.service.TransactionOutputService;
 import com.muzzy.domain.Wallet;
+import com.muzzy.service.TransactionTemporarySet;
 import com.muzzy.service.factory.AncestorTransactionFactory;
 import com.muzzy.service.factory.TransactionFactory;
 import com.muzzy.service.map.BlockMapService;
@@ -29,14 +30,16 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
     private final WalletMapService walletMapService;
     private final TransactionFactory transactionFactory;
     private final AncestorTransactionFactory ancestorTransactionFactory;
+    private final TransactionTemporarySet transactionTemporarySet;
 
     @Autowired
-    public Bootstrap(BlockMapService blockMapService, TransactionOutputService transactionOutputService, WalletMapService walletMapService, TransactionFactory transactionFactory, AncestorTransactionFactory ancestorTransactionFactory) {
+    public Bootstrap(BlockMapService blockMapService, TransactionOutputService transactionOutputService, WalletMapService walletMapService, TransactionFactory transactionFactory, AncestorTransactionFactory ancestorTransactionFactory, TransactionTemporarySet transactionTemporarySet) {
         this.blockMapService = blockMapService;
         this.transactionOutputService = transactionOutputService;
         this.walletMapService = walletMapService;
         this.transactionFactory = transactionFactory;
         this.ancestorTransactionFactory = ancestorTransactionFactory;
+        this.transactionTemporarySet = transactionTemporarySet;
     }
 
     @Override
@@ -53,7 +56,10 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
 
 //------------------
 //        new AncestorTransaction().getAncestorTransaction(ancestorWallet, walletA.getPublicKey(), 100F);
+
         Transaction ancestorTransaction = ancestorTransactionFactory.getAncestorTransaction(ancestorWallet, walletA.getPublicKey(), 100F);
+
+        //Druga operacja w bloku przechodzi, bp zapisuje Wyjście z transakcji na UTXO! O tutaj :)
         transactionOutputService.save(ancestorTransaction.getOutputs().get(0));
         genesis.addTransaction(ancestorTransaction);
 
@@ -71,6 +77,7 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
         Block block1 = new BlockVerified(blockMapService.getLastBlock().getHash());
 
         block1.addTransaction(transactionFactory.getTransaction(walletA.getPrivateKey(),walletA.getPublicKey(),walletB.getPublicKey(),40F));
+        block1.addTransaction(transactionFactory.getTransaction(walletB.getPrivateKey(),walletB.getPublicKey(),walletC.getPublicKey(),20F));
         block1.addTransaction(transactionFactory.getTransaction(walletA.getPrivateKey(),walletA.getPublicKey(),walletC.getPublicKey(),10F));
 
         addBlock(block1);
@@ -127,6 +134,8 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
 //            difficulty--;
 //        }
         blockMapService.save(block);
+        transactionTemporarySet.getTransactionOutputSet().forEach(t -> transactionOutputService.save(t));
+        transactionTemporarySet.cleanAll();
     }
 
 
