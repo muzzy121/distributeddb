@@ -27,7 +27,9 @@ public class BlockMapService extends AbstractBlockMapService<Block, String> impl
 
     @Override
     public Block save(Block t) {
-        return super.save(t);
+        if (t.getTransactions().isEmpty()) {
+            return null;
+        } else return super.save(t);
     }
 
     @Override
