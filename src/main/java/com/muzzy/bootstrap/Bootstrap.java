@@ -1,5 +1,6 @@
 package com.muzzy.bootstrap;
 
+import com.muzzy.Main;
 import com.muzzy.domain.*;
 import com.muzzy.roles.Miner;
 import com.muzzy.service.TransactionOutputService;
@@ -64,10 +65,9 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
         genesis.addTransaction(ancestorTransaction);
 
 
-
         LOG.info("WalletA's balance before: " + transactionOutputService.getBalance(walletA.getPublicKey()));
 
-        genesis.addTransaction(transactionFactory.getTransaction(walletA.getPrivateKey(),walletA.getPublicKey(),walletB.getPublicKey(),10F));
+        genesis.addTransaction(transactionFactory.getTransaction(walletA.getPrivateKey(), walletA.getPublicKey(), walletB.getPublicKey(), 10F));
         LOG.info("WalletA's balance is: " + transactionOutputService.getBalance(walletA.getPublicKey()));
         LOG.info("WalletB's balance is: " + transactionOutputService.getBalance(walletB.getPublicKey()));
 
@@ -76,9 +76,9 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
 
         Block block1 = new BlockVerified(blockMapService.getLastBlock().getHash());
 
-        block1.addTransaction(transactionFactory.getTransaction(walletA.getPrivateKey(),walletA.getPublicKey(),walletB.getPublicKey(),40F));
-        block1.addTransaction(transactionFactory.getTransaction(walletB.getPrivateKey(),walletB.getPublicKey(),walletC.getPublicKey(),20F));
-        block1.addTransaction(transactionFactory.getTransaction(walletA.getPrivateKey(),walletA.getPublicKey(),walletC.getPublicKey(),10F));
+        block1.addTransaction(transactionFactory.getTransaction(walletA.getPrivateKey(), walletA.getPublicKey(), walletB.getPublicKey(), 40F));
+        block1.addTransaction(transactionFactory.getTransaction(walletB.getPrivateKey(), walletB.getPublicKey(), walletC.getPublicKey(), 20F));
+        block1.addTransaction(transactionFactory.getTransaction(walletA.getPrivateKey(), walletA.getPublicKey(), walletC.getPublicKey(), 10F));
 
         addBlock(block1);
         LOG.info("WalletA's balance is: " + transactionOutputService.getBalance(walletA.getPublicKey()));
@@ -88,20 +88,20 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
 //-----------------
         Block block2 = new BlockVerified(blockMapService.getLastBlock().getHash());
 
-        block2.addTransaction(transactionFactory.getTransaction(walletA.getPrivateKey(),walletA.getPublicKey(),walletC.getPublicKey(),40F));
+//        block2.addTransaction(transactionFactory.getTransaction(walletA.getPrivateKey(),walletA.getPublicKey(),walletC.getPublicKey(),40F));
         addBlock(block2);
         LOG.info("WalletA's balance is: " + transactionOutputService.getBalance(walletA.getPublicKey()));
         LOG.info("WalletC's balance is: " + transactionOutputService.getBalance(walletC.getPublicKey()));
 
 //-----------------
         Block block3 = new BlockVerified(blockMapService.getLastBlock().getHash());
-        block3.addTransaction(transactionFactory.getTransaction(walletB.getPrivateKey(),walletB.getPublicKey(),walletC.getPublicKey(),20F));
+        block3.addTransaction(transactionFactory.getTransaction(walletB.getPrivateKey(), walletB.getPublicKey(), walletC.getPublicKey(), 20F));
         addBlock(block3);
         LOG.info("WalletB's balance is: " + transactionOutputService.getBalance(walletB.getPublicKey()));
         LOG.info("WalletC's balance is: " + transactionOutputService.getBalance(walletC.getPublicKey()));
 //-----------------
         Block block4 = new BlockVerified(blockMapService.getLastBlock().getHash());
-        block4.addTransaction(transactionFactory.getTransaction(walletC.getPrivateKey(),walletC.getPublicKey(),walletB.getPublicKey(),60F));
+        block4.addTransaction(transactionFactory.getTransaction(walletC.getPrivateKey(), walletC.getPublicKey(), walletB.getPublicKey(), 60F));
         addBlock(block4);
         LOG.info("WalletB's balance is: " + transactionOutputService.getBalance(walletB.getPublicKey()));
         LOG.info("WalletC's balance is: " + transactionOutputService.getBalance(walletC.getPublicKey()));
@@ -115,14 +115,39 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
 
     }
 
+    public void mining() {
+        Main.notMined=true;
+        for(int cpu =0; cpu < Runtime.getRuntime().availableProcessors(); cpu++) {
+            new Thread(new Miner(cpu, blockMapService)).start();
+        }
+            while (Main.isStart) {
+                if (Main.notMined == false) {
+                    mining();
+                }
+            }
+
+//            do {
+//
+//            } while ()
+//            try {
+//                Thread.sleep(10 * 1000);
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
+        }
+
+
+
     public void addBlock(Block block) {
 //        long startTime= System.currentTimeMillis();
+
         block.mine(DIFFICULTY);
 //        for(int cpu =0; cpu < Runtime.getRuntime().availableProcessors(); cpu++) {
+
 //            new Thread(new Miner(cpu, block)).start();
 //        }
 //        try {
-//            Thread.sleep(2*60*1000);
+//            Thread.sleep(30*1000);
 //        } catch (InterruptedException e) {
 //            e.printStackTrace();
 //        }
@@ -133,7 +158,11 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
 //        else if (endTime - startTime > 10000 ){
 //            difficulty--;
 //        }
-        blockMapService.save(block);
+
+        if (blockMapService.save(block) == null) {
+            LOG.info("Block has no transactions");
+        }
+
         transactionTemporarySet.getTransactionOutputSet().forEach(t -> transactionOutputService.save(t));
         transactionTemporarySet.cleanAll();
     }
