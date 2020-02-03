@@ -1,8 +1,10 @@
 package com.muzzy;
 
+import com.muzzy.bootstrap.Bootstrap;
 import com.muzzy.cipher.CipherTest;
 import com.muzzy.configuration.ConfigLoader;
-import com.muzzy.roles.Miner;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -11,10 +13,7 @@ import org.springframework.core.task.TaskExecutor;
 
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by Paweł Mazur
@@ -24,8 +23,13 @@ import java.util.Set;
 @SpringBootApplication
 public class Main implements CommandLineRunner {
     public static boolean isStart = false;
+    public static boolean notMined = true;
+    private final Logger LOG = LoggerFactory.getLogger(Main.class);
+    private Scanner scanner = new Scanner(System.in);
     @Autowired
     private ConfigLoader configLoader;
+    @Autowired
+    private Bootstrap bootstrap;
 
 
     private TaskExecutor taskExecutor;
@@ -39,9 +43,19 @@ public class Main implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-
-        System.out.println("\nNode Started");
-
+        String s;
+        System.out.println("\nNode Ready");
+        System.out.print("Write start to run mining: ");
+        do {
+            s = scanner.next();
+        } while (!s.toLowerCase().equals("start") && !s.toLowerCase().equals("stop"));
+        if(s.toLowerCase().equals("start")) {
+            isStart=true;
+            bootstrap.mining();
+        } else {
+            LOG.info("Stopped");
+            isStart=false;
+        }
 
 
         //        serverSocket = new ServerSocket(configLoader.getPort());
