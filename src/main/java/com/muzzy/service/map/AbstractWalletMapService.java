@@ -8,11 +8,15 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-public abstract class AbstractWalletMapService<T extends Wallet, ID extends String>{
-    private Map<String,T> map = new HashMap<>();
+public abstract class AbstractWalletMapService<T extends Wallet, ID extends String> {
+    private Map<String, T> map = new HashMap<>();
 
     Set<T> findAll() {
         return new HashSet<>(map.values());
+    }
+
+    Set<String> findAllKeys() {
+        return new HashSet<String>(map.keySet());
     }
 
     T findById(ID id) {

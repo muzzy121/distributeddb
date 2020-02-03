@@ -12,6 +12,11 @@ import java.util.stream.Collectors;
 public class WalletMapService extends AbstractWalletMapService<Wallet, String> implements WalletService {
 
     @Override
+    public Set<String> getAllKeys() {
+        return super.findAllKeys();
+    }
+
+    @Override
     public Set<Wallet> getAll() {
         return super.findAll();
     }
