@@ -4,6 +4,7 @@ import com.muzzy.cipher.StringUtil;
 import com.muzzy.domain.Transaction;
 import com.muzzy.domain.TransactionInput;
 import com.muzzy.domain.TransactionOutput;
+import com.muzzy.dto.TransactionDto;
 import com.muzzy.service.TransactionOutputService;
 import com.muzzy.service.TransactionTemporarySet;
 import com.muzzy.service.controllerservice.Validation;
