@@ -11,6 +11,7 @@ import com.muzzy.service.map.WalletMapService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import javax.websocket.server.PathParam;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -53,7 +54,7 @@ public class SimulationController {
     }
 
     @PostMapping(path = "/wallet/{i}")
-    public void generateWallets(@RequestParam int numberOfWallets) {
+    public void generateWallets(@PathVariable("i") int numberOfWallets) {
         for (int i = 0; i < numberOfWallets; i++) {
             Wallet wallet = new Wallet();
             walletMapService.save(wallet);
