@@ -7,7 +7,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -21,7 +23,9 @@ class BlockMapServiceTest {
         block = new BlockVerified();
         block.setHash("1");
         block.setPreviousHash("0");
-        ArrayList<Transaction> transactions = new ArrayList<>();
+//        ArrayList<Transaction> transactions = new ArrayList<>();
+        Set<Transaction> transactions = new HashSet<>();
+
         transactions.add(new Transaction().builder().transactionId("1").build());
         block.setTransactions(transactions);
         blockMapService.save(block);

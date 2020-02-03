@@ -24,7 +24,7 @@
     <form th:action="@{'/transactions/add'}" th:object="${tdto}" th:method="post">
         <div class="form-group">
             <label for="exampleFormControlInput1">Sender</label>
-            <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="" th:value="${sender}" readonly>
+            <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="" th:value="${sender}" th:field="*{sender}" readonly>
         </div>
         <div class="form-group">
             <label for="exampleFormControlInput1">Value</label>
