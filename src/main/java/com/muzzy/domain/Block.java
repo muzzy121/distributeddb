@@ -1,13 +1,17 @@
 package com.muzzy.domain;
 
 import com.muzzy.cipher.StringUtil;
+import com.muzzy.domain.spsfl.SerialVersionUIDContainer;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.io.Serializable;
 import java.time.ZonedDateTime;
-import java.util.*;
+
+import java.util.ArrayList;
+import java.util.List;
+
 
 /**
  * Created by Paweł Mazur
@@ -18,7 +22,6 @@ import java.util.*;
 @Setter
 @NoArgsConstructor
 public abstract class Block implements Serializable {
-    private static final long serialVersionUID = 1L;
 
 //    private Long Id;
     private ZonedDateTime timestamp;
