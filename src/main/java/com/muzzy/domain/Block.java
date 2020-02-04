@@ -20,7 +20,6 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 public abstract class Block implements Serializable {
-    private static final long serialVersionUID = SerialVersionUIDContainer.BLOCK_SVUID;
 
 //    private Long Id;
     private ZonedDateTime timestamp;
