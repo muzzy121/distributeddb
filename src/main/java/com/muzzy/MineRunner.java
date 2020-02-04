@@ -16,20 +16,22 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 @Component
 //@PropertySource("application.yml")
-public class AppMain implements ApplicationListener<ContextRefreshedEvent> {
-    private Scanner scanner = new Scanner(System.in);
+public class MineRunner implements ApplicationListener<ContextRefreshedEvent> {
 
+    public static boolean notMined = true;
     private ApplicationContext context;
-    private ThreadPoolTaskExecutor taskExecutor;
     private ConfigLoader configLoader;
+    private ExecutorService executorService;
 
-
-    public AppMain(ApplicationContext context, ThreadPoolTaskExecutor taskExecutor, ConfigLoader configLoader) {
+    public MineRunner(ApplicationContext context, ConfigLoader configLoader) {
         this.context = context;
-        this.taskExecutor = taskExecutor;
         this.configLoader = configLoader;
     }
 
@@ -37,20 +39,18 @@ public class AppMain implements ApplicationListener<ContextRefreshedEvent> {
     private Socket socket;
 
     public void mining() {
-//        taskExecutor.setCorePoolSize(0);
-        taskExecutor.setCorePoolSize(8);
-        taskExecutor.setMaxPoolSize(8);
-        taskExecutor.setQueueCapacity(25);
-        Main.notMined = true;
-        taskExecutor.execute(context.getBean(Miner.class));
-//        for (int cpu = 0; cpu < Runtime.getRuntime().availableProcessors(); cpu++) {
-        for (int cpu = 0; cpu < 8; cpu++) {
-//            taskExecutor.execute(context.getBean(Miner.class));
-        }
-//        Map<String, Miner> map = context.getBeansOfType(Miner.class);
+        long i=0;
+        notMined = false;
+        executorService = Executors.newFixedThreadPool(2);
+        Future future = executorService.submit(context.getBean(Miner.class));
+        executorService.shutdown();
 
         while (Main.isStart) {
-            if (Main.notMined == false) {
+            if(i++ % 1000000000 == 0) {
+                System.out.print(".");
+            }
+            if (notMined == true) {
+                System.out.print("+");
                 mining();
             }
         }

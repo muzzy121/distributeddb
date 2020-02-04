@@ -1,6 +1,7 @@
 package com.muzzy.roles;
 
 import com.muzzy.Main;
+import com.muzzy.MineRunner;
 import com.muzzy.cipher.StringUtil;
 import com.muzzy.domain.Block;
 import com.muzzy.domain.BlockVerified;
@@ -17,8 +18,8 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.List;
 
-@Component
 @Scope("prototype")
+@Component
 public class Miner implements Runnable {
     private static final Logger LOG = LoggerFactory.getLogger(Miner.class);
     private String tNumber = "";
@@ -26,8 +27,10 @@ public class Miner implements Runnable {
     private Block block;
     private String hash = "999999999";
     private static String hashTmp = "";
+    private static boolean mining = true;
     private static long lag = 0L;
     private String previousHash;
+
     private final BlockMapService blockMapService;
     private final TransactionService transactionService;
     private final TransactionTemporarySet transactionTemporarySet;
@@ -48,20 +51,17 @@ public class Miner implements Runnable {
 
     @Override
     public void run() {
-            Main.notMined = true;
-            block = new BlockVerified(previousHash);
-//        LOG.info(previousHash);
+        MineRunner.notMined = false;
+        block = new BlockVerified(previousHash);
+        block.setTransactions(transactionService.getAll());
+        transactionService.clear();
 
-            block.setTransactions(transactionService.getAll());
-            transactionService.clear();
-
-            mine(DIFFICULTY);
-            if (!block.getTransactions().isEmpty()) {
-                LOG.warn("Added " + block.getTransactions().size() + " transactions");
-            }
+        mine(DIFFICULTY);
+        if (!block.getTransactions().isEmpty()) {
+            LOG.warn("Added " + block.getTransactions().size() + " transactions");
         }
-
-
+        MineRunner.notMined = true;
+    }
     public static void getSystemInfo() {
         long maxMemory = Runtime.getRuntime().maxMemory();
 
@@ -76,28 +76,23 @@ public class Miner implements Runnable {
     }
 
     public Block mine(int difficulty) {
+        mining = true;
         int a = 0;
         Integer nonce = 0;
         long startTime = System.currentTimeMillis();
-
         String toHash = block.getPreviousHash() + block.getTimestamp() + block.getTransactions();
         do {
-           nonce = (int) (Math.random() * 10000000);
-           hashTmp = StringUtil.applySha256(toHash + nonce);
-            try {
-                Thread.sleep(lag);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            nonce = (int) (Math.random() * 10000000);
+            hashTmp = StringUtil.applySha256(toHash + nonce);
             if (hashTmp.substring(0, difficulty).matches("[0]{" + difficulty + "}")) {
-               hash = hashTmp;
+                hash = hashTmp;
             }
-        } while (!hash.substring(0, difficulty).matches("[0]{" + difficulty + "}") && Main.notMined == true) ;
-        Main.notMined = false;
+        } while (!hash.substring(0, difficulty).matches("[0]{" + difficulty + "}") && mining == true) ;
+        mining =  false;
         long endTime = System.currentTimeMillis();
         if (hash.substring(0, difficulty).matches("[0]{" + difficulty + "}")) {
             long hashTime = endTime - startTime;
-            LOG.info("Done: " + hash + " by Thread no. " + tNumber + " in: " + hashTime / 1000 + "sec.");
+            LOG.info("Hash found: " + hash + " in: " + hashTime / 1000 + "sec.");
             block.setHashTime(hashTime);
             block.setHash(hash);
             if (!block.getTransactions().isEmpty()) {
