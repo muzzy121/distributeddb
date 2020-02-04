@@ -10,6 +10,9 @@ import java.util.stream.Collectors;
 
 @Service
 public class BlockMapService extends AbstractBlockMapService<Block, String> implements BlockService {
+
+
+
     @Override
     public LinkedHashSet<Block> getAll() {
         return super.findAll();

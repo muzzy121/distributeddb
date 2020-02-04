@@ -1,18 +1,23 @@
 package com.muzzy.domain;
 
 import com.muzzy.cipher.StringUtil;
+import com.muzzy.domain.spsfl.SerialVersionUIDContainer;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.io.Serializable;
 import java.security.PublicKey;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class TransactionOutput implements Comparable<TransactionOutput>{
+public class TransactionOutput implements Comparable<TransactionOutput>, Serializable {
+
+    private static final long serialVersionUID = SerialVersionUIDContainer.TRANSACTION_OUTPUT_SVUID;
+
 
     private String id;
     private PublicKey receiver;

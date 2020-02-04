@@ -1,6 +1,7 @@
 package com.muzzy.domain;
 
 import com.muzzy.cipher.StringUtil;
+import com.muzzy.domain.spsfl.SerialVersionUIDContainer;
 import com.muzzy.service.TransactionOutputService;
 import com.muzzy.service.controllerservice.Validation;
 import lombok.Builder;
@@ -25,6 +26,9 @@ import java.util.stream.Collectors;
 @Setter
 @NoArgsConstructor
 public class Transaction implements Serializable {
+
+    private static final long serialVersionUID = SerialVersionUIDContainer.TRANSACTION_SVUID;
+
     private String transactionId;
     private PublicKey sender;
     private PublicKey receiver;
