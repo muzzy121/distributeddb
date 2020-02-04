@@ -74,7 +74,12 @@ public class TransactionFactory {
             //Test ficzera, zamieniam UTXO na tymczasową listę, którą przepiszę do właściwej listy po dodaniu bloku do łańcucha
 
 //            transaction.getOutputs().forEach(o -> transactionOutputService.save(o));
-            transaction.getOutputs().forEach(transactionOutput -> transactionTemporarySet.addTransaction(transactionOutput));
+//            transaction.getOutputs().forEach(transactionOutput -> transactionTemporarySet.addTransaction(transactionOutput));
+            // spent money wait to add to block
+            transaction.getOutputs().stream().filter(transactionOutput -> transactionOutput.getReceiver().equals(receiver)).forEach(t-> transactionTemporarySet.addTransaction(t));
+            // redirect change directly to UTXO
+            transaction.getOutputs().stream().filter(transactionOutput -> !transactionOutput.getReceiver().equals(receiver)).forEach(t -> transactionOutputService.save(t));
+
            //Kasowanie starych wejść? Kasowanie bloku ze względu na np. jedną nieprawidłową transakcję spowoduje fraud środków
             inputs.stream().filter(i -> i.getUtxo() != null).forEach(y -> transactionOutputService.deleteById(y.getUtxo().getId()));
 //        }

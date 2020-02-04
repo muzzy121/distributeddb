@@ -9,4 +9,5 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public interface TransactionService extends CrudService<Transaction,String> {
+    void clear();
 }

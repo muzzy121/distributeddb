@@ -37,4 +37,9 @@ public class TransactionMapService extends AbstractTransactionMapService<Transac
     public void deleteById(String id) {
         super.deleteById(id);
     }
+
+    @Override
+    public void clear() {
+        super.clear();
+    }
 }

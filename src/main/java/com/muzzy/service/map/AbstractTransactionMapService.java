@@ -22,7 +22,7 @@ public abstract class AbstractTransactionMapService<T extends Transaction, ID ex
     }
 
     T save(T object) {
-//        map.put(id, object);
+        map.put(object.getTransactionId(),object);
         return object;
     }
 
@@ -34,5 +34,8 @@ public abstract class AbstractTransactionMapService<T extends Transaction, ID ex
         map.entrySet().removeIf(x -> x.getValue().equals(object));
     }
 
+    void clear() {
+        map.clear();
+    }
 }
 

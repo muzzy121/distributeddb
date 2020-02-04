@@ -7,9 +7,7 @@ import lombok.Setter;
 
 import java.io.Serializable;
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by Paweł Mazur
@@ -25,7 +23,8 @@ public abstract class Block implements Serializable {
 //    private Long Id;
     private ZonedDateTime timestamp;
     private Long nonce = 0L;
-    private List<Transaction> transactions = new ArrayList<>();
+//    private List<Transaction> transactions = new ArrayList<>();
+    private Set<Transaction> transactions = new HashSet<>();
     private String hash;
     private String previousHash;
     private Long hashTime;

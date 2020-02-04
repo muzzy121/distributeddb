@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.swing.text.BadLocationException;
 
 @Controller
-@Scope("prototype")
 public class BlockController {
     private final TransactionOutputService transactionOutputService;
     private final BlockMapService blockMapService;

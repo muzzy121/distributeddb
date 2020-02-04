@@ -3,6 +3,7 @@ package com.muzzy.bootstrap;
 import com.muzzy.Main;
 import com.muzzy.domain.*;
 import com.muzzy.roles.Miner;
+import com.muzzy.roles.TestThread;
 import com.muzzy.service.TransactionOutputService;
 import com.muzzy.domain.Wallet;
 import com.muzzy.service.TransactionTemporarySet;
@@ -13,8 +14,10 @@ import com.muzzy.service.map.WalletMapService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.core.task.TaskExecutor;
 import org.springframework.stereotype.Component;
 
 /**
@@ -24,14 +27,18 @@ import org.springframework.stereotype.Component;
 @Component
 public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
     final static Logger LOG = LoggerFactory.getLogger(Bootstrap.class);
-    final static int DIFFICULTY = 4;
+    final static int DIFFICULTY = 1;
+
+    private TaskExecutor taskExecutor;
+    @Autowired
+    private ApplicationContext context;
 
     private final BlockMapService blockMapService;
-    private final TransactionOutputService transactionOutputService;
     private final WalletMapService walletMapService;
     private final TransactionFactory transactionFactory;
     private final AncestorTransactionFactory ancestorTransactionFactory;
     private final TransactionTemporarySet transactionTemporarySet;
+    private final TransactionOutputService transactionOutputService;
 
     @Autowired
     public Bootstrap(BlockMapService blockMapService, TransactionOutputService transactionOutputService, WalletMapService walletMapService, TransactionFactory transactionFactory, AncestorTransactionFactory ancestorTransactionFactory, TransactionTemporarySet transactionTemporarySet) {
@@ -115,29 +122,7 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
 
     }
 
-    public void mining() {
-        Main.notMined=true;
-        for(int cpu =0; cpu < Runtime.getRuntime().availableProcessors(); cpu++) {
-            new Thread(new Miner(cpu, blockMapService)).start();
-        }
-            while (Main.isStart) {
-                if (Main.notMined == false) {
-                    mining();
-                }
-            }
-
-//            do {
-//
-//            } while ()
-//            try {
-//                Thread.sleep(10 * 1000);
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            }
-        }
-
-
-
+    @Deprecated
     public void addBlock(Block block) {
 //        long startTime= System.currentTimeMillis();
 

@@ -1,6 +1,5 @@
 package com.muzzy;
 
-import com.muzzy.bootstrap.Bootstrap;
 import com.muzzy.cipher.CipherTest;
 import com.muzzy.configuration.ConfigLoader;
 import org.slf4j.Logger;
@@ -9,7 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.core.task.TaskExecutor;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Bean;
+import org.thymeleaf.extras.java8time.dialect.Java8TimeDialect;
 
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -23,40 +24,45 @@ import java.util.*;
 @SpringBootApplication
 public class Main implements CommandLineRunner {
     public static boolean isStart = false;
-    public static boolean notMined = true;
     private final Logger LOG = LoggerFactory.getLogger(Main.class);
     private Scanner scanner = new Scanner(System.in);
+
     @Autowired
     private ConfigLoader configLoader;
+
     @Autowired
-    private Bootstrap bootstrap;
+    private ApplicationContext context;
 
-
-    private TaskExecutor taskExecutor;
     private ServerSocket serverSocket;
     private Socket socket;
 
+    @Bean
+    public Java8TimeDialect java8TimeDialect() {
+        return new Java8TimeDialect();
+    }
+
     public static void main(String[] args) {
         SpringApplication.run(Main.class, args);
-
     }
 
     @Override
     public void run(String... args) throws Exception {
         String s;
-        System.out.println("\nNode Ready");
         System.out.print("Write start to run mining: ");
         do {
             s = scanner.next();
-        } while (!s.toLowerCase().equals("start") && !s.toLowerCase().equals("stop"));
+        } while (!s.toLowerCase().equals("start"));
         if(s.toLowerCase().equals("start")) {
-            isStart=true;
-            bootstrap.mining();
-        } else {
-            LOG.info("Stopped");
-            isStart=false;
+            Main.isStart=true;
+            context.getBean(MineRunner.class).mining();
         }
-
+//        do {
+//            s = scanner.next();
+//        } while (s.toLowerCase().equals("stop"));
+//        if(s.toLowerCase().equals("stop")) {
+//            LOG.info("Stopped");
+//            isStart=false;
+//        }
 
         //        serverSocket = new ServerSocket(configLoader.getPort());
 //        while (true) {
@@ -70,8 +76,6 @@ public class Main implements CommandLineRunner {
 //        }
 
     }
-
-
     public static Set<byte[]> getLongStream() {
         Set<Long> doubles = new HashSet<Long>();
         Set<byte[]> byteSet = new HashSet<>();
