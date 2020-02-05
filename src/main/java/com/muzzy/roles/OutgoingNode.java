@@ -1,29 +1,26 @@
 package com.muzzy.roles;
 
 
+import com.muzzy.net.connection.OutgoingConnectionsRepository;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-import java.net.Socket;
-import java.util.HashSet;
 import java.util.Scanner;
-import java.util.Set;
 
-@Component
-@Scope("prototype")
 @Getter
 @Setter
-public class TestThread implements Runnable {
-    private Connector connector;
-    private Set<Socket> connectedSockets = new HashSet<>();
+@Component
+public class OutgoingNode implements Runnable {
     private Scanner scanner = new Scanner(System.in);
 
-    @Autowired
-    public TestThread(Connector connector) {
+    private final Connector connector;
+    private final OutgoingConnectionsRepository outgoingConnectionsRepository;
+
+    public OutgoingNode(Connector connector, OutgoingConnectionsRepository outgoingConnectionsRepository) {
         this.connector = connector;
+        this.outgoingConnectionsRepository = outgoingConnectionsRepository;
     }
 
     @Override
@@ -41,6 +38,7 @@ public class TestThread implements Runnable {
 //                break;
 //            }
 //        }
-//         connectedSockets = connector.connect();
+         connector.connect();
+         outgoingConnectionsRepository.getSockets().forEach();
     }
 }
