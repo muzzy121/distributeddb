@@ -3,6 +3,7 @@ package com.muzzy.clientaccess.restcontroller;
 import com.muzzy.domain.Transaction;
 import com.muzzy.domain.Wallet;
 import com.muzzy.dto.TransactionDto;
+import com.muzzy.dto.TransactionDtoPublic;
 import com.muzzy.dto.WalletDto;
 import com.muzzy.service.factory.TransactionFactory;
 import com.muzzy.service.map.TransactionMapService;
@@ -52,14 +53,14 @@ public class SimulationController {
     }
 
     @PostMapping(path = "/transaction", consumes = JSON)
-    public void addTransaction(@RequestBody TransactionDto transactionDto) {
-        Wallet senderWallet = walletMapService.getById(transactionDto.getSender());
-        Wallet receiverWallet = walletMapService.getById(transactionDto.getReciever());
+    public void addTransaction(@RequestBody TransactionDtoPublic transactionDtoPublic) {
+        Wallet senderWallet = walletMapService.getById(transactionDtoPublic.getSender());
+        Wallet receiverWallet = walletMapService.getById(transactionDtoPublic.getReciever());
         Transaction transaction = transactionFactory.getTransaction(
                 senderWallet.getPrivateKey(),
                 senderWallet.getPublicKey(),
                 receiverWallet.getPublicKey(),
-                transactionDto.getValue());
+                transactionDtoPublic.getValue());
         transactionMapService.save(transaction);
     }
 
