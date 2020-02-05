@@ -11,20 +11,30 @@ import com.muzzy.service.map.WalletMapService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-import javax.websocket.server.PathParam;
 import java.util.HashSet;
 import java.util.Set;
 
 @RestController
 @RequestMapping("sim")
-@AllArgsConstructor
+// @AllArgsConstructor
 public class SimulationController {
 
-    private static final String JSON = "application/json";
-    private WalletMapService walletMapService;
-    private TransactionMapService transactionMapService;
-    private TransactionOutputMapService transactionOutputMapService;
-    private TransactionFactory transactionFactory;
+    private static final String JSON = "application/json"; // żeby nie pisać "consumes =" every fkn time
+    private final WalletMapService walletMapService;  // final żeby się nie dało konstruować bezargumentowo
+    private final TransactionMapService transactionMapService;
+    private final TransactionOutputMapService transactionOutputMapService;
+    private final TransactionFactory transactionFactory;
+
+    public SimulationController(
+            WalletMapService walletMapService,
+            TransactionMapService transactionMapService,
+            TransactionOutputMapService transactionOutputMapService,
+            TransactionFactory transactionFactory) {
+        this.walletMapService = walletMapService;
+        this.transactionMapService = transactionMapService;
+        this.transactionOutputMapService = transactionOutputMapService;
+        this.transactionFactory = transactionFactory;
+    }
 
     @GetMapping("/wallets")
     public Set<WalletDto> getAllWalletData() {
@@ -44,13 +54,18 @@ public class SimulationController {
     @PostMapping(path = "/transaction", consumes = JSON)
     public void addTransaction(@RequestBody TransactionDto transactionDto) {
         Wallet senderWallet = walletMapService.getById(transactionDto.getSender());
-        Wallet recieverWallet = walletMapService.getById(transactionDto.getReciever());
+        Wallet receiverWallet = walletMapService.getById(transactionDto.getReciever());
         Transaction transaction = transactionFactory.getTransaction(
                 senderWallet.getPrivateKey(),
                 senderWallet.getPublicKey(),
-                recieverWallet.getPublicKey(),
+                receiverWallet.getPublicKey(),
                 transactionDto.getValue());
         transactionMapService.save(transaction);
+    }
+
+    @PostMapping(path = "/wallet")
+    public void generateWallets() {
+        generateWallets(1);
     }
 
     @PostMapping(path = "/wallet/{i}")
