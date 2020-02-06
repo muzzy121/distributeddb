@@ -1,17 +1,11 @@
-package com.muzzy;
+package com.muzzy.roles;
 
+import com.muzzy.Main;
 import com.muzzy.configuration.ConfigLoader;
-import com.muzzy.roles.Miner;
 import com.muzzy.service.TransactionService;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationListener;
-import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
-import java.io.ObjectOutputStream;
-import java.net.Socket;
-import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -24,12 +18,14 @@ public class MineRunner implements Callable<Integer> {
     private final ApplicationContext context;
     private final ConfigLoader configLoader;
     private final TransactionService transactionService;
+    private final OutgoingNode outgoingNode;
     private ExecutorService executorService;
 
-    public MineRunner(ApplicationContext context, ConfigLoader configLoader, TransactionService transactionService) {
+    public MineRunner(ApplicationContext context, ConfigLoader configLoader, TransactionService transactionService, OutgoingNode outgoingNode) {
         this.context = context;
         this.configLoader = configLoader;
         this.transactionService = transactionService;
+        this.outgoingNode = outgoingNode;
     }
     @Override
     public Integer call() throws Exception {
@@ -41,7 +37,7 @@ public class MineRunner implements Callable<Integer> {
         long i = 0;
         notMined = false;
         if (!transactionService.getAll().isEmpty()) {
-//            sendTransaction();
+            outgoingNode.run();
         }
         executorService = Executors.newFixedThreadPool(2);
         Future future = executorService.submit(context.getBean(Miner.class));

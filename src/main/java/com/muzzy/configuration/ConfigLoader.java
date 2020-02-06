@@ -19,4 +19,5 @@ import java.util.List;
 public class ConfigLoader {
     private List<String> addresses = new ArrayList<>();
     private Integer port;
+    private Integer serverport;
 }

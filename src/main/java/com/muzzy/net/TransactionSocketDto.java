@@ -14,4 +14,8 @@ import java.util.Set;
 public class TransactionSocketDto implements Serializable, Sendable {
 //    private Set<Transaction>
     private Long id;
+
+    public TransactionSocketDto() {
+        this.id = (long)Math.random()*1000;
+    }
 }

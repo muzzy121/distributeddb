@@ -72,11 +72,13 @@ public class IncomingNode implements Runnable {
                 Sendable object = (Sendable) objectInputStream.readObject();
                 LOG.info("Received Transaction " + object.getClass() + " , ID: " + object.getId());
             } catch (IOException e) {
-                e.printStackTrace();
-                LOG.error("Unknown object");
+//                e.printStackTrace();
+                incomingConnectionsRepository.deleteSocket(socket);
+                isStart=false;
+                LOG.error("Disconnected");
             } catch (ClassNotFoundException e) {
                 LOG.error("Unknown object");
-                e.printStackTrace();
+//                e.printStackTrace();
             }
         }
     }

@@ -50,25 +50,20 @@ public class TransactionSet implements Serializable {
     public void sendAllTransaction() {
         transactions.addAll(transactionService.getAll());
 
-
-        System.out.println("Before list");
-        socketSet.forEach(socket -> {
-            try {
-                System.out.println("After list");
-                objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            try {
-                objectOutputStream.writeObject(transactions);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-        });
+//        System.out.println("Before list");
+//        socketSet.forEach(socket -> {
+//            try {
+//                System.out.println("After list");
+//                objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//            try {
+//                objectOutputStream.writeObject(transactions);
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//
+//        });
     }
-
-    ;
-
-
 }

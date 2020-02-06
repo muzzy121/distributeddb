@@ -34,7 +34,7 @@ public class IncomingNodeRunner implements Callable<Integer> {
 
     @Override
     public Integer call() throws Exception {
-        serverSocket = new ServerSocket(configLoader.getPort());
+        serverSocket = new ServerSocket(configLoader.getServerport());
         LOG.info("Ready for connection");
         while (true) {
             try {
