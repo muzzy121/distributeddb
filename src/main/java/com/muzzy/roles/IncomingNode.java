@@ -9,10 +9,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.ObjectInputStream;
-import java.net.*;
+import java.io.*;
+import java.net.Socket;
 
 /**
  * Created by Paweł Mazur
@@ -56,9 +54,11 @@ public class IncomingNode implements Runnable {
 
     @Override
     public void run() {
-        LOG.info("Incoming connection from: "+ socket.getLocalSocketAddress());
-        LOG.info("Waiting for data...");
+        LOG.info("Incoming connection from: " + socket.getLocalSocketAddress());
         incomingConnectionsRepository.addSocket(socket);
+    }
+
+    private Object request(){
         try {
             InputStream inputStream = socket.getInputStream();
             objectInputStream = new ObjectInputStream(inputStream);
@@ -71,6 +71,7 @@ public class IncomingNode implements Runnable {
             try {
                 Sendable object = (Sendable) objectInputStream.readObject();
                 LOG.info("Received Transaction " + object.getClass() + " , ID: " + object.getId());
+                return object;
             } catch (IOException e) {
 //                e.printStackTrace();
                 incomingConnectionsRepository.deleteSocket(socket);
@@ -80,6 +81,16 @@ public class IncomingNode implements Runnable {
                 LOG.error("Unknown object");
 //                e.printStackTrace();
             }
-        }
+        } return null;
+    }
+    private void response() throws IOException {
+        LOG.info("Sending blockchain...");
+        //Send Im Node!
+
+        //Send Block List in Network
+        OutputStream outputStream = socket.getOutputStream();
+        ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
+
+
     }
 }

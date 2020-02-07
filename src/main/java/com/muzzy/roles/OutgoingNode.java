@@ -5,6 +5,8 @@ import com.muzzy.net.TransactionSocketDto;
 import com.muzzy.net.connection.OutgoingConnectionsRepository;
 import lombok.Getter;
 import lombok.Setter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -17,19 +19,20 @@ import java.util.Scanner;
 public class OutgoingNode implements Runnable {
     private Scanner scanner = new Scanner(System.in);
     private ObjectOutputStream objectOutputStream;
-    private final Connector connector;
+    private final Logger LOG = LoggerFactory.getLogger(OutgoingNode.class);
     private final OutgoingConnectionsRepository outgoingConnectionsRepository;
 
-    public OutgoingNode(Connector connector, OutgoingConnectionsRepository outgoingConnectionsRepository) {
-        this.connector = connector;
+    public OutgoingNode(OutgoingConnectionsRepository outgoingConnectionsRepository) {
         this.outgoingConnectionsRepository = outgoingConnectionsRepository;
     }
 
-    @Override
-    public void run() {
-
-        connector.connect();
-        //Wydaje mi sie ze tu operacja zostanie zablokowana. Teraz pytanie czy połaczenia nie powinny być załatwione wczesniej na osobnym wątku, a potem dopiero wysyłka na blokująco
+    /**
+     * Send object to all connected nodes
+     *
+     * run() not need now
+     */
+    public void send() {
+        //Blokujące!
 
         outgoingConnectionsRepository.getSockets().forEach(socket -> {
             if(objectOutputStream == null) {
@@ -42,9 +45,15 @@ public class OutgoingNode implements Runnable {
                 objectOutputStream.writeObject(new TransactionSocketDto());
                 objectOutputStream.flush();
             } catch (IOException e) {
+                LOG.error("Can't send information");
                 e.printStackTrace();
             }
 
         });
+    }
+
+    @Override
+    public void run() {
+
     }
 }

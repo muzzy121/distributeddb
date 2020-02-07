@@ -3,6 +3,7 @@ package com.muzzy.roles;
 import com.muzzy.Main;
 import com.muzzy.configuration.ConfigLoader;
 import com.muzzy.service.TransactionService;
+import com.muzzy.service.map.BlockMapService;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
@@ -18,14 +19,23 @@ public class MineRunner implements Callable<Integer> {
     private final ApplicationContext context;
     private final ConfigLoader configLoader;
     private final TransactionService transactionService;
+    private final Connector connector;
     private final OutgoingNode outgoingNode;
+    private final BlockMapService blockMapService;
+
     private ExecutorService executorService;
 
-    public MineRunner(ApplicationContext context, ConfigLoader configLoader, TransactionService transactionService, OutgoingNode outgoingNode) {
+    public MineRunner(ApplicationContext context,
+                      ConfigLoader configLoader,
+                      TransactionService transactionService,
+                      Connector connector,
+                      OutgoingNode outgoingNode, BlockMapService blockMapService) {
         this.context = context;
         this.configLoader = configLoader;
         this.transactionService = transactionService;
+        this.connector = connector;
         this.outgoingNode = outgoingNode;
+        this.blockMapService = blockMapService;
     }
     @Override
     public Integer call() throws Exception {
@@ -34,17 +44,16 @@ public class MineRunner implements Callable<Integer> {
     }
 
     public void mining() {
+
+
         long i = 0;
         notMined = false;
-        if (!transactionService.getAll().isEmpty()) {
-            outgoingNode.run();
-        }
         executorService = Executors.newFixedThreadPool(2);
         Future future = executorService.submit(context.getBean(Miner.class));
         executorService.shutdown();
 
         while (Main.isStart) {
-            if (i++ % 1000000000 == 0) {
+            if (i++ % 100000000 == 0) {
                 System.out.print(".");
             }
             if (notMined == true) {
@@ -52,6 +61,16 @@ public class MineRunner implements Callable<Integer> {
                 mining();
             }
         }
+    }
+    public void prepareMining(){
+        //Connect to nodes
+        connector.connect();
+
+        //Tests check chain state
+        if (!transactionService.getAll().isEmpty()) {
+            outgoingNode.send();
+        }
+
     }
 }
 //    public void sendTransaction(){

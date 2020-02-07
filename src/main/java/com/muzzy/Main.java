@@ -2,6 +2,7 @@ package com.muzzy;
 
 import com.muzzy.roles.IncomingNodeRunner;
 import com.muzzy.roles.MineRunner;
+import com.muzzy.roles.TestThread;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,6 +53,12 @@ public class Main implements CommandLineRunner {
             executorService = Executors.newSingleThreadExecutor();
             Future future = executorService.submit(context.getBean(IncomingNodeRunner.class));
             executorService.shutdown();
+        }
+        if(s.toLowerCase().equals("test")) {
+//            Main.isStart=true;
+                executorService = Executors.newSingleThreadExecutor();
+                Future future = executorService.submit(context.getBean(TestThread.class));
+                executorService.shutdown();
         }
         } while (!s.toLowerCase().equals("stop"));
         Main.isStart = false;

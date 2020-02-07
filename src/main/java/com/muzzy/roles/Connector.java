@@ -2,13 +2,14 @@ package com.muzzy.roles;
 
 import com.muzzy.configuration.ConfigLoader;
 import com.muzzy.net.connection.OutgoingConnectionsRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -16,6 +17,7 @@ import java.util.stream.Collectors;
 public class Connector {
     private ConfigLoader configLoader;
     private Socket socket;
+    private final Logger LOG = LoggerFactory.getLogger(Connector.class);
     private final OutgoingConnectionsRepository outgoingConnectionsRepository;
 
     @Autowired
@@ -24,13 +26,17 @@ public class Connector {
         this.outgoingConnectionsRepository = outgoingConnectionsRepository;
     }
 
+    /**
+     * Get IP list, try to connect to every one, except this which are connected by now
+     * Collect all sockets to Outgoing Connections Repository
+     */
     public void connect(){
         List<String> toConnection = configLoader.getAddresses();
         List<String> oC = outgoingConnectionsRepository.getSockets().stream().map(x -> x.getLocalAddress().getHostAddress()).collect(Collectors.toList());
         toConnection.removeIf(a -> check(oC,a));
 
         toConnection.forEach(address -> {
-            System.out.println("Looking up for: " + address);
+            LOG.debug("Looking up for: " + address);
             InetSocketAddress inetSocketAddress = new InetSocketAddress(address, configLoader.getPort());
             try {
                 socket = new Socket();
@@ -39,7 +45,7 @@ public class Connector {
                     outgoingConnectionsRepository.addSocket(socket);
                 }
             } catch (IOException e) {
-                System.out.println("Unable to connect with: " + address);
+                LOG.debug("Unable to connect with: " + address);
 //                e.printStackTrace();
             }
         });
