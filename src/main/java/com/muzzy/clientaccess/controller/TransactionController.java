@@ -77,11 +77,12 @@ public class TransactionController {
 
     @RequestMapping(value = "/transactions/add", method = RequestMethod.POST)
     RedirectView addTransaction(@ModelAttribute TransactionDto tdto, Model model) {
+        if(tdto == null || tdto.getSender().equals("") || tdto.getReciever().equals("") || tdto.getValue().equals(""))
+        {return new RedirectView("/transactions/getForm");}
         LOG.debug(tdto.getSender());
         LOG.debug(tdto.getReciever());
         LOG.debug(tdto.getValue().toString());
         LOG.warn("Ready to add transaction!");
-
         Wallet sender_wallet = walletMapService.getById(tdto.getSender());
         Wallet reciever_wallet = walletMapService.getById(tdto.getReciever());
 
