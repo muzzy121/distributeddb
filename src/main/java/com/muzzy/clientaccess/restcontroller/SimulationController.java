@@ -11,7 +11,6 @@ import com.muzzy.service.map.WalletMapService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-import javax.websocket.server.PathParam;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -44,7 +43,7 @@ public class SimulationController {
     @PostMapping(path = "/transaction", consumes = JSON)
     public void addTransaction(@RequestBody TransactionDto transactionDto) {
         Wallet senderWallet = walletMapService.getById(transactionDto.getSender());
-        Wallet recieverWallet = walletMapService.getById(transactionDto.getReciever());
+        Wallet recieverWallet = walletMapService.getById(transactionDto.getReceiver());
         Transaction transaction = transactionFactory.getTransaction(
                 senderWallet.getPrivateKey(),
                 senderWallet.getPublicKey(),

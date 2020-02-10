@@ -29,15 +29,17 @@
         <div class="form-group">
             <label for="exampleFormControlInput1">Value</label>
             <input type="number" th:field="*{value}" class="form-control" id="exampleFormControlInput2" placeholder="Value">
+
         </div>
+        <div th:if="${#fields.hasErrors('value')}" th:errors="*{value}">Generic Error</div>
         <div class="form-group">
-            <label for="exampleFormControlSelect1">Select reciever</label>
+            <label for="exampleFormControlSelect1">Select receiver</label>
             <select class="form-control" id="exampleFormControlSelect1"
-            th:field="*{reciever}">
+            th:field="*{receiver}">
                 <option value="#" selected>Choose...</option>
-                <option th:each="reciver : ${recivers}"
-                        th:value="${reciver.getStringFromPubKey()}"
-                        th:utext="${reciver.getStringFromPubKey()}"
+                <option th:each="receiver : ${receivers}"
+                        th:value="${receiver}"
+                        th:utext="${receiver}"
                 />
             </select>
         </div>
