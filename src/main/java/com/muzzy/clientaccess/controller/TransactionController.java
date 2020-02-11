@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
-import java.util.Set;
+import java.util.List;
 import java.util.stream.Collectors;
 
 
@@ -39,6 +39,7 @@ public class TransactionController {
         this.transactionService = transactionService;
         this.transactionValidator = transactionValidator;
     }
+
     @RequestMapping(value = {"/transactions"}, method = RequestMethod.GET)
     public String findTransaction(@RequestParam(name = "id") String id, Model model) {
         if (id.trim() == "") {
@@ -64,64 +65,53 @@ public class TransactionController {
         binder.addValidators(transactionValidator);
     }
 
+    @ModelAttribute("transactionDto")
+    public TransactionDto newTransaction() {
+        return new TransactionDto();
+    }
+
     @RequestMapping(value = "/transactions/getForm", method = RequestMethod.GET)
-    public String getNewTransactionForm(@RequestParam String id, Model model ) {
+    public String getNewTransactionForm(@RequestParam String id, Model model, @ModelAttribute("transactionDto") final TransactionDto transactionDto) {
 
         Wallet sender = walletMapService.getById(id);
-        Set<String> allExceptId = walletMapService.getAllExceptId(sender.getPublicKey()).stream().map(wallet -> wallet.getStringFromPubKey()).collect(Collectors.toSet());
+        List<String> allExceptId = walletMapService.getAllExceptId(sender.getPublicKey()).stream().map(wallet -> wallet.getStringFromPubKey()).collect(Collectors.toList());
 
+        model.addAttribute("receivers", allExceptId);
+        model.addAttribute("transactionDto", transactionDto.setSender(id));
 
-        model.addAttribute("sender", sender.getStringFromPubKey()); // send hashed pubkey of sender
-        model.addAttribute("receivers", allExceptId); // send hashed pubkey of possible receivers
-        model.addAttribute("tdto", new TransactionDto().setSender(id));
-
-//        transactionSet.sendAllTransaction();
         LOG.debug("Wallet PublicKey: " + sender.getStringFromPubKey());
-//        LOG.debug(allExceptId.toString());
         return "transaction/add";
     }
 
     @RequestMapping(value = "/transactions/add", method = RequestMethod.POST)
-    String addTransaction(@Valid TransactionDto tdto, BindingResult bindingResult, Model model, RedirectAttributes redirectAttributes) {
+    String addTransaction(@Valid @ModelAttribute("transactionDto") final TransactionDto transactionDto,
+                          BindingResult bindingResult,
+                          RedirectAttributes redirectAttributes,
+                          Model model) {
+
         if (bindingResult.hasErrors()) {
-            redirectAttributes.addAttribute("id", tdto.getSender());
-            return "redirect:/transactions/getForm";
+            Wallet sender = walletMapService.getById(transactionDto.getSender());
+            List<String> allExceptId = walletMapService.getAllExceptId(sender.getPublicKey()).stream().map(wallet -> wallet.getStringFromPubKey()).collect(Collectors.toList());
+            model.addAttribute("receivers",allExceptId);
+            return "transaction/add";
         }
 
-        if((tdto == null) || tdto.getSender().equals("") || tdto.getReceiver().equals("") || tdto.getValue() == null) {
-            return "redirect:/wallets";
-        }
+        Wallet sender_wallet = walletMapService.getById(transactionDto.getSender());
+        Wallet receiver_wallet = walletMapService.getById(transactionDto.getReceiver());
 
-        LOG.debug(tdto.getSender());
-        LOG.debug(tdto.getReceiver());
-        LOG.debug(tdto.getValue().toString());
+        Transaction transaction = transactionFactory.getTransaction(
+                sender_wallet.getPrivateKey(),
+                sender_wallet.getPublicKey(),
+                receiver_wallet.getPublicKey(),
+                transactionDto.getValue());
+
+        LOG.debug(transactionDto.getSender());
+        LOG.debug(transactionDto.getReceiver());
+        LOG.debug(transactionDto.getValue().toString());
         LOG.warn("Ready to add transaction!");
-        Wallet sender_wallet = walletMapService.getById(tdto.getSender());
-        Wallet reciever_wallet = walletMapService.getById(tdto.getReceiver());
 
-        Transaction transaction = transactionFactory.getTransaction(sender_wallet.getPrivateKey(),sender_wallet.getPublicKey(),reciever_wallet.getPublicKey(),tdto.getValue());
         transactionService.save(transaction);
-    return "redirect:/index";
+        return "redirect:/index";
     }
-
-//    @RequestMapping(value = "/transactions/add", method = RequestMethod.POST)
-//    RedirectView addTransaction(@ModelAttribute TransactionDto tdto, Model model) {
-//        if((tdto == null) || tdto.getSender().equals("") || tdto.getReciever().equals("") || tdto.getValue() == null) {
-//            return new RedirectView("/redirectTo");
-//        }
-//
-//
-//        LOG.debug(tdto.getSender());
-//        LOG.debug(tdto.getReciever());
-//        LOG.debug(tdto.getValue().toString());
-//        LOG.warn("Ready to add transaction!");
-//        Wallet sender_wallet = walletMapService.getById(tdto.getSender());
-//        Wallet reciever_wallet = walletMapService.getById(tdto.getReciever());
-//
-//        Transaction transaction = transactionFactory.getTransaction(sender_wallet.getPrivateKey(),sender_wallet.getPublicKey(),reciever_wallet.getPublicKey(),tdto.getValue());
-//        transactionService.save(transaction);
-//    return new RedirectView("/index");
-//    }
-
 
 }
