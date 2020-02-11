@@ -15,11 +15,12 @@ public class TransactionValidator implements Validator {
 
     @Override
     public void validate(Object o, Errors errors) {
-        ValidationUtils.rejectIfEmpty(errors,  "value", "field.value.empty");
+        ValidationUtils.rejectIfEmpty(errors, "value", "field.value.empty");
+        ValidationUtils.rejectIfEmpty(errors, "receiver", "field.value.empty");
         TransactionDto transactionDto = (TransactionDto) o;
-
-//    if(transactionDto.getValue() == null) {
-//            errors.rejectValue("value", "Dupa");
-//        }
+        //two ways to add reject information
+        if (transactionDto.getReceiver().equals("#")) {
+//            errors.rejectValue("receiver", "field.value.empty");
+        }
     }
 }
