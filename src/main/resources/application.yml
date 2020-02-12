@@ -1,5 +1,6 @@
 develop:
   addresses:
     - 127.0.0.1
-    - 192.168.100.15
-  port: 8888
+  #    - 192.168.100.15
+  port: 8889
+  serverport: 8888

@@ -21,26 +21,28 @@
 <body>
 <h1><span class="badge badge-secondary">New transaction</span></h1>
 <div class="container-fluid align-center">
-    <form th:action="@{'/transactions/add'}" th:object="${tdto}" th:method="post">
+    <form th:action="@{'/transactions/add'}" th:object="${transactionDto}" th:method="post">
         <div class="form-group">
             <label for="exampleFormControlInput1">Sender</label>
-            <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="" th:value="${sender}" th:field="*{sender}" readonly>
+            <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="" th:field="*{sender}"  readonly>
         </div>
         <div class="form-group">
             <label for="exampleFormControlInput1">Value</label>
             <input type="number" th:field="*{value}" class="form-control" id="exampleFormControlInput2" placeholder="Value">
         </div>
+        <div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('value')}" th:errors="*{value}">Error</div>
         <div class="form-group">
-            <label for="exampleFormControlSelect1">Select reciever</label>
+            <label for="exampleFormControlSelect1">Select receiver</label>
             <select class="form-control" id="exampleFormControlSelect1"
-            th:field="*{reciever}">
-                <option value="#" selected>Choose...</option>
-                <option th:each="reciver : ${recivers}"
-                        th:value="${reciver.getStringFromPubKey()}"
-                        th:utext="${reciver.getStringFromPubKey()}"
+            th:field="*{receiver}">
+                <option value="" selected>Choose...</option>
+                <option th:each="receiver : ${receivers}"
+                        th:value="${receiver}"
+                        th:utext="${receiver}"
                 />
             </select>
         </div>
+        <div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('receiver')}" th:errors="*{receiver}">Error</div>
         <input type="submit" class="btn btn-outline-success my-2 my-sm-0" value="Send funds" />
     </form>
 </div>

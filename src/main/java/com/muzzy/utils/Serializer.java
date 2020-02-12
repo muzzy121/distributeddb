@@ -7,11 +7,12 @@ import java.io.*;
 @Component
 public class Serializer {
 
-    private static String FILE_PATH = "/resources/repo/blockchainfile";
+    private final String PATH = getClass().getResource("/blockchain/block.chain").toString();
+//    private static String FILE_PATH = "/resources/repo/blockchainfile";
 
-    public static void serialize(Object obj) {
+    public void serialize(Object obj) {
         try {
-            FileOutputStream fos = new FileOutputStream(FILE_PATH);
+            FileOutputStream fos = new FileOutputStream(PATH);
             BufferedOutputStream bos = new BufferedOutputStream(fos);
             ObjectOutputStream oos = new ObjectOutputStream(bos);
             oos.writeObject(obj);
@@ -23,10 +24,10 @@ public class Serializer {
         }
     }
 
-    public static Object deserialize() {
+    public Object deserialize() {
         Object obj = null;
         try {
-            FileInputStream fis = new FileInputStream(FILE_PATH);
+            FileInputStream fis = new FileInputStream(PATH);
             BufferedInputStream bis = new BufferedInputStream(fis);
             ObjectInputStream ois = new ObjectInputStream(bis);
             obj = ois.readObject();

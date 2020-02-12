@@ -31,7 +31,7 @@
 <!--    <tr><th>Private Key</th><td style="text-overflow: ellipsis; max-width: 0px; overflow: hidden; white-space: nowrap;" th:text="*{getStringFromPrvKey()}"></td>-->
     <tr><th>Balance</th><td th:text="${balance}"></td>
     <tr><th></th><td class="text-right">
-        <form class="button" th:action="@{/transactions/getForm}" method="POST">
+        <form class="button" th:action="@{/transactions/getForm}" method="GET">
             <input type="hidden" name="id" th:value="*{getStringFromPubKey()}"/>
         <input class="btn btn-outline-success my-2 my-sm-0" type="submit" value="Add new transaction"/>
     </form></td></tr>

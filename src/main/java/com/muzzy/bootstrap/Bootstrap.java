@@ -3,7 +3,7 @@ package com.muzzy.bootstrap;
 import com.muzzy.Main;
 import com.muzzy.domain.*;
 import com.muzzy.roles.Miner;
-import com.muzzy.roles.TestThread;
+import com.muzzy.roles.OutgoingNode;
 import com.muzzy.service.TransactionOutputService;
 import com.muzzy.domain.Wallet;
 import com.muzzy.service.TransactionTemporarySet;

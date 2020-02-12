@@ -1,11 +1,9 @@
 package com.muzzy.roles;
 
 import com.muzzy.Main;
-import com.muzzy.MineRunner;
 import com.muzzy.cipher.StringUtil;
 import com.muzzy.domain.Block;
 import com.muzzy.domain.BlockVerified;
-import com.muzzy.domain.Transaction;
 import com.muzzy.service.TransactionOutputService;
 import com.muzzy.service.TransactionService;
 import com.muzzy.service.TransactionTemporarySet;
@@ -15,15 +13,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Scope("prototype")
 @Component
 public class Miner implements Runnable {
     private static final Logger LOG = LoggerFactory.getLogger(Miner.class);
     private String tNumber = "";
-    private int DIFFICULTY = 5;
+    private int DIFFICULTY = 6;
     private Block block;
     private String hash = "999999999";
     private static String hashTmp = "";
@@ -35,6 +30,7 @@ public class Miner implements Runnable {
     private final TransactionService transactionService;
     private final TransactionTemporarySet transactionTemporarySet;
     private final TransactionOutputService transactionOutputService;
+
 
 
     private void stop() {

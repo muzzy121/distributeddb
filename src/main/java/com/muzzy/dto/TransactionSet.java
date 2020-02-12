@@ -2,7 +2,7 @@ package com.muzzy.dto;
 
 import com.muzzy.domain.Transaction;
 import com.muzzy.roles.Connector;
-import com.muzzy.roles.TestThread;
+import com.muzzy.roles.OutgoingNode;
 import com.muzzy.service.TransactionService;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -38,7 +38,7 @@ public class TransactionSet implements Serializable {
     private ApplicationContext applicationContext;
 
     @Autowired
-    private TestThread testThread;
+    private OutgoingNode outgoingNode;
 
     private Set<Transaction> transactions;
     private ObjectOutputStream objectOutputStream;
@@ -50,26 +50,20 @@ public class TransactionSet implements Serializable {
     public void sendAllTransaction() {
         transactions.addAll(transactionService.getAll());
 
-//        Set<Socket> socketSet = connector.connect();
-        Set<Socket> socketSet = testThread.getConnectedSockets();
-        System.out.println("Before list");
-        socketSet.forEach(socket -> {
-            try {
-                System.out.println("After list");
-                objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            try {
-                objectOutputStream.writeObject(transactions);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-        });
+//        System.out.println("Before list");
+//        socketSet.forEach(socket -> {
+//            try {
+//                System.out.println("After list");
+//                objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//            try {
+//                objectOutputStream.writeObject(transactions);
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//
+//        });
     }
-
-    ;
-
-
 }

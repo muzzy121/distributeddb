@@ -1,16 +1,18 @@
 package com.muzzy.service.map;
 
+import com.muzzy.cipher.StringUtil;
 import com.muzzy.domain.Block;
 import com.muzzy.domain.Transaction;
 import com.muzzy.service.BlockService;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Objects;
 
 @Service
 public class BlockMapService extends AbstractBlockMapService<Block, String> implements BlockService {
-
 
 
     @Override
@@ -62,13 +64,22 @@ public class BlockMapService extends AbstractBlockMapService<Block, String> impl
 //            this.getAll().stream().forEach(block -> block.getTransactions().stream().filter());
             for (Block block : this.getAll()) {
                 for (Transaction transaction : block.getTransactions()
-                     ) {
-                    if(id.equals(transaction.getTransactionId())){
+                ) {
+                    if (id.equals(transaction.getTransactionId())) {
                         return block;
                     }
                 }
             }
         }
         return null;
+    }
+
+    @Override
+    public String getChainHash() {
+        List<Block> list = new ArrayList<>();
+        list.addAll(findAll());
+        StringBuilder string = new StringBuilder();
+        list.stream().forEach(x -> string.append(x.getHash()));
+        return StringUtil.applySha256(string.toString());
     }
 }

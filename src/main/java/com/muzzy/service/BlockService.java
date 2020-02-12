@@ -13,4 +13,5 @@ public interface BlockService extends CrudService<Block,String> {
     Block getLastBlock();
     Transaction getTransactionFromBlockById(String id);
     Block getBlockWithTransaction(String id);
+    String getChainHash();
 }
