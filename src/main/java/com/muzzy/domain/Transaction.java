@@ -1,21 +1,16 @@
 package com.muzzy.domain;
 
-import com.muzzy.cipher.StringUtil;
 import com.muzzy.domain.spsfl.SerialVersionUIDContainer;
 import com.muzzy.service.TransactionOutputService;
-import com.muzzy.service.controllerservice.Validation;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.experimental.SuperBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.Serializable;
-import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.util.ArrayList;
-import java.util.stream.Collectors;
 
 /**
  * Created by Paweł Mazur
@@ -41,13 +36,14 @@ public class Transaction implements Serializable {
     private TransactionOutputService transactionOutputService;
 
     @Builder
-    public Transaction(PublicKey sender, PublicKey reciever, float value, ArrayList<TransactionInput> inputs, ArrayList<TransactionOutput> outputs, String transactionId) {
+    public Transaction(PublicKey sender, PublicKey receiver, float value, ArrayList<TransactionInput> inputs, ArrayList<TransactionOutput> outputs, String transactionId) {
         this.sender = sender;
-        this.receiver = reciever;
+        this.receiver = receiver;
         this.value = value;
         this.inputs = inputs;
 //        this.outputs = outputs;
         this.transactionId = transactionId;
+//        // TODO: 2020-01-23 Czy sygnatura nie powinna być z datą? Może dodać Pole daty do transakcji, jej utworzenia
     }
 
 //    /**
@@ -69,7 +65,6 @@ public class Transaction implements Serializable {
 //     * @param privateKey
 //     */
 //    public void generateSignature(PrivateKey privateKey) {
-//        // TODO: 2020-01-23 Czy sygnatura nie powinna być z datą? Może dodać Pole daty do transakcji, jej utworzenia
 //        String data = StringUtil.getStringFromKey(sender) + StringUtil.getStringFromKey(receiver) + value;
 //        this.signature = Validation.confirm(privateKey, data);
 //    }

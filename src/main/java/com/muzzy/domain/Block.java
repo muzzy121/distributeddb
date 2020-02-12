@@ -32,7 +32,6 @@ public abstract class Block implements Serializable {
         this.previousHash = previousHash;
         this.timestamp = ZonedDateTime.now();  // TODO: 2020-01-28 Poprawić nadawanie strefy czasowej
     }
-
     /**
      * Method can hash block with given difficulty
      * @param difficulty
@@ -46,14 +45,8 @@ public abstract class Block implements Serializable {
     }
 
     public void addTransaction(Transaction transaction) {
-        if(transaction == null) return;  // TODO: 2020-01-28 To weryfikuje jedynie czy transakcja nie jest null, nie sprawdza czy wszytstko jest ustawione poprawnie, refactor
-        // TODO: 2020-01-28 Dlaczego sprawdzam czy poprzedni hash jest 0 ? Co to zmienia?
-//        if((!previousHash.equals("0"))) {
-//            if((!transaction.processTransaction())) {
-//                System.out.println("Transaction failed to process. Discarded.");
-//                return;
-//            }
-//        }
+        if(transaction == null) return;
+        // TODO: 2020-01-28 To weryfikuje jedynie czy transakcja nie jest null, nie sprawdza czy wszytstko jest ustawione poprawnie, refactor
         transactions.add(transaction);
     }
     public Transaction getTransactionById(String hash){

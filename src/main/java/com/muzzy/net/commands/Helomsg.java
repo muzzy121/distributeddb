@@ -1,4 +1,4 @@
-package com.muzzy.net.connection;
+package com.muzzy.net.commands;
 
 import com.muzzy.net.Sendable;
 

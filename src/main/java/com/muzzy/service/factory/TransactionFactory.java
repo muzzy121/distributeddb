@@ -4,7 +4,6 @@ import com.muzzy.cipher.StringUtil;
 import com.muzzy.domain.Transaction;
 import com.muzzy.domain.TransactionInput;
 import com.muzzy.domain.TransactionOutput;
-import com.muzzy.dto.TransactionDto;
 import com.muzzy.service.TransactionOutputService;
 import com.muzzy.service.TransactionTemporarySet;
 import com.muzzy.service.controllerservice.Validation;
@@ -15,7 +14,9 @@ import org.springframework.stereotype.Component;
 
 import java.security.PrivateKey;
 import java.security.PublicKey;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
@@ -60,7 +61,7 @@ public class TransactionFactory {
             if (total >= value) break;
         }
 
-        transaction = new Transaction().builder().sender(sender).reciever(receiver).value(value).inputs(inputs).build();
+        transaction = new Transaction().builder().sender(sender).receiver(receiver).value(value).inputs(inputs).build();
         transaction.setSignature(generateSignature(privateKey));
 //        if((!previousHash.equals("0"))) {
             float change = getInputsValue() - value;
@@ -69,22 +70,16 @@ public class TransactionFactory {
             transaction.getOutputs().add(new TransactionOutput(sender, change, transaction.getTransactionId()));
 
         // TODO: 2020-02-01 To miejsce jest do zmiany, dodaje do UTXO transakcje które nie zostały jeszcze dodane do bloku
-            // można stworzyć małe listy które będą przechowywać poza klasą takie dane
-
+            //można stworzyć małe listy które będą przechowywać poza klasą takie dane
             //Test ficzera, zamieniam UTXO na tymczasową listę, którą przepiszę do właściwej listy po dodaniu bloku do łańcucha
 
-//            transaction.getOutputs().forEach(o -> transactionOutputService.save(o));
-//            transaction.getOutputs().forEach(transactionOutput -> transactionTemporarySet.addTransaction(transactionOutput));
             // spent money wait to add to block
             transaction.getOutputs().stream().filter(transactionOutput -> transactionOutput.getReceiver().equals(receiver)).forEach(t-> transactionTemporarySet.addTransaction(t));
             // redirect change directly to UTXO
             transaction.getOutputs().stream().filter(transactionOutput -> !transactionOutput.getReceiver().equals(receiver)).forEach(t -> transactionOutputService.save(t));
-
            //Kasowanie starych wejść? Kasowanie bloku ze względu na np. jedną nieprawidłową transakcję spowoduje fraud środków
             inputs.stream().filter(i -> i.getUtxo() != null).forEach(y -> transactionOutputService.deleteById(y.getUtxo().getId()));
-//        }
 
-//        return true;
         return transaction;
     }
     /**

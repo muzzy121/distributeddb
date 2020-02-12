@@ -1,17 +1,14 @@
 package com.muzzy.domain;
 
-import com.muzzy.domain.Transaction;
-import com.muzzy.domain.TransactionInput;
-import com.muzzy.domain.TransactionOutput;
-import com.muzzy.service.TransactionOutputService;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.security.*;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.security.PrivateKey;
+import java.security.PublicKey;
+import java.util.Base64;
 
 @Getter
 @Setter
@@ -36,7 +33,7 @@ public class Wallet {
         }
     }
 
-    // TODO: 2020-01-27 Czy nie lepiej by było aby wiciąganie string-a z PubKey-a było tutaj? Czy jest to nam potrzebne gdzie indziej?
+    // TODO: 2020-01-27 Czy nie lepiej by było aby wyciąganie string-a z PubKey-a było tutaj? Czy jest to nam potrzebne gdzie indziej?
     public String getStringFromPubKey() {
         return Base64.getEncoder().encodeToString(publicKey.getEncoded());
     }
