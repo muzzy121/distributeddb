@@ -95,7 +95,6 @@ public class TransactionController {
                           BindingResult bindingResult,
                           RedirectAttributes redirectAttributes,
                           Model model) {
-
         if (bindingResult.hasErrors()) {
             Wallet sender = walletMapService.getById(transactionDto.getSender());
             List<String> allExceptId = walletMapService.getAllExceptId(sender.getPublicKey()).stream()
