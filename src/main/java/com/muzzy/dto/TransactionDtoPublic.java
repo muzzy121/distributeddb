@@ -4,7 +4,7 @@ package com.muzzy.dto;
 import org.springframework.stereotype.Component;
 
 /**
- * Object that is beeing setn though
+ * Object that is beeing sent through REST
  */
 
 
