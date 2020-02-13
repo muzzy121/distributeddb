@@ -20,6 +20,8 @@ import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
+
 /**
  * Load simple data for Functional Tests
  */
@@ -65,7 +67,7 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
 //------------------
 //        new AncestorTransaction().getAncestorTransaction(ancestorWallet, walletA.getPublicKey(), 100F);
 
-        Transaction ancestorTransaction = ancestorTransactionFactory.getAncestorTransaction(ancestorWallet, walletA.getPublicKey(), 100F);
+        Transaction ancestorTransaction = ancestorTransactionFactory.getAncestorTransaction(ancestorWallet, walletA.getPublicKey(), BigDecimal.valueOf(100) );
 
         //Druga operacja w bloku przechodzi, bp zapisuje Wyjście z transakcji na UTXO! O tutaj :)
         transactionOutputService.save(ancestorTransaction.getOutputs().get(0));
@@ -74,7 +76,7 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
 
         LOG.info("WalletA's balance before: " + transactionOutputService.getBalance(walletA.getPublicKey()));
 
-        genesis.addTransaction(transactionFactory.getTransaction(walletA.getPrivateKey(), walletA.getPublicKey(), walletB.getPublicKey(), 10F));
+        genesis.addTransaction(transactionFactory.getTransaction(walletA.getPrivateKey(), walletA.getPublicKey(), walletB.getPublicKey(), BigDecimal.valueOf(10F)));
         LOG.info("WalletA's balance is: " + transactionOutputService.getBalance(walletA.getPublicKey()));
         LOG.info("WalletB's balance is: " + transactionOutputService.getBalance(walletB.getPublicKey()));
 
@@ -83,9 +85,9 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
 
         Block block1 = new BlockVerified(blockMapService.getLastBlock().getHash());
 
-        block1.addTransaction(transactionFactory.getTransaction(walletA.getPrivateKey(), walletA.getPublicKey(), walletB.getPublicKey(), 40F));
-        block1.addTransaction(transactionFactory.getTransaction(walletB.getPrivateKey(), walletB.getPublicKey(), walletC.getPublicKey(), 20F));
-        block1.addTransaction(transactionFactory.getTransaction(walletA.getPrivateKey(), walletA.getPublicKey(), walletC.getPublicKey(), 10F));
+        block1.addTransaction(transactionFactory.getTransaction(walletA.getPrivateKey(), walletA.getPublicKey(), walletB.getPublicKey(), BigDecimal.valueOf(40F)));
+        block1.addTransaction(transactionFactory.getTransaction(walletB.getPrivateKey(), walletB.getPublicKey(), walletC.getPublicKey(), BigDecimal.valueOf(20F)));
+        block1.addTransaction(transactionFactory.getTransaction(walletA.getPrivateKey(), walletA.getPublicKey(), walletC.getPublicKey(), BigDecimal.valueOf(10F)));
 
         addBlock(block1);
         LOG.info("WalletA's balance is: " + transactionOutputService.getBalance(walletA.getPublicKey()));
@@ -102,13 +104,13 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
 
 //-----------------
         Block block3 = new BlockVerified(blockMapService.getLastBlock().getHash());
-        block3.addTransaction(transactionFactory.getTransaction(walletB.getPrivateKey(), walletB.getPublicKey(), walletC.getPublicKey(), 20F));
+        block3.addTransaction(transactionFactory.getTransaction(walletB.getPrivateKey(), walletB.getPublicKey(), walletC.getPublicKey(), BigDecimal.valueOf(20F)));
         addBlock(block3);
         LOG.info("WalletB's balance is: " + transactionOutputService.getBalance(walletB.getPublicKey()));
         LOG.info("WalletC's balance is: " + transactionOutputService.getBalance(walletC.getPublicKey()));
 //-----------------
         Block block4 = new BlockVerified(blockMapService.getLastBlock().getHash());
-        block4.addTransaction(transactionFactory.getTransaction(walletC.getPrivateKey(), walletC.getPublicKey(), walletB.getPublicKey(), 60F));
+        block4.addTransaction(transactionFactory.getTransaction(walletC.getPrivateKey(), walletC.getPublicKey(), walletB.getPublicKey(), BigDecimal.valueOf(60F)));
         addBlock(block4);
         LOG.info("WalletB's balance is: " + transactionOutputService.getBalance(walletB.getPublicKey()));
         LOG.info("WalletC's balance is: " + transactionOutputService.getBalance(walletC.getPublicKey()));

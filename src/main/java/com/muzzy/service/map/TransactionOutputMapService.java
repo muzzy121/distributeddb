@@ -4,6 +4,7 @@ import com.muzzy.domain.TransactionOutput;
 import com.muzzy.service.TransactionOutputService;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.security.PublicKey;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -60,11 +61,12 @@ public class TransactionOutputMapService extends AbstractTransactionOutputMapSer
     }
 
     @Override
-    public float getBalance(PublicKey publicKey) {
+    public BigDecimal getBalance(PublicKey publicKey) {
         Set<TransactionOutput> transactionOutputSet = this.getAll();
-        double total = transactionOutputSet.stream()
+        BigDecimal total = transactionOutputSet.stream()
                 .filter(utxo -> utxo.isMine(publicKey))
-                .collect(Collectors.summingDouble(TransactionOutput::getValue));
-        return (float) total;
+                .map(TransactionOutput::getValue)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        return total;
     }
 }

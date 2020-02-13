@@ -3,6 +3,8 @@ package com.muzzy.dto;
 
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
+
 /**
  * Object that is beeing sent through REST
  */
@@ -28,17 +30,17 @@ public class TransactionDtoPublic {
         return this;
     }
 
-    public Float getValue() {
+    public BigDecimal getValue() {
         return value;
     }
 
-    public TransactionDtoPublic setValue(Float value) {
+    public TransactionDtoPublic setValue(BigDecimal value) {
         this.value = value;
         return this;
     }
 
     private String sender;
     private String receiver;
-    private Float value;
+    private BigDecimal value;
 
 }

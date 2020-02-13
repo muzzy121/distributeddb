@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.util.ArrayList;
@@ -32,12 +33,12 @@ public class TransactionFactory {
         this.transactionTemporarySet = transactionTemporarySet;
     }
 
-    public Transaction getTransaction(PrivateKey privateKey, PublicKey sender, PublicKey receiver, float value) {
+    public Transaction getTransaction(PrivateKey privateKey, PublicKey sender, PublicKey receiver, BigDecimal value) {
         /**
          * Ten early exit także trzeba obgadać, chyba że poszukać transakcji która pozwoli zapłacić z całości!?
          * Co będzie wydajniejsze - czy lepiej eliminować małe transackcje z UTXO, czy lepiej wydawać z jednego inputa
          */
-        if (transactionOutputService.getBalance(sender) < value) {
+        if (transactionOutputService.getBalance(sender).compareTo(value) < 0 ) {
             LOG.error("You don't have coins for this transaction");
             return null;
         }
@@ -50,21 +51,21 @@ public class TransactionFactory {
 
         // Mandatory obj.
         ArrayList<TransactionInput> inputs = new ArrayList<>();
-        float total = 0F;
+        BigDecimal total = BigDecimal.ZERO;
 
 
         // TODO: 2020-01-28 Trzeba sie zastanowić jak to ma działać
         for (TransactionOutput utxo : transactionOutputList
         ) {
             inputs.add(new TransactionInput(utxo.getId(), utxo));
-            total += utxo.getValue();
-            if (total >= value) break;
+            total.add(utxo.getValue());
+            if (total.compareTo(value) >= 0 ) break;
         }
 
         transaction = new Transaction().builder().sender(sender).receiver(receiver).value(value).inputs(inputs).build();
         transaction.setSignature(generateSignature(privateKey));
 //        if((!previousHash.equals("0"))) {
-            float change = getInputsValue() - value;
+            BigDecimal change = getInputsValue().add(value.negate());
             transaction.setTransactionId(calculateHash());
             transaction.getOutputs().add(new TransactionOutput(receiver, value, transaction.getTransactionId()));
             transaction.getOutputs().add(new TransactionOutput(sender, change, transaction.getTransactionId()));
@@ -127,15 +128,19 @@ public class TransactionFactory {
 //
 //    }
 
-    public float getInputsValue() {
-        double total = transaction.getInputs().stream()
+    public BigDecimal getInputsValue() {
+        BigDecimal total = transaction.getInputs().stream()
                 .filter(input -> input.getUtxo() != null) //Kiedy może dojść do sytuacji kiedy utxo będzie null!?
-                .collect(Collectors.summingDouble(x -> x.getUtxo().getValue()));
-        return (float) total;
+                .map(TransactionInput::getUtxo)
+                .map(TransactionOutput::getValue)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        return total;
     }
 
-    public float getOutputsValue() {
-        double total = transaction.getOutputs().stream().collect(Collectors.summingDouble(x -> x.getValue()));
-        return (float) total;
+    public BigDecimal getOutputsValue() {
+        BigDecimal total = transaction.getOutputs().stream()
+                .map(TransactionOutput::getValue)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        return total;
     }
 }
