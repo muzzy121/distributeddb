@@ -10,6 +10,7 @@ import com.muzzy.service.controllerservice.Validation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.util.ArrayList;
@@ -19,7 +20,7 @@ public class AncestorTransactionFactory {
     @Autowired
     private TransactionOutputService transactionOutputService;
 
-    public Transaction getAncestorTransaction(Wallet ancestorWallet, PublicKey receiver, float value) {
+    public Transaction getAncestorTransaction(Wallet ancestorWallet, PublicKey receiver, BigDecimal value) {
         ArrayList<TransactionOutput> transactionOutputs = new ArrayList<>();
         transactionOutputs.add(new TransactionOutput(receiver, value, "0"));
         AncestorTransaction ancestorTransaction = AncestorTransaction.childBuilder()

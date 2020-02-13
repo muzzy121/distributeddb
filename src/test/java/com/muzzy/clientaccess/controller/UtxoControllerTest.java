@@ -11,6 +11,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -39,8 +40,8 @@ class UtxoControllerTest {
     @BeforeEach
     void setUp() {
         transactionOutputs = new HashSet<>();
-        transactionOutputs.add(new TransactionOutput("10",null,10F,"0"));
-        transactionOutputs.add(new TransactionOutput("20",null,20F,"1"));
+        transactionOutputs.add(new TransactionOutput("10",null, BigDecimal.valueOf(10F),"0"));
+        transactionOutputs.add(new TransactionOutput("20",null,BigDecimal.valueOf(20F),"1"));
         mockMvc = MockMvcBuilders.standaloneSetup(utxoController).build();
     }
 

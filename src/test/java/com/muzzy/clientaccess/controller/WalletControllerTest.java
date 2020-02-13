@@ -14,6 +14,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import java.math.BigDecimal;
 import java.security.PublicKey;
 import java.util.HashSet;
 import java.util.Set;
@@ -69,7 +70,7 @@ class WalletControllerTest {
     @Test
     void getWalletDetail() throws Exception {
         when(walletMapService.getById(anyString())).thenReturn(wallet);
-        when(transactionOutputService.getBalance(any())).thenReturn(10f);
+        when(transactionOutputService.getBalance(any())).thenReturn(BigDecimal.valueOf(10f));
         mockMvc.perform(post("/wallets/detail").param("id", "1"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("wallet/detail"))

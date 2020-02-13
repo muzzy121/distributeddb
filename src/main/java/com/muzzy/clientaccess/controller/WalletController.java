@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.view.RedirectView;
 
+import java.math.BigDecimal;
+
 
 @Controller
 public class WalletController {
@@ -36,7 +38,7 @@ public class WalletController {
 
         LOG.info(id);
         Wallet wallet = walletMapService.getById(id);
-        float balance = transactionOutputService.getBalance(wallet.getPublicKey());
+        BigDecimal balance = transactionOutputService.getBalance(wallet.getPublicKey());
         model.addAttribute("wallet", wallet);
         model.addAttribute("balance", balance);
         return "wallet/detail";

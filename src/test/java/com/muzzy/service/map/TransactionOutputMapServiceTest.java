@@ -6,6 +6,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
+import java.math.BigDecimal;
 import java.security.PublicKey;
 import java.util.Set;
 
@@ -23,7 +24,7 @@ class TransactionOutputMapServiceTest {
         transactionOutputMapService = new TransactionOutputMapService();
         transactionOutput = new TransactionOutput();
         transactionOutput.setId("1");
-        transactionOutput.setValue(10);
+        transactionOutput.setValue(BigDecimal.valueOf(10));
         transactionOutput.setReceiver(wallet.getPublicKey());
         transactionOutputMapService.save(transactionOutput);
         // ---- For getTransctionByReciever and getBalance
@@ -71,7 +72,7 @@ class TransactionOutputMapServiceTest {
 
     @Test
     void getBalance() {
-        float balance = transactionOutputMapService.getBalance(mockPublicKey);
-        assertEquals(10F,balance);
+        BigDecimal balance = transactionOutputMapService.getBalance(mockPublicKey);
+        assertEquals(BigDecimal.valueOf(10F),balance);
     }
 }

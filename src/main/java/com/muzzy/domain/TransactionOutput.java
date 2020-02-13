@@ -8,7 +8,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.security.PublicKey;
+import java.util.Comparator;
 
 @Getter
 @Setter
@@ -21,11 +23,11 @@ public class TransactionOutput implements Comparable<TransactionOutput>, Seriali
 
     private String id;
     private PublicKey receiver;
-    private float value;
+    private BigDecimal value;
     private String parentTransactionId;
 
 
-    public TransactionOutput(PublicKey receiver, float value, String parentTransactionId) {
+    public TransactionOutput(PublicKey receiver, BigDecimal value, String parentTransactionId) {
         this.receiver = receiver;
         this.value = value;
         this.parentTransactionId = parentTransactionId;
@@ -38,6 +40,6 @@ public class TransactionOutput implements Comparable<TransactionOutput>, Seriali
 
     @Override
     public int compareTo(TransactionOutput o) {
-        return Float.compare(this.value, o.value);
+        return value.compareTo(o.value);
     }
 }

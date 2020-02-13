@@ -9,6 +9,7 @@ import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.security.PublicKey;
 import java.util.ArrayList;
 
@@ -27,7 +28,7 @@ public class Transaction implements Serializable {
     private String transactionId;
     private PublicKey sender;
     private PublicKey receiver;
-    private float value;
+    private BigDecimal value;
     private byte[] signature;
     private ArrayList<TransactionInput> inputs;
     private ArrayList<TransactionOutput> outputs = new ArrayList<>();
@@ -36,7 +37,7 @@ public class Transaction implements Serializable {
     private TransactionOutputService transactionOutputService;
 
     @Builder
-    public Transaction(PublicKey sender, PublicKey receiver, float value, ArrayList<TransactionInput> inputs, ArrayList<TransactionOutput> outputs, String transactionId) {
+    public Transaction(PublicKey sender, PublicKey receiver, BigDecimal value, ArrayList<TransactionInput> inputs, ArrayList<TransactionOutput> outputs, String transactionId) {
         this.sender = sender;
         this.receiver = receiver;
         this.value = value;
