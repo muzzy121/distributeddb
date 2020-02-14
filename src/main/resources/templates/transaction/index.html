@@ -32,7 +32,7 @@
     <tr th:each="transaction: ${transactions}">
         <td><a th:href="@{/transactions(id=${transaction.parentTransactionId})}" th:text="${transaction.id}">x</td>
         <!--/*@thymesVar id="getStringFromKey" type="com.muzzy.cipher"*/-->
-        <td th:text="${T(com.muzzy.cipher.StringUtil).getStringFromKey(transaction.getReceiver())}">x</td>
+        <td th:text="${T(com.muzzy.cipher.StringUtil).getStringFromKey(transaction.getReceiverKey())}">x</td>
         <td th:text="${transaction.value}">x</td>
     </tr>
 </table>

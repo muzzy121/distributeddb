@@ -1,6 +1,10 @@
 package com.muzzy.clientaccess.restcontroller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.muzzy.domain.Block;
+import com.muzzy.domain.TransactionOutput;
+import com.muzzy.service.TransactionOutputService;
 import com.muzzy.service.map.BlockMapService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,19 +22,33 @@ public class BlockchainRestController {
     private static final Logger LOG = LoggerFactory.getLogger(SimulationController.class);
 
     private final BlockMapService blockMapService;
+    private final TransactionOutputService transactionOutputService;
 
-    public BlockchainRestController(BlockMapService blockMapService) {
+    public BlockchainRestController(BlockMapService blockMapService, TransactionOutputService transactionOutputService) {
         this.blockMapService = blockMapService;
+        this.transactionOutputService = transactionOutputService;
     }
 
     @RequestMapping(value = "/block/lasthash", method = RequestMethod.GET)
     public String getCurrentBlock() {
         return blockMapService.getLastBlock().getHash();
     }
+
+
     @RequestMapping(value = "/block/all", method = RequestMethod.GET)
     public LinkedHashSet<Block> getAllBlocks(){
+//
+        ObjectMapper om = new ObjectMapper();
+        TransactionOutput transaction = transactionOutputService.getAll().stream().findFirst().get();
+        try {
+            String test = om.writeValueAsString(transaction);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
         return blockMapService.getAll();
+//        return null;
     }
+
     @RequestMapping(value = "/block/allafter/{hash}",method = RequestMethod.GET)
     public LinkedHashSet<Block> getAllFrom(@PathVariable("hash") String hash){
 

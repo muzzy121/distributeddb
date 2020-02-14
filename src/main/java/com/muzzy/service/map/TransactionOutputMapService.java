@@ -57,7 +57,7 @@ public class TransactionOutputMapService extends AbstractTransactionOutputMapSer
     @Override
     public Set<TransactionOutput> getTransctionByReciever(PublicKey publicKey) {
         Set<TransactionOutput> transactionOutputs = getAll();
-        return transactionOutputs.stream().filter(txos -> txos.getReceiver().equals(publicKey)).collect(Collectors.toSet());
+        return transactionOutputs.stream().filter(txos -> txos.getReceiverKey().equals(publicKey)).collect(Collectors.toSet());
     }
 
     @Override

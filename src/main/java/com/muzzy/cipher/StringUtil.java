@@ -1,7 +1,8 @@
 package com.muzzy.cipher;
 
-import java.security.Key;
-import java.security.MessageDigest;
+import java.security.*;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
 
 public class StringUtil {
@@ -29,5 +30,13 @@ public class StringUtil {
     }
     public static String getStringFromKey(Key key) {
         return Base64.getEncoder().encodeToString(key.getEncoded());
+    }
+
+
+    public PublicKey getPubKeyFromString(String stringFromPublicKey) throws NoSuchAlgorithmException, InvalidKeySpecException {
+        byte[] publicKeyData = Base64.getDecoder().decode(stringFromPublicKey);
+        X509EncodedKeySpec spec = new X509EncodedKeySpec(publicKeyData);
+        KeyFactory kf = KeyFactory.getInstance("RSA");
+        return kf.generatePublic(spec);
     }
 }

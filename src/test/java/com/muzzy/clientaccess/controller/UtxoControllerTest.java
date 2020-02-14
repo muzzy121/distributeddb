@@ -16,8 +16,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import static org.hamcrest.Matchers.hasSize;
-import static org.junit.jupiter.api.Assertions.*;
-
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -41,7 +39,7 @@ class UtxoControllerTest {
     void setUp() {
         transactionOutputs = new HashSet<>();
         transactionOutputs.add(new TransactionOutput("10",null, BigDecimal.valueOf(10F),"0"));
-        transactionOutputs.add(new TransactionOutput("20",null,BigDecimal.valueOf(20F),"1"));
+        transactionOutputs.add(new TransactionOutput("20",null, BigDecimal.valueOf(20F),"1"));
         mockMvc = MockMvcBuilders.standaloneSetup(utxoController).build();
     }
 

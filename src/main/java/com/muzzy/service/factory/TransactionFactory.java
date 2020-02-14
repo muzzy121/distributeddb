@@ -18,7 +18,6 @@ import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Component
 public class TransactionFactory {
@@ -75,9 +74,9 @@ public class TransactionFactory {
             //Test ficzera, zamieniam UTXO na tymczasową listę, którą przepiszę do właściwej listy po dodaniu bloku do łańcucha
 
             // spent money wait to add to block
-            transaction.getOutputs().stream().filter(transactionOutput -> transactionOutput.getReceiver().equals(receiver)).forEach(t-> transactionTemporarySet.addTransaction(t));
+            transaction.getOutputs().stream().filter(transactionOutput -> transactionOutput.getReceiverKey().equals(receiver)).forEach(t-> transactionTemporarySet.addTransaction(t));
             // redirect change directly to UTXO
-            transaction.getOutputs().stream().filter(transactionOutput -> !transactionOutput.getReceiver().equals(receiver)).forEach(t -> transactionOutputService.save(t));
+            transaction.getOutputs().stream().filter(transactionOutput -> !transactionOutput.getReceiverKey().equals(receiver)).forEach(t -> transactionOutputService.save(t));
            //Kasowanie starych wejść? Kasowanie bloku ze względu na np. jedną nieprawidłową transakcję spowoduje fraud środków
             inputs.stream().filter(i -> i.getUtxo() != null).forEach(y -> transactionOutputService.deleteById(y.getUtxo().getId()));
 
@@ -89,8 +88,8 @@ public class TransactionFactory {
      */
     private String calculateHash() {
         return StringUtil.applySha256(
-                StringUtil.getStringFromKey(transaction.getSender()) +
-                        StringUtil.getStringFromKey(transaction.getReceiver()) +
+                StringUtil.getStringFromKey(transaction.getSenderKey()) +
+                        StringUtil.getStringFromKey(transaction.getReceiverKey()) +
                         transaction.getValue()
         );
     }
@@ -102,7 +101,7 @@ public class TransactionFactory {
      */
     public byte[] generateSignature(PrivateKey privateKey) {
         // TODO: 2020-01-23 Czy sygnatura nie powinna być z datą? Może dodać Pole daty do transakcji, jej utworzenia
-        String data = StringUtil.getStringFromKey(transaction.getSender()) + StringUtil.getStringFromKey(transaction.getReceiver()) + transaction.getValue();
+        String data = StringUtil.getStringFromKey(transaction.getSenderKey()) + StringUtil.getStringFromKey(transaction.getReceiverKey()) + transaction.getValue();
         return Validation.confirm(privateKey, data);
     }
 
@@ -112,8 +111,8 @@ public class TransactionFactory {
      * @return boolean
      */
     public boolean verifiySignature() {
-        String data = StringUtil.getStringFromKey(transaction.getSender()) + StringUtil.getStringFromKey(transaction.getReceiver()) + transaction.getValue();
-        return Validation.verifySignature(transaction.getSender(), data, transaction.getSignature());
+        String data = StringUtil.getStringFromKey(transaction.getSenderKey()) + StringUtil.getStringFromKey(transaction.getReceiverKey()) + transaction.getValue();
+        return Validation.verifySignature(transaction.getSenderKey(), data, transaction.getSignature());
     }
     /**
      * Werify if Signature is proper

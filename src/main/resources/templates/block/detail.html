@@ -48,10 +48,10 @@
         </tr>
         <tr>
             <th>Sender</th>
-            <td th:text="${T(com.muzzy.cipher.StringUtil).getStringFromKey(transaction.getSender())}">x</td>
+            <td th:text="${T(com.muzzy.cipher.StringUtil).getStringFromKey(transaction.getSenderKey())}">x</td>
         </tr>
             <th>Reciever</th>
-            <td th:text="${T(com.muzzy.cipher.StringUtil).getStringFromKey(transaction.getReceiver())}">x</td>
+            <td th:text="${T(com.muzzy.cipher.StringUtil).getStringFromKey(transaction.getReceiverKey())}">x</td>
         <tr>
             <th>Value</th>
             <td th:text="${transaction.getValue()}">x</td>
