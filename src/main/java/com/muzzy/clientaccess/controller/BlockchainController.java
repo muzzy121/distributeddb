@@ -5,20 +5,20 @@ import com.muzzy.domain.Transaction;
 import com.muzzy.dto.TransactionSet;
 import com.muzzy.service.TransactionOutputService;
 import com.muzzy.service.map.BlockMapService;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
-
-import javax.swing.text.BadLocationException;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
-public class BlockController {
+public class BlockchainController {
     private final TransactionOutputService transactionOutputService;
     private final BlockMapService blockMapService;
     private final TransactionSet transactionSet;
 
-    public BlockController(TransactionOutputService transactionOutputService, TransactionSet transactionSet, BlockMapService blockMapService) {
+    public BlockchainController(TransactionOutputService transactionOutputService, TransactionSet transactionSet, BlockMapService blockMapService) {
         this.transactionOutputService = transactionOutputService;
         this.transactionSet = transactionSet;
         this.blockMapService = blockMapService;

@@ -1,5 +1,6 @@
 package com.muzzy.domain;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.muzzy.domain.spsfl.SerialVersionUIDContainer;
 import com.muzzy.service.TransactionOutputService;
 import lombok.Builder;
@@ -21,6 +22,7 @@ import java.util.ArrayList;
 @Getter
 @Setter
 @NoArgsConstructor
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public class Transaction implements Serializable {
 
     private static final long serialVersionUID = SerialVersionUIDContainer.TRANSACTION_SVUID;

@@ -25,7 +25,7 @@ public class AncestorTransactionFactory {
         transactionOutputs.add(new TransactionOutput(receiver, value, "0"));
         AncestorTransaction ancestorTransaction = AncestorTransaction.childBuilder()
                 .sender(ancestorWallet.getPublicKey())
-                .reciever(receiver)
+                .receiver(receiver)
                 .value(value)
                 .inputs(null)
                 .transactionId("0")

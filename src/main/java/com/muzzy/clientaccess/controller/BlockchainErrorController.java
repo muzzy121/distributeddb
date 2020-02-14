@@ -5,7 +5,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-public class BlockChainErrorController implements ErrorController {
+public class BlockchainErrorController implements ErrorController {
 
     @RequestMapping("/error")
     public String handleError() {

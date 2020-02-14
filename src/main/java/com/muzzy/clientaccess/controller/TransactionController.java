@@ -64,7 +64,7 @@ public class TransactionController {
         return "transaction/detail";
     }
 
-    @InitBinder
+    @InitBinder("transactionDto")
     protected void initTransactionFormBinder(WebDataBinder binder) {
         binder.addValidators(transactionValidator);
     }
