@@ -8,6 +8,6 @@ import org.springframework.stereotype.Service;
  * 14.01.2020
  */
 @Service
-public interface TransactionService extends CrudService<Transaction,String> {
+public interface TransactionService extends CrudService<Transaction, String> {
     void clear();
 }

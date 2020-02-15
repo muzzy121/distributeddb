@@ -10,7 +10,6 @@ import lombok.Setter;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.security.PublicKey;
-import java.util.Comparator;
 
 @Getter
 @Setter
@@ -31,7 +30,7 @@ public class TransactionOutput implements Comparable<TransactionOutput>, Seriali
         this.receiver = receiver;
         this.value = value;
         this.parentTransactionId = parentTransactionId;
-        this.id = StringUtil.applySha256(StringUtil.getStringFromKey(receiver)+ value +parentTransactionId);
+        this.id = StringUtil.applySha256(StringUtil.getStringFromKey(receiver) + value + parentTransactionId);
     }
 
     public boolean isMine(PublicKey publicKey) {

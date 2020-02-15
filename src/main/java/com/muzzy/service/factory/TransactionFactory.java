@@ -18,7 +18,6 @@ import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Component
 public class TransactionFactory {
@@ -34,19 +33,21 @@ public class TransactionFactory {
     }
 
     public Transaction getTransaction(PrivateKey privateKey, PublicKey sender, PublicKey receiver, BigDecimal value) {
+
         /**
          * Ten early exit także trzeba obgadać, chyba że poszukać transakcji która pozwoli zapłacić z całości!?
          * Co będzie wydajniejsze - czy lepiej eliminować małe transackcje z UTXO, czy lepiej wydawać z jednego inputa
          */
-        if (transactionOutputService.getBalance(sender).compareTo(value) < 0 ) {
+        if (transactionOutputService.getBalance(sender).compareTo(value) < 0) {
             LOG.error("You don't have coins for this transaction");
             return null;
         }
         /**
          * Sortowanie listy, trzeba się zastanowić czy jest ono potrzebne i jak wpływana na wydajność
+         *
+         * A po co sortować? Wpływ na wydajność raczej znikomy, tak czy siak to są małę listy
          */
-        List<TransactionOutput> transactionOutputList = new ArrayList<TransactionOutput>();
-        transactionOutputService.getTransctionByReciever(sender).forEach(transactionOutput -> transactionOutputList.add(transactionOutput));
+        List<TransactionOutput> transactionOutputList = new ArrayList<>(transactionOutputService.getTransctionByReciever(sender));
         Collections.sort(transactionOutputList);
 
         // Mandatory obj.
@@ -59,32 +60,34 @@ public class TransactionFactory {
         ) {
             inputs.add(new TransactionInput(utxo.getId(), utxo));
             total.add(utxo.getValue());
-            if (total.compareTo(value) >= 0 ) break;
+            if (total.compareTo(value) >= 0) break;
         }
 
         transaction = new Transaction().builder().sender(sender).receiver(receiver).value(value).inputs(inputs).build();
         transaction.setSignature(generateSignature(privateKey));
 //        if((!previousHash.equals("0"))) {
-            BigDecimal change = getInputsValue().add(value.negate());
-            transaction.setTransactionId(calculateHash());
-            transaction.getOutputs().add(new TransactionOutput(receiver, value, transaction.getTransactionId()));
-            transaction.getOutputs().add(new TransactionOutput(sender, change, transaction.getTransactionId()));
+        BigDecimal change = getInputsValue().add(value.negate());
+        transaction.setTransactionId(calculateHash());
+        transaction.getOutputs().add(new TransactionOutput(receiver, value, transaction.getTransactionId()));
+        transaction.getOutputs().add(new TransactionOutput(sender, change, transaction.getTransactionId()));
 
         // TODO: 2020-02-01 To miejsce jest do zmiany, dodaje do UTXO transakcje które nie zostały jeszcze dodane do bloku
-            //można stworzyć małe listy które będą przechowywać poza klasą takie dane
-            //Test ficzera, zamieniam UTXO na tymczasową listę, którą przepiszę do właściwej listy po dodaniu bloku do łańcucha
+        //można stworzyć małe listy które będą przechowywać poza klasą takie dane
+        //Test ficzera, zamieniam UTXO na tymczasową listę, którą przepiszę do właściwej listy po dodaniu bloku do łańcucha
 
-            // spent money wait to add to block
-            transaction.getOutputs().stream().filter(transactionOutput -> transactionOutput.getReceiver().equals(receiver)).forEach(t-> transactionTemporarySet.addTransaction(t));
-            // redirect change directly to UTXO
-            transaction.getOutputs().stream().filter(transactionOutput -> !transactionOutput.getReceiver().equals(receiver)).forEach(t -> transactionOutputService.save(t));
-           //Kasowanie starych wejść? Kasowanie bloku ze względu na np. jedną nieprawidłową transakcję spowoduje fraud środków
-            inputs.stream().filter(i -> i.getUtxo() != null).forEach(y -> transactionOutputService.deleteById(y.getUtxo().getId()));
+        // spent money wait to add to block
+        transaction.getOutputs().stream().filter(transactionOutput -> transactionOutput.getReceiver().equals(receiver)).forEach(t -> transactionTemporarySet.addTransaction(t));
+        // redirect change directly to UTXO
+        transaction.getOutputs().stream().filter(transactionOutput -> !transactionOutput.getReceiver().equals(receiver)).forEach(t -> transactionOutputService.save(t));
+        //Kasowanie starych wejść? Kasowanie bloku ze względu na np. jedną nieprawidłową transakcję spowoduje fraud środków
+        inputs.stream().filter(i -> i.getUtxo() != null).forEach(y -> transactionOutputService.deleteById(y.getUtxo().getId()));
 
         return transaction;
     }
+
     /**
      * Generates Hash using Public Keys and transaction value
+     *
      * @return Hash
      */
     private String calculateHash() {
@@ -115,6 +118,7 @@ public class TransactionFactory {
         String data = StringUtil.getStringFromKey(transaction.getSender()) + StringUtil.getStringFromKey(transaction.getReceiver()) + transaction.getValue();
         return Validation.verifySignature(transaction.getSender(), data, transaction.getSignature());
     }
+
     /**
      * Werify if Signature is proper
      * Calculate transaction Hash
@@ -127,20 +131,17 @@ public class TransactionFactory {
 //        // Verify transaction signature
 //
 //    }
-
     public BigDecimal getInputsValue() {
-        BigDecimal total = transaction.getInputs().stream()
+        return transaction.getInputs().stream()
                 .filter(input -> input.getUtxo() != null) //Kiedy może dojść do sytuacji kiedy utxo będzie null!?
                 .map(TransactionInput::getUtxo)
                 .map(TransactionOutput::getValue)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
-        return total;
     }
 
     public BigDecimal getOutputsValue() {
-        BigDecimal total = transaction.getOutputs().stream()
+        return transaction.getOutputs().stream()
                 .map(TransactionOutput::getValue)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
-        return total;
     }
 }

@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -46,7 +47,7 @@ public class TransactionController {
 
     @RequestMapping(value = {"/transactions"}, method = RequestMethod.GET)
     public String findTransaction(@RequestParam(name = "id") String id, Model model) {
-        if (id.trim() == "") {
+        if (id.trim().equals("")) {
             return "error/error";
         }
         String transactionId = id.trim();
@@ -58,7 +59,7 @@ public class TransactionController {
         model.addAttribute("transactionId", transactionId);
 
 
-        LOG.debug(transaction.getSignature().toString());
+        LOG.debug(Arrays.toString(transaction.getSignature()));
         LOG.debug(block.getHash());
         LOG.debug(transactionId);
         return "transaction/detail";
@@ -80,7 +81,7 @@ public class TransactionController {
 
         Wallet sender = walletMapService.getById(id);
         List<String> allExceptId = walletMapService.getAllExceptId(sender.getPublicKey()).stream()
-                .map(wallet -> wallet.getStringFromPubKey())
+                .map(Wallet::getStringFromPubKey)
                 .collect(Collectors.toList());
 
         model.addAttribute("receivers", allExceptId);
@@ -98,9 +99,9 @@ public class TransactionController {
         if (bindingResult.hasErrors()) {
             Wallet sender = walletMapService.getById(transactionDto.getSender());
             List<String> allExceptId = walletMapService.getAllExceptId(sender.getPublicKey()).stream()
-                    .map(wallet -> wallet.getStringFromPubKey())
+                    .map(Wallet::getStringFromPubKey)
                     .collect(Collectors.toList());
-            model.addAttribute("receivers",allExceptId);
+            model.addAttribute("receivers", allExceptId);
             return "transaction/add";
         }
 

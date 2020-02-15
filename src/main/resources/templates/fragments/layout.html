@@ -43,8 +43,10 @@
         </div>
 
     </div>
-    <form autocomplete="off" id="search" class="form-inline my-5 my-lg-0" th:action="@{/transactions(id=${transactionId})}" method="get">
-        <input aria-autocomplete="none" autocomplete="off" class="form-control mr-lg-2" type="search" placeholder="Search" aria-label="Search" th:value="${transactionSearch}" name="id" value="">
+    <form autocomplete="off" id="search" class="form-inline my-5 my-lg-0"
+          th:action="@{/transactions(id=${transactionId})}" method="get">
+        <input aria-autocomplete="none" autocomplete="off" class="form-control mr-lg-2" type="search"
+               placeholder="Search" aria-label="Search" th:value="${transactionSearch}" name="id" value="">
         <button class="btn btn-outline-success my-2 my-sm-0" type="submit" onclick="submit()">Search</button>
     </form>
 </nav>

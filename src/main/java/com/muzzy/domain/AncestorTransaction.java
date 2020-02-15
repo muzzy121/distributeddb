@@ -13,8 +13,8 @@ import java.util.ArrayList;
 public class AncestorTransaction extends Transaction {
 
     @Builder(builderMethodName = "childBuilder")
-    public AncestorTransaction(PublicKey sender, PublicKey reciever, BigDecimal value, ArrayList<TransactionInput> inputs, ArrayList<TransactionOutput> outputs, String transactionId) {
-        super(sender, reciever, value, inputs, outputs, transactionId);
+    public AncestorTransaction(PublicKey sender, PublicKey receiver, BigDecimal value, ArrayList<TransactionInput> inputs, ArrayList<TransactionOutput> outputs, String transactionId) {
+        super(sender, receiver, value, inputs, outputs, transactionId);
     }
 
 }

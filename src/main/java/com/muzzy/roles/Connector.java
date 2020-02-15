@@ -30,10 +30,10 @@ public class Connector {
      * Get IP list, try to connect to every one, except this which are connected by now
      * Collect all sockets to Outgoing Connections Repository
      */
-    public void connect(){
+    public void connect() {
         List<String> toConnection = configLoader.getAddresses();
         List<String> oC = outgoingConnectionsRepository.getSockets().stream().map(x -> x.getLocalAddress().getHostAddress()).collect(Collectors.toList());
-        toConnection.removeIf(a -> check(oC,a));
+        toConnection.removeIf(a -> check(oC, a));
 
         toConnection.forEach(address -> {
             LOG.debug("Looking up for: " + address);
@@ -41,7 +41,7 @@ public class Connector {
             try {
                 socket = new Socket();
                 socket.connect(inetSocketAddress);
-                if(socket.isConnected()) {
+                if (socket.isConnected()) {
                     outgoingConnectionsRepository.addSocket(socket);
                 }
             } catch (IOException e) {
@@ -51,7 +51,8 @@ public class Connector {
         });
 
     }
-    public void disconnect(){
+
+    public void disconnect() {
         outgoingConnectionsRepository.clear();
     }
 
@@ -60,6 +61,7 @@ public class Connector {
             if (addr.equals(address)) {
                 return true;
             }
-        } return false;
+        }
+        return false;
     }
 }

@@ -14,8 +14,6 @@ public class StringUtil {
     private StringUtil() {
     }
 
-    ;
-
     public static String applySha256(String input) {
 
         try {

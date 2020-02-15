@@ -20,8 +20,7 @@ public class CipherTest implements Cipherable<byte[]> {
             Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");  // Transformation of the algorithm
             cipher.init(Cipher.ENCRYPT_MODE, key);
 
-            byte[] cipherBytes = cipher.doFinal(plainBytes);
-            return cipherBytes;
+            return cipher.doFinal(plainBytes);
 
 //            Reinitialize the Cipher to decryption mode
 //            cipher.init(Cipher.DECRYPT_MODE, key, cipher.getParameters());

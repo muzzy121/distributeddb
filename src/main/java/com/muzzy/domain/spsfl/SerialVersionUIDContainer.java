@@ -3,6 +3,7 @@ package com.muzzy.domain.spsfl;
 /**
  * Container made due to Serialization
  * Ordnung must sein
+ * Nie wiedziałem ze ktos tu sprechen sie deutsch
  * Each class can have its "private static final long serialVersionUID" here
  */
 public interface SerialVersionUIDContainer {

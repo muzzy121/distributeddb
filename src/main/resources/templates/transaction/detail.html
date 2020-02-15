@@ -19,7 +19,7 @@
 <!--/*@thymesVar id="block" type="com.muzzy.domain.BlockVerified"*/-->
 <body>
 <div class="container-fluid">
-<!--    <h2>Block Details</h2>-->
+    <!--    <h2>Block Details</h2>-->
     <h1><span class="badge badge-secondary">Transaction Details</span></h1>
     <table class="table table-striped">
         <tbody>
@@ -72,9 +72,9 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr th:each="transactionOutput: ${transactionOutputs}" >
+                    <tr th:each="transactionOutput: ${transactionOutputs}">
                         <td th:text="${transactionOutput.getId()}"></td>
-<!--                        <td th:text="${transactionOutput.getParentTransactionId()}"></td>-->
+                        <!--                        <td th:text="${transactionOutput.getParentTransactionId()}"></td>-->
                         <!--                        <td th:text="${transactionOutput.getReceiver()}"></td>-->
                         <td th:text="${transactionOutput.getValue()}"></td>
                     </tr>

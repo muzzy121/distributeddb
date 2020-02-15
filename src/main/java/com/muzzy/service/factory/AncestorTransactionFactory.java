@@ -25,15 +25,16 @@ public class AncestorTransactionFactory {
         transactionOutputs.add(new TransactionOutput(receiver, value, "0"));
         AncestorTransaction ancestorTransaction = AncestorTransaction.childBuilder()
                 .sender(ancestorWallet.getPublicKey())
-                .reciever(receiver)
+                .receiver(receiver)
                 .value(value)
                 .inputs(null)
                 .transactionId("0")
                 .build();
         ancestorTransaction.getOutputs().add(new TransactionOutput(receiver, value, "0"));
-        generateSignature(ancestorWallet.getPrivateKey(),ancestorTransaction);
+        generateSignature(ancestorWallet.getPrivateKey(), ancestorTransaction);
         return ancestorTransaction;
     }
+
     public byte[] generateSignature(PrivateKey privateKey, Transaction t) {
         // TODO: 2020-01-23 Czy sygnatura nie powinna być z datą? Może dodać Pole daty do transakcji, jej utworzenia
         String data = StringUtil.getStringFromKey(t.getSender()) + StringUtil.getStringFromKey(t.getReceiver()) + t.getValue();

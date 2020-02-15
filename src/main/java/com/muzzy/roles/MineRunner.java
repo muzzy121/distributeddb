@@ -37,8 +37,9 @@ public class MineRunner implements Callable<Integer> {
         this.outgoingNode = outgoingNode;
         this.blockMapService = blockMapService;
     }
+
     @Override
-    public Integer call() throws Exception {
+    public Integer call() {
         mining();
         return null;
     }
@@ -56,13 +57,14 @@ public class MineRunner implements Callable<Integer> {
             if (i++ % 100000000 == 0) {
                 System.out.print(".");
             }
-            if (notMined == true) {
+            if (notMined) {
                 System.out.print("+");
                 mining();
             }
         }
     }
-    public void prepareMining(){
+
+    public void prepareMining() {
         //Connect to nodes
         connector.connect();
 
@@ -96,7 +98,7 @@ public class MineRunner implements Callable<Integer> {
 //    }
 
 
-    //    @Override
+//    @Override
 //    public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
 //
 //        if (contextRefreshedEvent.getApplicationContext().getParent() == null) {

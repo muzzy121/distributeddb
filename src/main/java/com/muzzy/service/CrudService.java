@@ -7,10 +7,14 @@ import java.util.Set;
  * 14.01.2020
  */
 
-public interface CrudService<T,ID> {
+public interface CrudService<T, ID> {
     Set<T> getAll();
+
     T getById(ID id);
+
     T save(T t);
+
     void delete(T t);
+
     void deleteById(ID id);
 }

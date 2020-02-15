@@ -17,8 +17,6 @@ public class Serializer {
             ObjectOutputStream oos = new ObjectOutputStream(bos);
             oos.writeObject(obj);
             oos.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -32,11 +30,7 @@ public class Serializer {
             ObjectInputStream ois = new ObjectInputStream(bis);
             obj = ois.readObject();
             ois.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
+        } catch (ClassNotFoundException | IOException e) {
             e.printStackTrace();
         }
         return obj;

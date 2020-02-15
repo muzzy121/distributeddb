@@ -4,9 +4,11 @@ import com.muzzy.cipher.StringUtil;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
 import java.io.Serializable;
 import java.time.ZonedDateTime;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Created by Paweł Mazur

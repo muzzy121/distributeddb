@@ -11,6 +11,7 @@ import java.net.Socket;
 import java.util.concurrent.Callable;
 
 import static com.muzzy.Main.isStart;
+
 @Component
 public class TestThread implements Callable<Integer> {
     private final Logger LOG = LoggerFactory.getLogger(TestThread.class);
@@ -23,7 +24,7 @@ public class TestThread implements Callable<Integer> {
     }
 
     @Override
-    public Integer call() throws Exception {
+    public Integer call() {
         socket = incomingConnectionsRepository.getSockets().stream().findFirst().get();
         request();
         return null;

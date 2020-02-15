@@ -22,7 +22,6 @@ public class Miner implements Runnable {
     private Block block;
     private String hash = "999999999";
     private static String hashTmp = "";
-    private static boolean mining = true;
     private static long lag = 0L;
     private String previousHash;
 
@@ -30,7 +29,6 @@ public class Miner implements Runnable {
     private final TransactionService transactionService;
     private final TransactionTemporarySet transactionTemporarySet;
     private final TransactionOutputService transactionOutputService;
-
 
 
     private void stop() {
@@ -58,6 +56,7 @@ public class Miner implements Runnable {
         }
         MineRunner.notMined = true;
     }
+
     public static void getSystemInfo() {
         long maxMemory = Runtime.getRuntime().maxMemory();
 
@@ -72,7 +71,7 @@ public class Miner implements Runnable {
     }
 
     public Block mine(int difficulty) {
-        mining = true;
+        boolean mining = true;
         int a = 0;
         Integer nonce = 0;
         long startTime = System.currentTimeMillis();
@@ -83,8 +82,8 @@ public class Miner implements Runnable {
             if (hashTmp.substring(0, difficulty).matches("[0]{" + difficulty + "}")) {
                 hash = hashTmp;
             }
-        } while (!hash.substring(0, difficulty).matches("[0]{" + difficulty + "}") && mining == true) ;
-        mining =  false;
+        } while (!hash.substring(0, difficulty).matches("[0]{" + difficulty + "}") && mining);
+        mining = false;
         long endTime = System.currentTimeMillis();
         if (hash.substring(0, difficulty).matches("[0]{" + difficulty + "}")) {
             long hashTime = endTime - startTime;
@@ -93,7 +92,7 @@ public class Miner implements Runnable {
             block.setHash(hash);
             if (!block.getTransactions().isEmpty()) {
                 blockMapService.save(block);
-                transactionTemporarySet.getTransactionOutputSet().forEach(t -> transactionOutputService.save(t));
+                transactionTemporarySet.getTransactionOutputSet().forEach(transactionOutputService::save);
                 transactionTemporarySet.cleanAll();
             }
             return block;

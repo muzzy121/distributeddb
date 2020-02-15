@@ -11,7 +11,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 
-import java.util.*;
+import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -36,30 +36,32 @@ public class Main implements CommandLineRunner {
     }
 
     @Override
-    public void run(String... args) throws Exception {
-        String s="";
+    public void run(String... args) {
+        String s = "";
         do {
-            if(s.equals("") || s.isEmpty()) { System.out.print("Miner ready (write command): ");}
+            if (s.equals("") || s.isEmpty()) {
+                System.out.print("Miner ready (write command): ");
+            }
             s = scanner.nextLine();
-        if(s.toLowerCase().equals("start")) {
-            Main.isStart=true;
-            executorService = Executors.newSingleThreadExecutor();
-            Future future = executorService.submit(context.getBean(MineRunner.class));
-            executorService.shutdown();
+            if (s.toLowerCase().equals("start")) {
+                Main.isStart = true;
+                executorService = Executors.newSingleThreadExecutor();
+                Future future = executorService.submit(context.getBean(MineRunner.class));
+                executorService.shutdown();
 //            context.getBean(MineRunner.class).mining(); // TODO: 2020-02-05 Zjebałem tu
-        }
-        if(s.toLowerCase().equals("listen")) {
+            }
+            if (s.toLowerCase().equals("listen")) {
 //            Main.isStart=true;
-            executorService = Executors.newSingleThreadExecutor();
-            Future future = executorService.submit(context.getBean(IncomingNodeRunner.class));
-            executorService.shutdown();
-        }
-        if(s.toLowerCase().equals("test")) {
+                executorService = Executors.newSingleThreadExecutor();
+                Future future = executorService.submit(context.getBean(IncomingNodeRunner.class));
+                executorService.shutdown();
+            }
+            if (s.toLowerCase().equals("test")) {
 //            Main.isStart=true;
                 executorService = Executors.newSingleThreadExecutor();
                 Future future = executorService.submit(context.getBean(TestThread.class));
                 executorService.shutdown();
-        }
+            }
         } while (!s.toLowerCase().equals("stop"));
         Main.isStart = false;
         LOG.warn("BYE BYE!");

@@ -75,7 +75,7 @@ class WalletControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(view().name("wallet/detail"))
                 .andExpect(model().attribute("wallet", Matchers.any(Wallet.class)))
-                .andExpect(model().attribute("balance", is(10f)));
+                .andExpect(model().attribute("balance", is(BigDecimal.valueOf(10f))));
         verify(walletMapService).getById(anyString());
         verify(transactionOutputService).getBalance(any());
     }

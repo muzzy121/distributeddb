@@ -76,8 +76,7 @@ public class BlockMapService extends AbstractBlockMapService<Block, String> impl
 
     @Override
     public String getChainHash() {
-        List<Block> list = new ArrayList<>();
-        list.addAll(findAll());
+        List<Block> list = new ArrayList<>(findAll());
         StringBuilder string = new StringBuilder();
         list.stream().forEach(x -> string.append(x.getHash()));
         return StringUtil.applySha256(string.toString());

@@ -12,7 +12,8 @@ import java.util.Set;
  * 14.01.2020
  */
 @Service
-public interface TransactionOutputService extends CrudService<TransactionOutput,String> {
+public interface TransactionOutputService extends CrudService<TransactionOutput, String> {
     Set<TransactionOutput> getTransctionByReciever(PublicKey publicKey);
+
     BigDecimal getBalance(PublicKey publicKey);
 }

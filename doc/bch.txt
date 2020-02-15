@@ -30,41 +30,6 @@ Do zrobienia jest sporo, przedewszystkim:
 
 Chętnych proszę o kontakt. PS. Pytanie do Paweł Puślecki. Będziesz w stanie nam odrobinę pomóc w ramach konsultacji i objąć apkę swoim patronatem ? :P
 
-
-
------------------------
-Ad wocem, baza ma siPanowie, pobiłem się po weekendzie ze swoimi myślami, a ponieważ uważam że do odważnych świat należy :)
-Mam szalony pomysł, który urodził się w mojej głowie po tym jak jeden z moich znajomych poprosił mnie o pomoc.
-Chodziło mu o implementacje kryptowaluty w jakiejś prostej grze. Puki co oczywiście odmówiłem, ale...
-Trochę poczytałem, trochę obejrzałem, jak zapewne wiecie krypto opierają się na technologi blockchain. 
-Nie chcę wynajdować koła na nowo, ale pomysł stworzenia własnej, rozproszonej bazy brzmi bardzo kusząco.
-Przechodząc do mięcha, mam propozycję:
-
-Szukam chętnych do stworzenia takiej bazy. 
-
-Co mogę obiecac:
-- Przegrzebę net żeby znaleźć potrzebną wiedzę (to już w sporej częsci zrobiłem :P)
-- Przygotowałem już pierwsze UML-e, schematy Klas, oraz podstawy działania (tutaj potrzebna jest szersza konsultacja, żeby wykluczyć błędne założenia)
-- Częściowo przygotowałem szkielet projektu ( aktualnie tworzę Node'y, jako bazę (nie wiem czy dobrze zacząłem :p) )
-- Jest to turbo fajny projekt do naszych przyszłych CV-ek (ocz jako portfolio), więc jeżeli zrobimy go dobrze to przyda się nie tylko jako projekt dla C_SCHOOL-a 
-- Jako że mi zależy, to będę dostępny tak często jak to będzie możliwe, wiec licze na duże tempo prac, i tym także postaram się odwdzięczyć.
-
-
-Czego nie mogę obiecać:
-- Jako, że jest to projekt z cyklu "NI MOM POJĘCIA CO ROBIĘ" może się okazać że ukończenie go zajmie sporo czasu, albo będzie nie możliwe.
-- Z podobnych przyczyn, nie wiem tak naprawdę czy, jeżeli przyjmiemy błędne założenia to będzie się wogóle czym pochwalić.
-
-Na co liczę ze strony chętnych:
-- Przedewszystkim chęci, poświęcenia czasu, krytykowania i akceptowania krytyki (ocz słuszego i słusznej :P).
-
-O szczegółach możemy pogadać w każdej formie, może być tutaj, może być Facebook, Discord... najlepiej wspólnie tak aby w miarę szybko przygotować plan działania, a w zasadzie jak najszybciej działać.
-Do zrobienia jest sporo, przedewszystkim:
-- Przemyśleć koncepcje, oraz plan działania apki
-- Nanieś poprawki na plan oraz diagramy
-- Podzielić się robotą ( a jest co robić )
-
-Chętnych proszę o kontakt. PS. Pytanie do Paweł Puślecki. Będziesz w stanie nam odrobinę pomóc w ramach konsultacji i objąć apkę swoim patronatem ? :P
-
 Ad wocem: 
 Celem jest stworzenie bazy w oparciu o Blockchain oraz jej obsługa, nie podjąłem decyzji co będziemy trzymać w Blokach. Chciałem to poddać pod dyskusję, tak żeby temat był ciekawy, raczej niepowtarzalny. Dobrze by było żeby nie był mocno skomplikowany, nie chcę zaciemniać istoty projektu.
 Jednych słowem, skupiamy się na Blockchain, Proof of work, Node's. Jak pójdzie sprawnie, i zrobimy dobre założenia, to zakładam że będzie można to jeszcze rozbudować o jakiś fajny Case który oprzemy na tej bazie. Ale sądze, że to raczej jako zadanie z gwiazdką. 

@@ -17,7 +17,9 @@ public class ThreadConfig {
 
     @Bean
     @Scope("prototype")
-    public Socket socket() { return new Socket();}
+    public Socket socket() {
+        return new Socket();
+    }
 
     @Bean
     public Java8TimeDialect java8TimeDialect() {

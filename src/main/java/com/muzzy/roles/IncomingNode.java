@@ -58,7 +58,7 @@ public class IncomingNode implements Runnable {
         incomingConnectionsRepository.addSocket(socket);
     }
 
-    private Object request(){
+    private Object request() {
         try {
             InputStream inputStream = socket.getInputStream();
             objectInputStream = new ObjectInputStream(inputStream);
@@ -75,14 +75,16 @@ public class IncomingNode implements Runnable {
             } catch (IOException e) {
 //                e.printStackTrace();
                 incomingConnectionsRepository.deleteSocket(socket);
-                isStart=false;
+                isStart = false;
                 LOG.error("Disconnected");
             } catch (ClassNotFoundException e) {
                 LOG.error("Unknown object");
 //                e.printStackTrace();
             }
-        } return null;
+        }
+        return null;
     }
+
     private void response() throws IOException {
         LOG.info("Sending blockchain...");
         //Send Im Node!

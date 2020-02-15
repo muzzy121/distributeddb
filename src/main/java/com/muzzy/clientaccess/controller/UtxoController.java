@@ -5,7 +5,7 @@ import com.muzzy.service.TransactionOutputService;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
 @Scope("prototype")
@@ -19,9 +19,9 @@ public class UtxoController {
     }
 
 
-    @GetMapping({"/","index"})
-    public String getIndexPage(Model model){
-            model.addAttribute("transactions", transactionOutputService.getAll());
+    @GetMapping({"/", "index"})
+    public String getIndexPage(Model model) {
+        model.addAttribute("transactions", transactionOutputService.getAll());
         return "transaction/index";
     }
 }

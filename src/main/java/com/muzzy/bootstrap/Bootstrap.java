@@ -1,9 +1,7 @@
 package com.muzzy.bootstrap;
 
-import com.muzzy.Main;
 import com.muzzy.domain.*;
 import com.muzzy.roles.Miner;
-import com.muzzy.roles.OutgoingNode;
 import com.muzzy.service.TransactionOutputService;
 import com.muzzy.domain.Wallet;
 import com.muzzy.service.TransactionTemporarySet;
@@ -67,7 +65,7 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
 //------------------
 //        new AncestorTransaction().getAncestorTransaction(ancestorWallet, walletA.getPublicKey(), 100F);
 
-        Transaction ancestorTransaction = ancestorTransactionFactory.getAncestorTransaction(ancestorWallet, walletA.getPublicKey(), BigDecimal.valueOf(100) );
+        Transaction ancestorTransaction = ancestorTransactionFactory.getAncestorTransaction(ancestorWallet, walletA.getPublicKey(), BigDecimal.valueOf(100));
 
         //Druga operacja w bloku przechodzi, bp zapisuje Wyjście z transakcji na UTXO! O tutaj :)
         transactionOutputService.save(ancestorTransaction.getOutputs().get(0));

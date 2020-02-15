@@ -15,5 +15,6 @@ import java.util.Set;
 @Component
 public interface WalletService extends CrudService<Wallet, String> {
     Set<Wallet> getAllExceptId(PublicKey publicKey);
+
     Set<String> getAllKeys();
 }

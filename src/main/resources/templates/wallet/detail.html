@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="https://www.thymeleaf.org" th:replace="~{fragments/layout :: layout (~{::body},'wallet_detail')}">
+<html lang="en" xmlns:th="https://www.thymeleaf.org"
+      th:replace="~{fragments/layout :: layout (~{::body},'wallet_detail')}">
 <head>
     <meta charset="UTF-8"/>
     <title>UTXO page</title>
@@ -26,15 +27,25 @@
     </thead>
     <!--/*@thymesVar id="wallet" type="com.muzzy.domain.Wallet"*/-->
     <tbody th:object="${wallet}">
-    <tr><th>Public Key</th><td th:text="*{getStringFromPubKey()}"></td>
-    <tr><th>Private Key</th><td style="word-wrap: break-word;min-width: 160px;max-width: 160px;" th:text="*{getStringFromPrvKey()}"></td>
-<!--    <tr><th>Private Key</th><td style="text-overflow: ellipsis; max-width: 0px; overflow: hidden; white-space: nowrap;" th:text="*{getStringFromPrvKey()}"></td>-->
-    <tr><th>Balance</th><td th:text="${balance}"></td>
-    <tr><th></th><td class="text-right">
-        <form class="button" th:action="@{/transactions/getForm}" method="GET">
-            <input type="hidden" name="id" th:value="*{getStringFromPubKey()}"/>
-        <input class="btn btn-outline-success my-2 my-sm-0" type="submit" value="Add new transaction"/>
-    </form></td></tr>
+    <tr>
+        <th>Public Key</th>
+        <td th:text="*{getStringFromPubKey()}"></td>
+    <tr>
+        <th>Private Key</th>
+        <td style="word-wrap: break-word;min-width: 160px;max-width: 160px;" th:text="*{getStringFromPrvKey()}"></td>
+        <!--    <tr><th>Private Key</th><td style="text-overflow: ellipsis; max-width: 0px; overflow: hidden; white-space: nowrap;" th:text="*{getStringFromPrvKey()}"></td>-->
+    <tr>
+        <th>Balance</th>
+        <td th:text="${balance}"></td>
+    <tr>
+        <th></th>
+        <td class="text-right">
+            <form class="button" th:action="@{/transactions/getForm}" method="GET">
+                <input type="hidden" name="id" th:value="*{getStringFromPubKey()}"/>
+                <input class="btn btn-outline-success my-2 my-sm-0" type="submit" value="Add new transaction"/>
+            </form>
+        </td>
+    </tr>
     </tbody>
 </table>
 

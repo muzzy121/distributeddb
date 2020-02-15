@@ -35,12 +35,13 @@ public class OutgoingNode implements Runnable {
         //Blokujące!
 
         outgoingConnectionsRepository.getSockets().forEach(socket -> {
-            if(objectOutputStream == null) {
+            if (objectOutputStream == null) {
                 try {
                     objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
                 } catch (IOException e) {
                     e.printStackTrace();
-                }}
+                }
+            }
             try {
                 objectOutputStream.writeObject(new TransactionSocketDto());
                 objectOutputStream.flush();

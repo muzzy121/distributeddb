@@ -29,18 +29,18 @@
                     <option selected>Choose...</option>
                     <option th:each="wallet: ${wallets}"
                             th:value="${wallet.getStringFromPubKey()}"
-                            th:utext="${wallet.getStringFromPubKey()}" />
-<!--                    <option th:remove="option" value="1">One</option>-->
+                            th:utext="${wallet.getStringFromPubKey()}"></option>
+                    <!--                    <option th:remove="option" value="1">One</option>-->
                 </select>
             </div>
         </div>
         <div class="form-row align-items-center">
-                    <div class="col-auto my-1">
-                        <div class="custom-control custom-checkbox mr-sm-2">
-                            <input type="checkbox" class="custom-control-input" id="customControlAutosizing">
-                            <label class="custom-control-label" for="customControlAutosizing">Remember my preference</label>
-                        </div>
-                    </div>
+            <div class="col-auto my-1">
+                <div class="custom-control custom-checkbox mr-sm-2">
+                    <input type="checkbox" class="custom-control-input" id="customControlAutosizing">
+                    <label class="custom-control-label" for="customControlAutosizing">Remember my preference</label>
+                </div>
+            </div>
             <div class="col-auto my-2">
                 <button type="submit" class="btn btn-primary">Submit</button>
             </div>

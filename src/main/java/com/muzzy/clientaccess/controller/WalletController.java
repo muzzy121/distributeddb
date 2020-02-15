@@ -10,7 +10,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.view.RedirectView;
 
 import java.math.BigDecimal;
 
@@ -28,13 +27,16 @@ public class WalletController {
     }
 
     @RequestMapping(value = "/wallets", method = RequestMethod.GET)
-    public String getWallets(Model model){
+    public String getWallets(Model model) {
         model.addAttribute("wallets", walletMapService.getAll());
         return "wallet/index";
     }
+
     @RequestMapping(value = "/wallets/detail", method = RequestMethod.POST)
-    public String getWalletDetail(@RequestParam(value = "id", required = false)String id , Model model){
-        if(id.equals(null) || id.equals("Choose...")) { return "redirect:/wallets"; }
+    public String getWalletDetail(@RequestParam(value = "id", required = false) String id, Model model) {
+        if (id == null || id.equals("Choose...")) {
+            return "redirect:/wallets";
+        }
 
         LOG.info(id);
         Wallet wallet = walletMapService.getById(id);

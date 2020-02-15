@@ -17,7 +17,7 @@ public class Wallet {
     private PrivateKey privateKey;
     private PublicKey publicKey;
 
-    public Wallet(){
+    public Wallet() {
         generateKeyPair();
     }
 
@@ -37,6 +37,7 @@ public class Wallet {
     public String getStringFromPubKey() {
         return Base64.getEncoder().encodeToString(publicKey.getEncoded());
     }
+
     public String getStringFromPrvKey() {
         return Base64.getEncoder().encodeToString(privateKey.getEncoded());
     }

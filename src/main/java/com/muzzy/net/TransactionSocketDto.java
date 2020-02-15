@@ -18,7 +18,7 @@ public class TransactionSocketDto implements Serializable, Sendable {
     private static Long id = 0L;
 
     public TransactionSocketDto() {
-        this.id = id +1L;
+        this.id = id + 1L;
     }
 
     @Override
@@ -31,13 +31,15 @@ public class TransactionSocketDto implements Serializable, Sendable {
 
     }
 
-    public void addTransaction(Transaction t){
+    public void addTransaction(Transaction t) {
         transactions.add(t);
     }
-    public void addTransaction(Set<Transaction> tSet){
-        tSet.forEach(transactions::add);
+
+    public void addTransaction(Set<Transaction> tSet) {
+        transactions.addAll(tSet);
     }
-    public void addTransaction(List<Transaction> tList){
+
+    public void addTransaction(List<Transaction> tList) {
         transactions.addAll(tList);
     }
 }

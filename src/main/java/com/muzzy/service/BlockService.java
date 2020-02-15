@@ -9,9 +9,12 @@ import org.springframework.stereotype.Service;
  * 14.01.2020
  */
 @Service
-public interface BlockService extends CrudService<Block,String> {
+public interface BlockService extends CrudService<Block, String> {
     Block getLastBlock();
+
     Transaction getTransactionFromBlockById(String id);
+
     Block getBlockWithTransaction(String id);
+
     String getChainHash();
 }
