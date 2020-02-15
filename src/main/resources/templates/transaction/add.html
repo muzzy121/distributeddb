@@ -28,7 +28,7 @@
         </div>
         <div class="form-group">
             <label for="exampleFormControlInput1">Value</label>
-            <input type="number" th:field="*{value}" class="form-control" id="exampleFormControlInput2" placeholder="Value">
+            <input type="number" step="0.1" th:field="*{value}" class="form-control" id="exampleFormControlInput2" placeholder="Value">
         </div>
         <div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('value')}" th:errors="*{value}">Error</div>
         <div class="form-group">
