@@ -5,6 +5,7 @@ import com.muzzy.domain.Transaction;
 import com.muzzy.service.BlockService;
 import org.springframework.stereotype.Service;
 
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Objects;
 
@@ -72,13 +73,14 @@ public class BlockMapService extends AbstractBlockMapService<Block, String> impl
 
     @Override
     public LinkedHashSet<Block> getBlocksAfter(String id) {
-        LinkedHashSet<Block> tempBlocks = new LinkedHashSet<>();
-        tempBlocks.forEach(block -> {
-            if(block.getHash().equals(id)){
-              return;
-            };
+        LinkedHashSet<Block> tempBlocks = getAll();
+        LinkedHashSet<Block> temp = getAll();
+        for (Block block : temp) {
             tempBlocks.remove(block);
-        });
+            if (block.getHash().equals(id)) {
+                break;
+            }
+        }
         return tempBlocks;
     }
 

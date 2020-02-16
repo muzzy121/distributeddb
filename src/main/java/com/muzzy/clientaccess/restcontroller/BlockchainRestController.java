@@ -27,14 +27,15 @@ public class BlockchainRestController {
     public String getCurrentBlock() {
         return blockMapService.getLastBlock().getHash();
     }
+
     @RequestMapping(value = "/block/all", method = RequestMethod.GET)
     public LinkedHashSet<Block> getAllBlocks(){
         return blockMapService.getAll();
     }
-    @RequestMapping(value = "/block/allafter/{hash}",method = RequestMethod.GET)
-    public LinkedHashSet<Block> getAllFrom(@PathVariable("hash") String hash){
 
-        return getAllBlocks();
+    @RequestMapping(value = "/block/allafter/{hash}", method = RequestMethod.GET)
+    public LinkedHashSet<Block> getAllFrom(@PathVariable("hash") String hash){
+        return blockMapService.getBlocksAfter(hash);
     }
 
 }

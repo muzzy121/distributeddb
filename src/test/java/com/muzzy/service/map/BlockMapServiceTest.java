@@ -98,4 +98,29 @@ class BlockMapServiceTest {
         assertNotNull(blockMapService.getBlockWithTransaction("1"));
         assertEquals("1", blockMapService.getBlockWithTransaction("1").getHash());
     }
+
+    @Test
+    void givenAllBlocks_whenGetBlocksAfter_thenGetLastFromTheOne() {
+        //Add to new blocks
+        Block newBlock = new BlockVerified();
+        newBlock.setHash("2");
+        newBlock.setPreviousHash("1");
+        Set<Transaction> transactions = new HashSet<>();
+        transactions.add(new Transaction().builder().transactionId("1").build());
+        newBlock.setTransactions(transactions);
+        blockMapService.save(newBlock);
+
+        Block newBlock2 = new BlockVerified();
+        newBlock.setHash("3");
+        newBlock.setPreviousHash("2");
+        Set<Transaction> transactions2 = new HashSet<>();
+        transactions2.add(new Transaction().builder().transactionId("2").build());
+        newBlock2.setTransactions(transactions2);
+        blockMapService.save(newBlock2);
+
+        //Should return only one element
+        assertEquals(1, blockMapService.getBlocksAfter(newBlock.getHash()).size());
+        //Should return two elements
+        assertEquals(2, blockMapService.getBlocksAfter("1").size());
+    }
 }
