@@ -13,8 +13,9 @@ import java.util.Set;
 import static org.junit.jupiter.api.Assertions.*;
 
 class BlockMapServiceTest {
-    BlockMapService blockMapService;
-    Block block;
+
+    private BlockMapService blockMapService;
+    private Block block;
 
     @BeforeEach
     void setUp() {

@@ -22,7 +22,7 @@ public class Miner implements Runnable {
     private Block block;
     private String hash = "999999999";
     private static String hashTmp = "";
-    private static boolean mining = true;
+    public static boolean mining = true;
     private static long lag = 0L;
     private String previousHash;
 
@@ -97,6 +97,9 @@ public class Miner implements Runnable {
                 transactionTemporarySet.cleanAll();
             }
             return block;
-        } else return null;
+        } else {
+            LOG.info("Stopped by REST API");
+            return null;
+        }
     }
 }
