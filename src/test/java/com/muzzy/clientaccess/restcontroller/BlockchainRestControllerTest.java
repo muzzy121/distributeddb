@@ -101,7 +101,7 @@ class BlockchainRestControllerTest {
                 .content(jsonObject);
         MvcResult mvcResult = mockMvc.perform(requestBuilder)
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("[*]",Matchers.nullValue()))
+                .andExpect(content().string(""))  //Null content
                 .andReturn();
         System.out.println(mvcResult.getResponse().getContentAsString());
 
