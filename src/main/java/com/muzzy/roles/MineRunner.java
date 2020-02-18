@@ -44,8 +44,6 @@ public class MineRunner implements Callable<Integer> {
     }
 
     public void mining() {
-
-
         long i = 0;
         notMined = false;
         executorService = Executors.newFixedThreadPool(2);

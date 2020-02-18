@@ -9,14 +9,14 @@ import org.springframework.context.annotation.Configuration;
 import java.util.ArrayList;
 import java.util.List;
 
+@Getter
+@Setter
 @Configuration
 @EnableConfigurationProperties
 @ConfigurationProperties(prefix = "develop")
-@Getter
-@Setter
 public class ConfigLoader {
     private List<String> addresses = new ArrayList<>();
     private Integer port;
     private Integer serverport;
-    private String stop_mining;
+    private RestApiConfig api;
 }

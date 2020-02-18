@@ -1,9 +1,12 @@
 package com.muzzy.net.api;
 
 import com.muzzy.configuration.ConfigLoader;
+import com.muzzy.configuration.RestApiConfig;
+import com.muzzy.configuration.RestTemplateConfig;
 import com.muzzy.net.commands.StopMsg;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.http.HttpEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
@@ -14,43 +17,22 @@ public class RESTApiControl {
 
     private RestTemplate restTemplate;
     private final ConfigLoader configLoader;
+    private final RestTemplateConfig restTemplateConfig;
 
-    public RESTApiControl(ConfigLoader configLoader) {
+    public RESTApiControl(ConfigLoader configLoader, RestTemplateConfig restTemplateConfig) {
         this.configLoader = configLoader;
+        this.restTemplateConfig = restTemplateConfig;
     }
-    public void brakeMiningOnAllNodes(){
-        StopMsg stopMsg = new StopMsg("1234");
-        configLoader.getAddresses().forEach(address -> restTemplate.postForLocation(address + configLoader.getStop_mining(), stopMsg));
+    public void brakeMiningOnAllNodes(String blockHash){
+        restTemplate = new RestTemplate(restTemplateConfig.getHttpRequestFactory());
+        RestApiConfig restApiConfig = configLoader.getApi();
+        HttpEntity<StopMsg> request = new HttpEntity<>(new StopMsg(blockHash));
+
+        for (String address : configLoader.getAddresses()) {
+            String url = "http://" + address + ":" + restApiConfig.getDstPort() + restApiConfig.getStopEndpoint();
+            System.out.println("Sending stop to: " + url);
+            restTemplate.postForLocation(url, request);
+        }
     }
 }
 
-
-
-//
-//        HttpEntity<Foo> request = new HttpEntity<>(new Foo("bar"));
-//        Foo foo = restTemplate.postForObject(fooResourceUrl, request, Foo.class);
-//        assertThat(foo, notNullValue());
-//        assertThat(foo.getName(), is("bar"));
-//
-//        5.2. The postForLocation API
-//        Similarly, let's have a look at the operation that – instead of returning the full Resource, just returns the Location of that newly created Resource:
-//
-//        HttpEntity<Foo> request = new HttpEntity<>(new Foo("bar"));
-//        URI location = restTemplate
-//        .postForLocation(fooResourceUrl, request);
-//        assertThat(location, notNullValue());
-//        5.3. The exchange API
-//        Let's have a look at how to do a POST with the more generic exchange API:
-//
-//
-//        RestTemplate restTemplate = new RestTemplate();
-//        HttpEntity<Foo> request = new HttpEntity<>(new Foo("bar"));
-//        ResponseEntity<Foo> response = restTemplate
-//        .exchange(fooResourceUrl, HttpMethod.POST, request, Foo.class);
-//
-//        assertThat(response.getStatusCode(), is(HttpStatus.CREATED));
-//
-//        Foo foo = response.getBody();
-//
-//        assertThat(foo, notNullValue());
-//        assertThat(foo.getName(), is("bar"));

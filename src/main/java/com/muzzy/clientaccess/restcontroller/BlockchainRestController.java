@@ -84,6 +84,8 @@ public class BlockchainRestController {
     }
     @RequestMapping(value = "/block/mining/stop", consumes = JSON, method = RequestMethod.POST)
     public void stopMining(@RequestBody StopMsg stopMsg){
+        System.out.println();
+        LOG.info("Hash come: "+stopMsg.getSecret());
         Miner.mining = false;
     }
 }

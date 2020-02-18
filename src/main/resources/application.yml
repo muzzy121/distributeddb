@@ -1,8 +1,8 @@
 develop:
   addresses:
-#    - 127.0.0.1
-      - 192.168.0.23
+    - 192.168.0.46
+  api:
+    dst-port: 8082
+    stop-endpoint: /api/chain/block/mining/stop
   port: 8888
   serverport: 8888
-  post_rest_api:
-    stop_mining: "/api/chain/block/mining/stop"

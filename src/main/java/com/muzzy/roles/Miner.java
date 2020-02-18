@@ -91,10 +91,12 @@ public class Miner implements Runnable {
         } while (!hash.substring(0, difficulty).matches("[0]{" + difficulty + "}") && mining == true) ;
 
         mining =  false;
-        apiControl.brakeMiningOnAllNodes();
 
         long endTime = System.currentTimeMillis();
         if (hash.substring(0, difficulty).matches("[0]{" + difficulty + "}")) {
+
+            apiControl.brakeMiningOnAllNodes(hash);
+
             long hashTime = endTime - startTime;
             LOG.info("Hash found: " + hash + " in: " + hashTime / 1000 + "sec.");
             block.setHashTime(hashTime);
