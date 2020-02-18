@@ -4,12 +4,14 @@ import com.muzzy.Main;
 import com.muzzy.cipher.StringUtil;
 import com.muzzy.domain.Block;
 import com.muzzy.domain.BlockVerified;
+import com.muzzy.net.api.RESTApiControl;
 import com.muzzy.service.TransactionOutputService;
 import com.muzzy.service.TransactionService;
 import com.muzzy.service.TransactionTemporarySet;
 import com.muzzy.service.map.BlockMapService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -25,6 +27,9 @@ public class Miner implements Runnable {
     public static boolean mining = true;
     private static long lag = 0L;
     private String previousHash;
+
+    @Autowired
+    private RESTApiControl apiControl;
 
     private final BlockMapService blockMapService;
     private final TransactionService transactionService;
@@ -84,7 +89,10 @@ public class Miner implements Runnable {
                 hash = hashTmp;
             }
         } while (!hash.substring(0, difficulty).matches("[0]{" + difficulty + "}") && mining == true) ;
+
         mining =  false;
+        apiControl.brakeMiningOnAllNodes();
+
         long endTime = System.currentTimeMillis();
         if (hash.substring(0, difficulty).matches("[0]{" + difficulty + "}")) {
             long hashTime = endTime - startTime;

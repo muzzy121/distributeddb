@@ -18,4 +18,5 @@ public class ConfigLoader {
     private List<String> addresses = new ArrayList<>();
     private Integer port;
     private Integer serverport;
+    private String stop_mining;
 }
