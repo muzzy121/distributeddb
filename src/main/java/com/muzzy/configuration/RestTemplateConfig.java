@@ -1,39 +1,36 @@
 package com.muzzy.configuration;
 
-import lombok.Getter;
-import lombok.Setter;
+import org.apache.http.client.config.RequestConfig;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.ClientHttpRequestFactory;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
-import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
 
-@Getter
-@Setter
-@Component
+@Configuration
 public class RestTemplateConfig {
-    private ClientHttpRequestFactory httpRequestFactory;
 
-    private RestTemplateConfig(){
-        this.httpRequestFactory = getClientHttpRequestFactory();
-    }
-    private ClientHttpRequestFactory getClientHttpRequestFactory() {
-        int timeout = 2;
-        HttpComponentsClientHttpRequestFactory clientHttpRequestFactory
-                = new HttpComponentsClientHttpRequestFactory();
-        clientHttpRequestFactory.setConnectTimeout(timeout);
-        return clientHttpRequestFactory;
+    //    private final int TIMEOUT = (int) TimeUnit.SECONDS.toMillis(10);
+    private final int TIMEOUT = 1;
+
+    @Bean
+    public RestTemplate restTemplate() {
+        return new RestTemplate(getRequestFactoryAdvanced());
     }
 
-//    private ClientHttpRequestFactory getClientHttpRequestFactory() {
-//        int timeout = 5;
-//        RequestConfig config = RequestConfig.custom()
-//                .setConnectTimeout(timeout)
-//                .setConnectionRequestTimeout(timeout)
-//                .setSocketTimeout(timeout)
-//                .build();
-//        CloseableHttpClient client = HttpClientBuilder
-//                .create()
-//                .setDefaultRequestConfig(config)
-//                .build();
-//        return new HttpComponentsClientHttpRequestFactory(client);
-//    }
+    private ClientHttpRequestFactory getRequestFactoryAdvanced() {
+        RequestConfig config = RequestConfig.custom()
+                .setSocketTimeout(TIMEOUT)
+                .setConnectTimeout(TIMEOUT)
+                .setConnectionRequestTimeout(TIMEOUT)
+                .build();
+
+        CloseableHttpClient client = HttpClients.custom()
+                .setDefaultRequestConfig(config)
+                .build();
+
+        return new HttpComponentsClientHttpRequestFactory(client);
+    }
 }

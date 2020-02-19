@@ -57,6 +57,8 @@ public class BlockchainRestController {
     public BlockDto addBlockToChain(@RequestBody BlockDto blockDto){
         Block block = blockMapService.getLastBlock();
 
+
+
         if(!block.getHash().equals(blockDto.getPreviousHash())){
             LOG.error("Bad previousHash code");
             return null;

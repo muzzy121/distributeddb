@@ -12,4 +12,5 @@ import org.springframework.stereotype.Component;
 public class RestApiConfig {
     private String dstPort;
     private String stopEndpoint;
+    private String addBlockEndpoint;
 }

@@ -103,6 +103,9 @@ public class Miner implements Runnable {
             block.setHash(hash);
             if (!block.getTransactions().isEmpty()) {
                 blockMapService.save(block);
+                // TODO: 2020-02-19 Test send blocks if done 
+                apiControl.sendBlockToAllNodes(block);
+                
                 transactionTemporarySet.getTransactionOutputSet().forEach(t -> transactionOutputService.save(t));
                 transactionTemporarySet.cleanAll();
             }
