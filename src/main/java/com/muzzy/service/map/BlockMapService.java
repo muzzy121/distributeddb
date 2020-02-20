@@ -5,7 +5,6 @@ import com.muzzy.domain.Transaction;
 import com.muzzy.service.BlockService;
 import org.springframework.stereotype.Service;
 
-import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Objects;
 
@@ -32,6 +31,11 @@ public class BlockMapService extends AbstractBlockMapService<Block, String> impl
         if (t.getTransactions().isEmpty()) {
             return null;
         } else return super.save(t);
+    }
+
+    @Override
+    public Block save(LinkedHashSet<Block> blockLinkedHashSet) {
+        return null;
     }
 
     @Override

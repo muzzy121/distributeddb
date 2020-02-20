@@ -16,4 +16,5 @@ public interface BlockService extends CrudService<Block,String> {
     Transaction getTransactionFromBlockById(String id);
     Block getBlockWithTransaction(String id);
     LinkedHashSet<Block> getBlocksAfter(String id);
+    Block save(LinkedHashSet<Block> blockLinkedHashSet);
 }
