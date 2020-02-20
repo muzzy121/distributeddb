@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
-import java.security.PublicKey;
 import java.util.ArrayList;
 
 @Setter
@@ -13,8 +12,8 @@ import java.util.ArrayList;
 public class AncestorTransaction extends Transaction {
 
     @Builder(builderMethodName = "childBuilder")
-    public AncestorTransaction(PublicKey sender, PublicKey reciever, BigDecimal value, ArrayList<TransactionInput> inputs, ArrayList<TransactionOutput> outputs, String transactionId) {
-        super(sender, reciever, value, inputs, outputs, transactionId);
+    public AncestorTransaction(String sender, String receiver, BigDecimal value, ArrayList<TransactionInput> inputs, ArrayList<TransactionOutput> outputs, String transactionId) {
+        super(sender, receiver, value, inputs, outputs, transactionId);
     }
 
 }

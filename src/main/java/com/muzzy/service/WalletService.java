@@ -9,11 +9,10 @@ package com.muzzy.service;
 import com.muzzy.domain.Wallet;
 import org.springframework.stereotype.Component;
 
-import java.security.PublicKey;
 import java.util.Set;
 
 @Component
 public interface WalletService extends CrudService<Wallet, String> {
-    Set<Wallet> getAllExceptId(PublicKey publicKey);
+    Set<Wallet> getAllExceptId(String publicKey);
     Set<String> getAllKeys();
 }

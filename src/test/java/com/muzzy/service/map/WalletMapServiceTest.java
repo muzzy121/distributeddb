@@ -1,22 +1,17 @@
 package com.muzzy.service.map;
 
 import com.muzzy.domain.Wallet;
-import org.junit.jupiter.api.*;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.security.PrivateKey;
-import java.security.PublicKey;
-import java.util.Base64;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class WalletMapServiceTest {
     WalletMapService walletMapService;
-    PrivateKey privateKey;
-    PublicKey publicKey;
-    String stringFormatPublicKey;
+    String privateKey;
+    String publicKey;
 
 
     @BeforeEach
@@ -26,7 +21,6 @@ class WalletMapServiceTest {
         walletMapService.save(wallet);
         privateKey = wallet.getPrivateKey();
         publicKey = wallet.getPublicKey();
-        this.stringFormatPublicKey = Base64.getEncoder().encodeToString(publicKey.getEncoded());
     }
 
     @Test
@@ -37,14 +31,14 @@ class WalletMapServiceTest {
 
     @Test
     void deleteById() {
-        walletMapService.deleteById(stringFormatPublicKey);
+        walletMapService.deleteById(publicKey);
         Set<Wallet> all = walletMapService.getAll();
         assertEquals(0, all.size());
     }
 
     @Test
     void delete() {
-        walletMapService.delete(walletMapService.findById(stringFormatPublicKey));
+        walletMapService.delete(walletMapService.findById(publicKey));
         Set<Wallet> all = walletMapService.getAll();
     }
 
@@ -56,7 +50,7 @@ class WalletMapServiceTest {
 
     @Test
     void getById() {
-        Wallet result = walletMapService.getById(stringFormatPublicKey);
+        Wallet result = walletMapService.getById(publicKey);
         assertEquals(result.getPublicKey(),publicKey);
     }
 }

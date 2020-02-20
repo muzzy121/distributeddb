@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.security.PublicKey;
 import java.util.ArrayList;
 
 /**
@@ -26,8 +25,8 @@ public class Transaction implements Serializable {
     private static final long serialVersionUID = SerialVersionUIDContainer.TRANSACTION_SVUID;
 
     private String transactionId;
-    private PublicKey sender;
-    private PublicKey receiver;
+    private String sender;
+    private String receiver;
     private BigDecimal value;
     private byte[] signature;
     private ArrayList<TransactionInput> inputs;
@@ -37,7 +36,7 @@ public class Transaction implements Serializable {
     private TransactionOutputService transactionOutputService;
 
     @Builder
-    public Transaction(PublicKey sender, PublicKey receiver, BigDecimal value, ArrayList<TransactionInput> inputs, ArrayList<TransactionOutput> outputs, String transactionId) {
+    public Transaction(String sender, String receiver, BigDecimal value, ArrayList<TransactionInput> inputs, ArrayList<TransactionOutput> outputs, String transactionId) {
         this.sender = sender;
         this.receiver = receiver;
         this.value = value;

@@ -13,12 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
-import java.security.PrivateKey;
-import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Component
 public class TransactionFactory {
@@ -33,7 +30,7 @@ public class TransactionFactory {
         this.transactionTemporarySet = transactionTemporarySet;
     }
 
-    public Transaction getTransaction(PrivateKey privateKey, PublicKey sender, PublicKey receiver, BigDecimal value) {
+    public Transaction getTransaction(String privateKey, String sender, String receiver, BigDecimal value) {
         /**
          * Ten early exit także trzeba obgadać, chyba że poszukać transakcji która pozwoli zapłacić z całości!?
          * Co będzie wydajniejsze - czy lepiej eliminować małe transackcje z UTXO, czy lepiej wydawać z jednego inputa
@@ -89,8 +86,8 @@ public class TransactionFactory {
      */
     private String calculateHash() {
         return StringUtil.applySha256(
-                StringUtil.getStringFromKey(transaction.getSender()) +
-                        StringUtil.getStringFromKey(transaction.getReceiver()) +
+                transaction.getSender() +
+                        transaction.getReceiver() +
                         transaction.getValue()
         );
     }
@@ -100,9 +97,9 @@ public class TransactionFactory {
      *
      * @param privateKey
      */
-    public byte[] generateSignature(PrivateKey privateKey) {
+    public byte[] generateSignature(String privateKey) {
         // TODO: 2020-01-23 Czy sygnatura nie powinna być z datą? Może dodać Pole daty do transakcji, jej utworzenia
-        String data = StringUtil.getStringFromKey(transaction.getSender()) + StringUtil.getStringFromKey(transaction.getReceiver()) + transaction.getValue();
+        String data = transaction.getSender() + transaction.getReceiver() + transaction.getValue();
         return Validation.confirm(privateKey, data);
     }
 
@@ -112,7 +109,7 @@ public class TransactionFactory {
      * @return boolean
      */
     public boolean verifiySignature() {
-        String data = StringUtil.getStringFromKey(transaction.getSender()) + StringUtil.getStringFromKey(transaction.getReceiver()) + transaction.getValue();
+        String data = transaction.getSender() + transaction.getReceiver() + transaction.getValue();
         return Validation.verifySignature(transaction.getSender(), data, transaction.getSignature());
     }
     /**

@@ -9,8 +9,6 @@ import lombok.Setter;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.security.PublicKey;
-import java.util.Comparator;
 
 @Getter
 @Setter
@@ -22,19 +20,19 @@ public class TransactionOutput implements Comparable<TransactionOutput>, Seriali
 
 
     private String id;
-    private PublicKey receiver;
+    private String receiver;
     private BigDecimal value;
     private String parentTransactionId;
 
 
-    public TransactionOutput(PublicKey receiver, BigDecimal value, String parentTransactionId) {
+    public TransactionOutput(String receiver, BigDecimal value, String parentTransactionId) {
         this.receiver = receiver;
         this.value = value;
         this.parentTransactionId = parentTransactionId;
-        this.id = StringUtil.applySha256(StringUtil.getStringFromKey(receiver)+ value +parentTransactionId);
+        this.id = StringUtil.applySha256(receiver + value +parentTransactionId);
     }
 
-    public boolean isMine(PublicKey publicKey) {
+    public boolean isMine(String publicKey) {
         return publicKey == receiver;
     }
 

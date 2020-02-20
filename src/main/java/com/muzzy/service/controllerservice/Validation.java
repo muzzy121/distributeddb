@@ -1,19 +1,17 @@
 package com.muzzy.service.controllerservice;
 
 
-import java.security.PrivateKey;
-import java.security.PublicKey;
+import com.muzzy.cipher.StringUtil;
+
 import java.security.Signature;
-import java.util.ArrayList;
-import java.util.HashMap;
 
 public class Validation {
 
-    public static byte[] confirm(PrivateKey privateKey, String input) {
+    public static byte[] confirm(String privateKey, String input) {
         byte[] output;
         try {
             Signature confirmation = Signature.getInstance("SHA256withRSA");
-            confirmation.initSign(privateKey);
+            confirmation.initSign(StringUtil.getPrvKeyFromString(privateKey));
             byte[] strByte = input.getBytes();
             confirmation.update(strByte);
             output = confirmation.sign();
@@ -23,10 +21,10 @@ public class Validation {
         }
     }
 
-    public static boolean verifySignature(PublicKey publicKey, String data, byte[] signature) {
+    public static boolean verifySignature(String publicKey, String data, byte[] signature) {
         try {
             Signature verify = Signature.getInstance("SHA256withRSA");
-            verify.initVerify(publicKey);
+            verify.initVerify(StringUtil.getPubKeyFromString(publicKey));
             verify.update(data.getBytes());
             return verify.verify(signature);
         } catch (Exception e) {

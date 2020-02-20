@@ -1,6 +1,5 @@
 package com.muzzy.service.map;
 
-import com.muzzy.cipher.StringUtil;
 import com.muzzy.domain.Wallet;
 
 import java.util.HashMap;
@@ -24,8 +23,8 @@ public abstract class AbstractWalletMapService<T extends Wallet, ID extends Stri
     }
 
     T save(T object) {
-        map.put(StringUtil.getStringFromKey(object.getPublicKey()), object);
-        return map.get(StringUtil.getStringFromKey(object.getPublicKey()));
+        map.put(object.getPublicKey(), object);
+        return map.get(object.getPublicKey());
     }
 
     void deleteById(ID id) {
