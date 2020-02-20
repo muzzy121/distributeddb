@@ -21,7 +21,7 @@ public class Miner implements Runnable {
     private static final Logger LOG = LoggerFactory.getLogger(Miner.class);
     private String tNumber = "";
     private int DIFFICULTY = 5;
-    private Block block;
+    private BlockVerified block;
     private String hash = "999999999";
     private static String hashTmp = "";
     public static boolean mining = true;

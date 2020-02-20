@@ -1,6 +1,7 @@
 package com.muzzy.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.muzzy.cipher.StringUtil;
 import com.muzzy.domain.spsfl.SerialVersionUIDContainer;
 import com.muzzy.service.TransactionOutputService;
 import lombok.Builder;
@@ -11,7 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
+import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
 
 /**
@@ -21,7 +24,7 @@ import java.util.ArrayList;
 
 @Getter
 @Setter
-@NoArgsConstructor
+    @NoArgsConstructor
 @JsonIgnoreProperties({"receiverKey","senderKey"})
 public class Transaction implements Serializable {
 
@@ -50,6 +53,13 @@ public class Transaction implements Serializable {
     public String getReceiver(){
         return this.receiver.toString();
     }
+    public void setSender(String sender) throws InvalidKeySpecException, NoSuchAlgorithmException {
+        this.sender = StringUtil.getPubKeyFromString(sender);
+    }
+    public void setReceiver(String receiver) throws InvalidKeySpecException, NoSuchAlgorithmException {
+        this.receiver = StringUtil.getPubKeyFromString(receiver);
+    }
+
 
     @Builder
     public Transaction(PublicKey sender, PublicKey receiver, BigDecimal value, ArrayList<TransactionInput> inputs, ArrayList<TransactionOutput> outputs, String transactionId) {

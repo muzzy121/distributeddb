@@ -17,6 +17,7 @@ public class Wallet {
     private PrivateKey privateKey;
     private PublicKey publicKey;
 
+
     public Wallet(){
         generateKeyPair();
     }

@@ -33,7 +33,7 @@ public class StringUtil {
     }
 
 
-    public PublicKey getPubKeyFromString(String stringFromPublicKey) throws NoSuchAlgorithmException, InvalidKeySpecException {
+    public static PublicKey getPubKeyFromString(String stringFromPublicKey) throws NoSuchAlgorithmException, InvalidKeySpecException {
         byte[] publicKeyData = Base64.getDecoder().decode(stringFromPublicKey);
         X509EncodedKeySpec spec = new X509EncodedKeySpec(publicKeyData);
         KeyFactory kf = KeyFactory.getInstance("RSA");

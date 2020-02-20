@@ -2,7 +2,7 @@ package com.muzzy.clientaccess.restcontroller;
 
 import com.muzzy.cipher.StringUtil;
 import com.muzzy.domain.Block;
-import com.muzzy.dto.BlockDto;
+import com.muzzy.domain.BlockVerified;
 import com.muzzy.net.commands.StopMsg;
 import com.muzzy.roles.Miner;
 import com.muzzy.service.TransactionOutputService;
@@ -54,7 +54,7 @@ public class BlockchainRestController {
     }
 
     @RequestMapping(value = "/block/add", method = RequestMethod.POST, consumes = JSON)
-    public BlockDto addBlockToChain(@RequestBody BlockDto blockDto){
+    public Block addBlockToChain(@RequestBody BlockVerified blockDto){
         Block block = blockMapService.getLastBlock();
 
 
