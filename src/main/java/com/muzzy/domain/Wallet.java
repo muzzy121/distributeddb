@@ -4,10 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.stereotype.Component;
 
-import java.security.KeyPair;
-import java.security.KeyPairGenerator;
-import java.security.PrivateKey;
-import java.security.PublicKey;
+import java.security.*;
 import java.util.Base64;
 
 @Getter
@@ -17,6 +14,26 @@ public class Wallet {
     private PrivateKey privateKey;
     private PublicKey publicKey;
 
+    private String encodedPrivateKey;
+    private String encodedPublicKey;
+
+    public String getPrivateKey() {
+        return encodedPrivateKey;
+    }
+
+    public Wallet setPrivateKey(PrivateKey privateKey) {
+        this.privateKey = privateKey;
+        return this;
+    }
+
+    public String getPublicKey() {
+        return encodedPublicKey;
+    }
+
+    public Wallet setPublicKey(PublicKey publicKey) {
+        this.publicKey = publicKey;
+        return this;
+    }
 
     public Wallet(){
         generateKeyPair();
@@ -29,6 +46,9 @@ public class Wallet {
             KeyPair keyPair = keyGen.generateKeyPair();
             privateKey = keyPair.getPrivate();
             publicKey = keyPair.getPublic();
+            encodedPrivateKey = getStringFromKey(privateKey);
+            encodedPublicKey = getStringFromKey(publicKey);
+
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -40,6 +60,10 @@ public class Wallet {
     }
     public String getStringFromPrvKey() {
         return Base64.getEncoder().encodeToString(privateKey.getEncoded());
+    }
+
+    public String getStringFromKey(Key key) {
+        return Base64.getEncoder().encodeToString(key.getEncoded());
     }
 
     @Override

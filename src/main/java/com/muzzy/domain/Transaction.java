@@ -1,7 +1,5 @@
 package com.muzzy.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.muzzy.cipher.StringUtil;
 import com.muzzy.domain.spsfl.SerialVersionUIDContainer;
 import com.muzzy.service.TransactionOutputService;
 import lombok.Builder;
@@ -24,15 +22,15 @@ import java.util.ArrayList;
 
 @Getter
 @Setter
-    @NoArgsConstructor
+@NoArgsConstructor
 @JsonIgnoreProperties({"receiverKey","senderKey"})
 public class Transaction implements Serializable {
 
     private static final long serialVersionUID = SerialVersionUIDContainer.TRANSACTION_SVUID;
 
     private String transactionId;
-    private PublicKey sender;
-    private PublicKey receiver;
+    private String sender;
+    private String receiver;
     private BigDecimal value;
     private byte[] signature;
     private ArrayList<TransactionInput> inputs;
@@ -41,28 +39,8 @@ public class Transaction implements Serializable {
     @Autowired
     private TransactionOutputService transactionOutputService;
 
-    public PublicKey getSenderKey(){
-        return this.sender;
-    }
-    public PublicKey getReceiverKey(){
-        return this.receiver;
-    }
-    public String getSender(){
-        return this.sender.toString();
-    }
-    public String getReceiver(){
-        return this.receiver.toString();
-    }
-    public void setSender(String sender) throws InvalidKeySpecException, NoSuchAlgorithmException {
-        this.sender = StringUtil.getPubKeyFromString(sender);
-    }
-    public void setReceiver(String receiver) throws InvalidKeySpecException, NoSuchAlgorithmException {
-        this.receiver = StringUtil.getPubKeyFromString(receiver);
-    }
-
-
     @Builder
-    public Transaction(PublicKey sender, PublicKey receiver, BigDecimal value, ArrayList<TransactionInput> inputs, ArrayList<TransactionOutput> outputs, String transactionId) {
+    public Transaction(String sender, String receiver, BigDecimal value, ArrayList<TransactionInput> inputs, ArrayList<TransactionOutput> outputs, String transactionId) {
         this.sender = sender;
         this.receiver = receiver;
         this.value = value;

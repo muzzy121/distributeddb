@@ -42,7 +42,7 @@ public class WalletMapService extends AbstractWalletMapService<Wallet, String> i
     }
 
     @Override
-    public Set<Wallet> getAllExceptId(PublicKey publicKey) {
+    public Set<Wallet> getAllExceptId(String publicKey) {
         return getAll().stream().filter(wallet -> !wallet.getPublicKey().equals(publicKey)).collect(Collectors.toSet());
     }
 }

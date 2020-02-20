@@ -7,16 +7,14 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import java.math.BigDecimal;
-import java.security.PublicKey;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class TransactionOutputMapServiceTest {
     TransactionOutputMapService transactionOutputMapService;
     TransactionOutput transactionOutput;
-    PublicKey mockPublicKey;
-    PublicKey publicKey;
+    String mockPublicKey;
 
     @BeforeEach
     void setUp() {
@@ -32,7 +30,7 @@ class TransactionOutputMapServiceTest {
 //                .thenReturn(transactionOutputMapService.getAll());
 
         // ---- For getBalance
-        mockPublicKey = Mockito.any(PublicKey.class);
+        mockPublicKey = Mockito.anyString();
     }
 
     @Test

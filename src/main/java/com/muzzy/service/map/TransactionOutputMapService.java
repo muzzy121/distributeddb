@@ -5,7 +5,6 @@ import com.muzzy.service.TransactionOutputService;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.security.PublicKey;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -55,13 +54,13 @@ public class TransactionOutputMapService extends AbstractTransactionOutputMapSer
     }
 
     @Override
-    public Set<TransactionOutput> getTransctionByReciever(PublicKey publicKey) {
+    public Set<TransactionOutput> getTransctionByReciever(String publicKey) {
         Set<TransactionOutput> transactionOutputs = getAll();
         return transactionOutputs.stream().filter(txos -> txos.getReceiverKey().equals(publicKey)).collect(Collectors.toSet());
     }
 
     @Override
-    public BigDecimal getBalance(PublicKey publicKey) {
+    public BigDecimal getBalance(String publicKey) {
         Set<TransactionOutput> transactionOutputSet = this.getAll();
         BigDecimal total = transactionOutputSet.stream()
                 .filter(utxo -> utxo.isMine(publicKey))
