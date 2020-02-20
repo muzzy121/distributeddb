@@ -1,5 +1,6 @@
 package com.muzzy.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.muzzy.domain.spsfl.SerialVersionUIDContainer;
 import com.muzzy.service.TransactionOutputService;
 import lombok.Builder;
@@ -10,9 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.security.NoSuchAlgorithmException;
-import java.security.PublicKey;
-import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
 
 /**
@@ -23,7 +21,7 @@ import java.util.ArrayList;
 @Getter
 @Setter
 @NoArgsConstructor
-@JsonIgnoreProperties({"receiverKey","senderKey"})
+@JsonIgnoreProperties({"transactionOutputService", "serialVersionUID"})
 public class Transaction implements Serializable {
 
     private static final long serialVersionUID = SerialVersionUIDContainer.TRANSACTION_SVUID;

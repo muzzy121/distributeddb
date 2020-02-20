@@ -1,11 +1,12 @@
 package com.muzzy.bootstrap;
 
-import com.muzzy.Main;
-import com.muzzy.domain.*;
-import com.muzzy.roles.Miner;
-import com.muzzy.roles.OutgoingNode;
-import com.muzzy.service.TransactionOutputService;
+import com.muzzy.domain.Block;
+import com.muzzy.domain.BlockVerified;
+import com.muzzy.domain.Transaction;
 import com.muzzy.domain.Wallet;
+import com.muzzy.net.api.RESTApiControl;
+import com.muzzy.roles.Miner;
+import com.muzzy.service.TransactionOutputService;
 import com.muzzy.service.TransactionTemporarySet;
 import com.muzzy.service.factory.AncestorTransactionFactory;
 import com.muzzy.service.factory.TransactionFactory;
@@ -14,13 +15,12 @@ import com.muzzy.service.map.WalletMapService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
-import org.springframework.core.task.TaskExecutor;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
+import java.util.LinkedHashSet;
 
 /**
  * Load simple data for Functional Tests
@@ -31,25 +31,23 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
     final static Logger LOG = LoggerFactory.getLogger(Bootstrap.class);
     final static int DIFFICULTY = 1;
 
-    private TaskExecutor taskExecutor;
-    @Autowired
-    private ApplicationContext context;
-
     private final BlockMapService blockMapService;
     private final WalletMapService walletMapService;
     private final TransactionFactory transactionFactory;
     private final AncestorTransactionFactory ancestorTransactionFactory;
     private final TransactionTemporarySet transactionTemporarySet;
     private final TransactionOutputService transactionOutputService;
+    private final RESTApiControl restApiControl;
 
     @Autowired
-    public Bootstrap(BlockMapService blockMapService, TransactionOutputService transactionOutputService, WalletMapService walletMapService, TransactionFactory transactionFactory, AncestorTransactionFactory ancestorTransactionFactory, TransactionTemporarySet transactionTemporarySet) {
+    public Bootstrap(BlockMapService blockMapService, TransactionOutputService transactionOutputService, WalletMapService walletMapService, TransactionFactory transactionFactory, AncestorTransactionFactory ancestorTransactionFactory, TransactionTemporarySet transactionTemporarySet, RESTApiControl restApiControl) {
         this.blockMapService = blockMapService;
         this.transactionOutputService = transactionOutputService;
         this.walletMapService = walletMapService;
         this.transactionFactory = transactionFactory;
         this.ancestorTransactionFactory = ancestorTransactionFactory;
         this.transactionTemporarySet = transactionTemporarySet;
+        this.restApiControl = restApiControl;
     }
 
     @Override
@@ -60,27 +58,38 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
         Wallet walletB = new Wallet();
         Wallet walletC = new Wallet();
 
-        Block genesis = new BlockVerified("0");
+
         Miner.getSystemInfo();
-        LOG.info("Creating and Mining first block... ");
+        //Download transactions
+        Block block = blockMapService.getLastBlock();
+        if (block != null) {
+            blockMapService.save(restApiControl.getBlocksFromNetwork(block.getHash()));
+        } else {
+            blockMapService.save(restApiControl.getBlocksFromNetwork());
+        }
 
+        if (blockMapService.getAll().size() == 0) {
+
+            Block genesis = new BlockVerified("0");
+            LOG.info("Creating and Mining first block... ");
 //------------------
-//        new AncestorTransaction().getAncestorTransaction(ancestorWallet, walletA.getPublicKey(), 100F);
+            Transaction ancestorTransaction = ancestorTransactionFactory.getAncestorTransaction(ancestorWallet, walletA.getPublicKey(), BigDecimal.valueOf(100));
 
-        Transaction ancestorTransaction = ancestorTransactionFactory.getAncestorTransaction(ancestorWallet, walletA.getPublicKey(), BigDecimal.valueOf(100) );
+            //Druga operacja w bloku przechodzi, bp zapisuje Wyjście z transakcji na UTXO! O tutaj :)
 
-        //Druga operacja w bloku przechodzi, bp zapisuje Wyjście z transakcji na UTXO! O tutaj :)
-        transactionOutputService.save(ancestorTransaction.getOutputs().get(0));
-        genesis.addTransaction(ancestorTransaction);
+            transactionOutputService.save(ancestorTransaction.getOutputs().get(0));
+            genesis.addTransaction(ancestorTransaction);
+            LOG.info("WalletA's balance before: " + transactionOutputService.getBalance(walletA.getPublicKey()));
+
+//            genesis.addTransaction(transactionFactory.getTransaction(walletA.getPrivateKey(), walletA.getPublicKey(), walletB.getPublicKey(), BigDecimal.valueOf(10F)));
+//            LOG.info("WalletA's balance is: " + transactionOutputService.getBalance(walletA.getPublicKey()));
+//            LOG.info("WalletB's balance is: " + transactionOutputService.getBalance(walletB.getPublicKey()));
+
+            addBlock(genesis);
+        }
+//------------------
 
 
-        LOG.info("WalletA's balance before: " + transactionOutputService.getBalance(walletA.getPublicKey()));
-
-        genesis.addTransaction(transactionFactory.getTransaction(walletA.getPrivateKey(), walletA.getPublicKey(), walletB.getPublicKey(), BigDecimal.valueOf(10F)));
-        LOG.info("WalletA's balance is: " + transactionOutputService.getBalance(walletA.getPublicKey()));
-        LOG.info("WalletB's balance is: " + transactionOutputService.getBalance(walletB.getPublicKey()));
-
-        addBlock(genesis);
 //------------------
 
         Block block1 = new BlockVerified(blockMapService.getLastBlock().getHash());

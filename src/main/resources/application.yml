@@ -5,5 +5,7 @@ develop:
     dst-port: 8082
     stop-endpoint: /api/chain/block/mining/stop
     add-block-endpoint: /api/chain/block/add
+    get-all-from: /api/chain/block/allafter/
+    get-all: /api/chain/block/all
   port: 8888
   serverport: 8888

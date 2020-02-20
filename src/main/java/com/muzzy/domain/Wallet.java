@@ -21,8 +21,8 @@ public class Wallet {
         return encodedPrivateKey;
     }
 
-    public Wallet setPrivateKey(PrivateKey privateKey) {
-        this.privateKey = privateKey;
+    public Wallet setPrivateKey(String privateKey) {
+        this.encodedPrivateKey = privateKey;
         return this;
     }
 
@@ -30,8 +30,8 @@ public class Wallet {
         return encodedPublicKey;
     }
 
-    public Wallet setPublicKey(PublicKey publicKey) {
-        this.publicKey = publicKey;
+    public Wallet setPublicKey(String publicKey) {
+        this.encodedPublicKey = publicKey;
         return this;
     }
 

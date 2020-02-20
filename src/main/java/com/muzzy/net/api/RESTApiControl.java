@@ -2,6 +2,7 @@ package com.muzzy.net.api;
 
 import com.muzzy.configuration.ConfigLoader;
 import com.muzzy.configuration.RestApiConfig;
+import com.muzzy.domain.Block;
 import com.muzzy.domain.BlockVerified;
 import com.muzzy.net.commands.StopMsg;
 import lombok.Getter;
@@ -13,6 +14,8 @@ import org.springframework.http.HttpEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
+
+import java.util.LinkedHashSet;
 
 @Getter
 @Setter
@@ -58,6 +61,34 @@ public class RESTApiControl {
                 LOG.debug("Can't connect!");
             }
         }
+    }
+
+    public LinkedHashSet<Block> getBlocksFromNetwork(String hash) {
+        for (String address : configLoader.getAddresses()
+        ) {
+            String url = "http://" + address + ":" + restApiConfig.getDstPort() + restApiConfig.getGetAllFrom() + hash;
+            LOG.info("Downloading data from network...");
+            try {
+                return restTemplate.getForObject(url, LinkedHashSet.class);
+            } catch (RestClientException re) {
+                LOG.info("Can't get Blockchain data!");
+            }
+        }
+        return null;
+    }
+
+    public LinkedHashSet<Block> getBlocksFromNetwork() {
+        for (String address : configLoader.getAddresses()
+        ) {
+            String url = "http://" + address + ":" + restApiConfig.getDstPort() + restApiConfig.getGetAll();
+            LOG.info("Downloading data from network...");
+            try {
+                return restTemplate.getForObject(url, LinkedHashSet.class);
+            } catch (RestClientException re) {
+                LOG.info("Can't get Blockchain data!");
+            }
+        }
+        return null;
     }
 }
 

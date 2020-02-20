@@ -13,7 +13,7 @@ import org.springframework.web.client.RestTemplate;
 public class RestTemplateConfig {
 
     //    private final int TIMEOUT = (int) TimeUnit.SECONDS.toMillis(10);
-    private final int TIMEOUT = 1;
+    private final int TIMEOUT = 1000;
 
     @Bean
     public RestTemplate restTemplate() {

@@ -13,4 +13,6 @@ public class RestApiConfig {
     private String dstPort;
     private String stopEndpoint;
     private String addBlockEndpoint;
+    private String getAllFrom;
+    private String getAll;
 }

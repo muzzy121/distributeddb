@@ -25,8 +25,12 @@ public abstract class AbstractBlockMapService<T extends Block,ID extends String>
     }
 
     T getLastBlock(){
+        String key = "";
         ArrayList<String> hashList = new ArrayList<>(map.keySet());
-        return map.get(hashList.get(hashList.size()-1));
+        if(!hashList.isEmpty()){
+            key = hashList.get(hashList.size() - 1);
+        } else return null;
+        return map.get(key);
     }
 
 //    private Long getNextId(){

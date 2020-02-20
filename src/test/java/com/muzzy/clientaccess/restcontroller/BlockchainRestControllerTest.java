@@ -1,6 +1,7 @@
 package com.muzzy.clientaccess.restcontroller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.muzzy.cipher.StringUtil;
 import com.muzzy.domain.Block;
 import com.muzzy.domain.BlockVerified;
 import com.muzzy.domain.Transaction;
@@ -42,8 +43,8 @@ class BlockchainRestControllerTest {
     private LinkedHashSet<Block> blockLinkedHashSet = new LinkedHashSet<>();
     private MockMvc mockMvc;
     private MvcResult mvcResult;
-    private PrivateKey privateKey;
-    private PublicKey publicKey;
+    private String privateKey;
+    private String publicKey;
 
     @BeforeEach
     void setUp() throws NoSuchAlgorithmException {
@@ -52,8 +53,9 @@ class BlockchainRestControllerTest {
         KeyPairGenerator keyGen = KeyPairGenerator.getInstance("RSA");
         keyGen.initialize(512);
         KeyPair keyPair = keyGen.generateKeyPair();
-        privateKey = keyPair.getPrivate();
-        publicKey = keyPair.getPublic();
+        privateKey = StringUtil.getStringFromKey(keyPair.getPrivate());
+        publicKey = StringUtil.getStringFromKey(keyPair.getPublic());
+
 
         block = new BlockVerified();
         block.setHash("1");
