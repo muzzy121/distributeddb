@@ -6,6 +6,7 @@ import com.muzzy.domain.Block;
 import com.muzzy.domain.Transaction;
 import com.muzzy.domain.TransactionOutput;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import java.security.Signature;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -44,6 +45,17 @@ public class Validation {
         return StringUtil.applySha256(hash);
     }
 
+    public Integer calculateDifficulty(Block block) {
+        int counter = 0;
+        Integer chars = Integer.valueOf(block.getHash().charAt(0));
+        Iterator iterator = block.getHash().chars().iterator();
+        while (chars == 48) {
+            chars = (Integer) iterator.next();
+            counter++;
+        }
+        return counter-1;
+    }
+
 
     public static Boolean isChainValid(Transaction ancestorTransaction, int difficulty, List<Block> blockLinkedHashSet) {
         Block currentBlock;
@@ -63,11 +75,11 @@ public class Validation {
                 System.out.println("Current Hashes not equal");
                 return false;
             }
-        if (!previousBlock.getHash().equals(currentBlock.getPreviousHash())) {
-            System.out.println(previousBlock.getHash() + " " + currentBlock.getPreviousHash());
-            System.out.println("Previous Hashes not equal");
-            return false;
-        }
+            if (!previousBlock.getHash().equals(currentBlock.getPreviousHash())) {
+                System.out.println(previousBlock.getHash() + " " + currentBlock.getPreviousHash());
+                System.out.println("Previous Hashes not equal");
+                return false;
+            }
 //
 //        if (!currentBlock.hash.substring(0, difficulty).equals(hashTarget)) {
 //            System.out.println("Mining in progress or malfunction");
