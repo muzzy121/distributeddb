@@ -3,10 +3,13 @@ package com.muzzy.service.map;
 import com.muzzy.domain.Block;
 import com.muzzy.domain.Transaction;
 import com.muzzy.service.BlockService;
+import com.muzzy.service.controllerservice.Validation;
 import org.springframework.stereotype.Service;
 
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 public class BlockMapService extends AbstractBlockMapService<Block, String> implements BlockService {
@@ -35,6 +38,12 @@ public class BlockMapService extends AbstractBlockMapService<Block, String> impl
 
     @Override
     public Block save(LinkedHashSet<Block> blockLinkedHashSet) {
+        if(blockLinkedHashSet.isEmpty()){
+            return null;
+        }
+        List<Block> linkedHashSet = getAll().stream().collect(Collectors.toList());
+
+
         return null;
     }
 

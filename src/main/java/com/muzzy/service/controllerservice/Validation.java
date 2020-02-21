@@ -2,8 +2,15 @@ package com.muzzy.service.controllerservice;
 
 
 import com.muzzy.cipher.StringUtil;
+import com.muzzy.domain.Block;
+import com.muzzy.domain.Transaction;
+import com.muzzy.domain.TransactionOutput;
 
 import java.security.Signature;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.List;
 
 public class Validation {
 
@@ -31,28 +38,36 @@ public class Validation {
             throw new RuntimeException(e);
         }
     }
-}
 
-//    public static Boolean isChainValid(Transaction ancestorTransaction, int difficulty, ArrayList<Block> blockchain) {
-//    Block currentBlock;
-//    Block previousBlock;
-//    String hashTarget = new String(new char[difficulty]).replace('\0', '0');
-//    HashMap<String, TransactionOutput> tempUTXOs = new HashMap<>();
-//    tempUTXOs.put(ancestorTransaction.outputs.get(0).id, ancestorTransaction.outputs.get(0));
-//
-//    for (int i = 1; i < blockchain.size(); i++) {
-//        currentBlock = blockchain.get(i);
-//        previousBlock = blockchain.get(i - 1);
-//
-//        if (!currentBlock.hash.equals(currentBlock.calculateHash())) {
-//            System.out.println("Current Hashes not equal");
-//            return false;
-//        }
-//        if (!previousBlock.hash.equals(currentBlock.previousHash)) {
-//            System.out.println(previousBlock.hash + " " + currentBlock.previousHash);
-//            System.out.println("Previous Hashes not equal");
-//            return false;
-//        }
+    public static String calculateHash(Block block) {
+        String hash = block.getPreviousHash() + block.getTimestamp() + block.getTransactions() + block.getNonce();
+        return StringUtil.applySha256(hash);
+    }
+
+
+    public static Boolean isChainValid(Transaction ancestorTransaction, int difficulty, List<Block> blockLinkedHashSet) {
+        Block currentBlock;
+        Block previousBlock;
+        String hashTarget = new String(new char[difficulty]).replace('\0', '0');
+        HashMap<String, TransactionOutput> tempUTXOs = new HashMap<>();
+        tempUTXOs.put(ancestorTransaction.getOutputs().get(0).getId(), ancestorTransaction.getOutputs().get(0));
+
+        for (int i = 1; i < blockLinkedHashSet.size(); i++) {
+            currentBlock = blockLinkedHashSet.get(i);
+            previousBlock = blockLinkedHashSet.get(i - 1);
+
+//    return true;
+//    }
+//}
+            if (!currentBlock.getHash().equals(calculateHash(currentBlock))) {
+                System.out.println("Current Hashes not equal");
+                return false;
+            }
+        if (!previousBlock.getHash().equals(currentBlock.getPreviousHash())) {
+            System.out.println(previousBlock.getHash() + " " + currentBlock.getPreviousHash());
+            System.out.println("Previous Hashes not equal");
+            return false;
+        }
 //
 //        if (!currentBlock.hash.substring(0, difficulty).equals(hashTarget)) {
 //            System.out.println("Mining in progress or malfunction");
@@ -103,9 +118,8 @@ public class Validation {
 //
 //        }
 //
-//    }
-//    System.out.println("Blockchain is valid");
-//    return true;
-//
-//}
-
+        }
+        System.out.println("Blockchain is valid");
+        return true;
+    }
+}
