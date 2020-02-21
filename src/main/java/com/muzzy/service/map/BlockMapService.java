@@ -38,12 +38,13 @@ public class BlockMapService extends AbstractBlockMapService<Block, String> impl
 
     @Override
     public Block save(LinkedHashSet<Block> blockLinkedHashSet) {
-        if(blockLinkedHashSet.isEmpty()){
+        LinkedHashSet<Block> blocks = new LinkedHashSet<>();
+//        blocks.addAll(blockLinkedHashSet);
+
+        if(blockLinkedHashSet == null){
             return null;
         }
         List<Block> linkedHashSet = getAll().stream().collect(Collectors.toList());
-
-
         return null;
     }
 

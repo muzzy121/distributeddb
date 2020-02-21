@@ -55,6 +55,7 @@ public class Miner implements Runnable {
         MineRunner.notMined = false;
         block = new BlockVerified(previousHash);
         block.setTransactions(transactionService.getAll());
+        block.setDifficulty(DIFFICULTY);
         transactionService.clear();
 
         mine(DIFFICULTY);
@@ -99,7 +100,7 @@ public class Miner implements Runnable {
 
             long hashTime = endTime - startTime;
             LOG.info("Hash found: " + hash + " in: " + hashTime / 1000 + "sec.");
-            block.setHashTime(hashTime);
+            block.setHashingTime(hashTime);
             block.setHash(hash);
             if (!block.getTransactions().isEmpty()) {
                 blockMapService.save(block);

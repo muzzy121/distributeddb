@@ -25,8 +25,9 @@ public abstract class Block implements Serializable {
     private Set<Transaction> transactions = new HashSet<>();
     private String hash;
     private String previousHash;
-    private Long hashTime;
-//    private long generatingTime;
+    private Long hashingTime;
+    private int difficulty;
+    //    private long generatingTime;
 
     public Block(String previousHash) {
         this.previousHash = previousHash;
@@ -37,7 +38,8 @@ public abstract class Block implements Serializable {
      * @param difficulty
      */
     public void mine(int difficulty) {
-        String toHash = this.previousHash + this.timestamp + this.transactions;
+        this.difficulty = difficulty;
+        String toHash = this.previousHash + this.timestamp + this.transactions + difficulty;
         do {
             this.nonce ++;
             this.hash = StringUtil.applySha256(toHash + this.nonce);

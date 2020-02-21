@@ -45,7 +45,7 @@ public class Validation {
         return StringUtil.applySha256(hash);
     }
 
-    public Integer calculateDifficulty(Block block) {
+    public static Integer calculateDifficulty(Block block) {
         int counter = 0;
         Integer chars = Integer.valueOf(block.getHash().charAt(0));
         Iterator iterator = block.getHash().chars().iterator();
@@ -57,10 +57,10 @@ public class Validation {
     }
 
 
-    public static Boolean isChainValid(Transaction ancestorTransaction, int difficulty, List<Block> blockLinkedHashSet) {
+    public static Boolean isChainValid(Transaction ancestorTransaction, List<Block> blockLinkedHashSet) {
         Block currentBlock;
         Block previousBlock;
-        String hashTarget = new String(new char[difficulty]).replace('\0', '0');
+//        String hashTarget = new String(new char[difficulty]).replace('\0', '0');
         HashMap<String, TransactionOutput> tempUTXOs = new HashMap<>();
         tempUTXOs.put(ancestorTransaction.getOutputs().get(0).getId(), ancestorTransaction.getOutputs().get(0));
 
@@ -81,10 +81,10 @@ public class Validation {
                 return false;
             }
 //
-//        if (!currentBlock.hash.substring(0, difficulty).equals(hashTarget)) {
-//            System.out.println("Mining in progress or malfunction");
-//            return false;
-//        }
+        if (currentBlock.getDifficulty() >= calculateDifficulty(currentBlock)) {
+            System.out.println("Mining in progress or malfunction");
+            return false;
+        }
 //
 //        TransactionOutput tempOutput;
 //        for (int j = 0; j < currentBlock.transactions.size(); j++) {
