@@ -1,23 +1,22 @@
 package com.muzzy.service.controllerservice;
 
 import com.muzzy.domain.*;
-import com.muzzy.service.factory.TransactionFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.annotation.DirtiesContext;
 
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ValidationTest {
     private Block block;
     private Block genesisBlock;
-    // Mock blockService
+    private Transaction transaction;
+    private Wallet wallet;
 
 
     @BeforeEach
@@ -28,21 +27,19 @@ class ValidationTest {
         block = new BlockVerified(genesisBlock.getHash());
         block.setTimestamp(ZonedDateTime.now());
         block.mine(5);
-    }
 
-    @Test
-    void confirm() {
+        wallet = new Wallet();
+        transaction = new Transaction().builder()
+                .sender(wallet.getPublicKey())
+                .receiver("2222")
+                .value(new BigDecimal(100))
+                .build();
+
     }
 
     @Test
     void verifySignature() {
 
-        Wallet wallet = new Wallet();
-        Transaction transaction = new Transaction().builder()
-                .sender(wallet.getPublicKey())
-                .receiver("2222")
-                .value(new BigDecimal(100))
-                .build();
         String data = transaction.getSender() + transaction.getReceiver() + transaction.getValue();
         byte[] signature = Validation.confirm(wallet.getPrivateKey(), data);
 
@@ -56,7 +53,6 @@ class ValidationTest {
 
         //Test if data are not OK
         assertTrue(test2);
-
     }
 
     @Test

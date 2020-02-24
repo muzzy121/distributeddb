@@ -2,7 +2,6 @@ package com.muzzy.net.api;
 
 import com.muzzy.configuration.ConfigLoader;
 import com.muzzy.configuration.RestApiConfig;
-import com.muzzy.domain.Block;
 import com.muzzy.domain.BlockVerified;
 import com.muzzy.net.commands.StopMsg;
 import lombok.Getter;
@@ -10,7 +9,10 @@ import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
@@ -36,8 +38,8 @@ public class RESTApiControl {
     }
 
     public void brakeMiningOnAllNodes(String blockHash) {
-
         HttpEntity<StopMsg> request = new HttpEntity<>(new StopMsg(blockHash));
+
         for (String address : configLoader.getAddresses()) {
             String url = "http://" + address + ":" + restApiConfig.getDstPort() + restApiConfig.getStopEndpoint();
             LOG.info(url);
@@ -63,13 +65,18 @@ public class RESTApiControl {
         }
     }
 
-    public LinkedHashSet<Block> getBlocksFromNetwork(String hash) {
+    public LinkedHashSet<BlockVerified> getBlocksFromNetwork(String hash) {
         for (String address : configLoader.getAddresses()
         ) {
             String url = "http://" + address + ":" + restApiConfig.getDstPort() + restApiConfig.getGetAllFrom() + hash;
             LOG.info("Downloading data from network...");
+            LOG.info(url);
             try {
-                return restTemplate.getForObject(url, LinkedHashSet.class);
+                ResponseEntity<LinkedHashSet<BlockVerified>> rateResponse =
+                        restTemplate.exchange(url,
+                                HttpMethod.GET, null, new ParameterizedTypeReference<LinkedHashSet<BlockVerified>>() {
+                                });
+                return rateResponse.getBody();
             } catch (RestClientException re) {
                 LOG.info("Can't get Blockchain data!");
             }
@@ -77,18 +84,23 @@ public class RESTApiControl {
         return null;
     }
 
-    public LinkedHashSet<Block> getBlocksFromNetwork() {
+    public LinkedHashSet<BlockVerified> getBlocksFromNetwork() {
         for (String address : configLoader.getAddresses()
         ) {
             String url = "http://" + address + ":" + restApiConfig.getDstPort() + restApiConfig.getGetAll();
             LOG.info("Downloading data from network...");
+            LOG.info(url);
             try {
-                return restTemplate.getForObject(url, LinkedHashSet.class);
+                ResponseEntity<LinkedHashSet<BlockVerified>> rateResponse =
+                        restTemplate.exchange(url,
+                                HttpMethod.GET, null, new ParameterizedTypeReference<LinkedHashSet<BlockVerified>>() {
+                                });
+                return rateResponse.getBody();
             } catch (RestClientException re) {
+                re.printStackTrace();
                 LOG.info("Can't get Blockchain data!");
             }
         }
         return null;
     }
 }
-

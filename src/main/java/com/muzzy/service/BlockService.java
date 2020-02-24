@@ -1,6 +1,7 @@
 package com.muzzy.service;
 
 import com.muzzy.domain.Block;
+import com.muzzy.domain.BlockVerified;
 import com.muzzy.domain.Transaction;
 import org.springframework.stereotype.Service;
 
@@ -16,5 +17,5 @@ public interface BlockService extends CrudService<Block,String> {
     Transaction getTransactionFromBlockById(String id);
     Block getBlockWithTransaction(String id);
     LinkedHashSet<Block> getBlocksAfter(String id);
-    Block save(LinkedHashSet<Block> blockLinkedHashSet);
+    Block save(LinkedHashSet<BlockVerified> blockLinkedHashSet);
 }

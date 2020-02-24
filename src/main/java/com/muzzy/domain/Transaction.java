@@ -31,6 +31,7 @@ public class Transaction implements Serializable {
     private String receiver;
     private BigDecimal value;
     private byte[] signature;
+//    private ArrayList<TransactionInput> inputs = new ArrayList<>();
     private ArrayList<TransactionInput> inputs;
     private ArrayList<TransactionOutput> outputs = new ArrayList<>();
 

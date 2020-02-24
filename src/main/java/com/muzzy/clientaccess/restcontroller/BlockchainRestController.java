@@ -1,6 +1,8 @@
 package com.muzzy.clientaccess.restcontroller;
 
 import com.muzzy.cipher.StringUtil;
+import com.muzzy.configuration.ConfigLoader;
+import com.muzzy.configuration.RestApiConfig;
 import com.muzzy.domain.Block;
 import com.muzzy.domain.BlockVerified;
 import com.muzzy.net.commands.StopMsg;
@@ -20,12 +22,16 @@ public class BlockchainRestController {
     private static final String JSON = "application/json";
     private static final Logger LOG = LoggerFactory.getLogger(SimulationController.class);
 
+    private final ConfigLoader configLoader;
     private final BlockMapService blockMapService;
     private final TransactionOutputService transactionOutputService;
+    private RestApiConfig restApiConfig;
 
-    public BlockchainRestController(BlockMapService blockMapService, TransactionOutputService transactionOutputService) {
+    public BlockchainRestController(ConfigLoader configLoader, BlockMapService blockMapService, TransactionOutputService transactionOutputService) {
+        this.configLoader = configLoader;
         this.blockMapService = blockMapService;
         this.transactionOutputService = transactionOutputService;
+        this.restApiConfig = configLoader.getApi();
     }
 
     @RequestMapping(value = "/block/lasthash", method = RequestMethod.GET)
@@ -56,7 +62,6 @@ public class BlockchainRestController {
     @RequestMapping(value = "/block/add", method = RequestMethod.POST, consumes = JSON)
     public Block addBlockToChain(@RequestBody BlockVerified blockDto){
         Block block = blockMapService.getLastBlock();
-
 
 
         if(!block.getHash().equals(blockDto.getPreviousHash())){

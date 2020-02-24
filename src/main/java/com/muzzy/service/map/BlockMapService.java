@@ -1,9 +1,12 @@
 package com.muzzy.service.map;
 
 import com.muzzy.domain.Block;
+import com.muzzy.domain.BlockVerified;
 import com.muzzy.domain.Transaction;
 import com.muzzy.service.BlockService;
 import com.muzzy.service.controllerservice.Validation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.LinkedHashSet;
@@ -13,6 +16,8 @@ import java.util.stream.Collectors;
 
 @Service
 public class BlockMapService extends AbstractBlockMapService<Block, String> implements BlockService {
+
+    private static final Logger LOG = LoggerFactory.getLogger(BlockMapService.class);
 
     @Override
     public LinkedHashSet<Block> getAll() {
@@ -37,14 +42,26 @@ public class BlockMapService extends AbstractBlockMapService<Block, String> impl
     }
 
     @Override
-    public Block save(LinkedHashSet<Block> blockLinkedHashSet) {
-        LinkedHashSet<Block> blocks = new LinkedHashSet<>();
-//        blocks.addAll(blockLinkedHashSet);
-
+    public Block save(LinkedHashSet<BlockVerified> blockLinkedHashSet) {
         if(blockLinkedHashSet == null){
             return null;
         }
+        List<Block> blocks = blockLinkedHashSet.stream().collect(Collectors.toList());
+//        blocks.addAll(blockLinkedHashSet);
+
+        //Verify transfered blocks
+        //Sum all
+
+
         List<Block> linkedHashSet = getAll().stream().collect(Collectors.toList());
+        LOG.info("Old chain Valid" + Validation.isChainValid(linkedHashSet).toString());
+
+        LOG.info("New chain Valid" + Validation.isChainValid(blocks));
+
+        if(linkedHashSet.get(linkedHashSet.size()-1).getHash() == blocks.get(0).getPreviousHash()) {
+            LOG.info("Ready to add blocks");
+            linkedHashSet.addAll(blocks);
+        }
         return null;
     }
 
