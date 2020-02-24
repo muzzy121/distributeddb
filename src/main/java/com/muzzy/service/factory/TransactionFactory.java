@@ -108,7 +108,7 @@ public class TransactionFactory {
      *
      * @return boolean
      */
-    public boolean verifiySignature() {
+    public boolean verifySignature() {
         String data = transaction.getSender() + transaction.getReceiver() + transaction.getValue();
         return Validation.verifySignature(transaction.getSender(), data, transaction.getSignature());
     }

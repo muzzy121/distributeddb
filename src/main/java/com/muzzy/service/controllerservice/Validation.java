@@ -8,10 +8,7 @@ import com.muzzy.domain.TransactionOutput;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import java.security.Signature;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.List;
+import java.util.*;
 
 public class Validation {
 
@@ -41,7 +38,7 @@ public class Validation {
     }
 
     public static String calculateHash(Block block) {
-        String hash = block.getPreviousHash() + block.getTimestamp() + block.getTransactions() + block.getNonce();
+        String hash = block.getPreviousHash() + block.getTimestamp() + block.getTransactions() + block.getDifficulty() + block.getNonce();
         return StringUtil.applySha256(hash);
     }
 
@@ -53,16 +50,18 @@ public class Validation {
             chars = (Integer) iterator.next();
             counter++;
         }
-        return counter-1;
+        return counter - 1;
     }
 
 
-    public static Boolean isChainValid(Transaction ancestorTransaction, List<Block> blockLinkedHashSet) {
+    public static Boolean isChainValid(List<Block> blockLinkedHashSet) {
+//    public static Boolean isChainValid(Transaction ancestorTransaction, List<Block> blockLinkedHashSet) {
         Block currentBlock;
         Block previousBlock;
 //        String hashTarget = new String(new char[difficulty]).replace('\0', '0');
         HashMap<String, TransactionOutput> tempUTXOs = new HashMap<>();
-        tempUTXOs.put(ancestorTransaction.getOutputs().get(0).getId(), ancestorTransaction.getOutputs().get(0));
+
+//        tempUTXOs.put(ancestorTransaction.getOutputs().get(0).getId(), ancestorTransaction.getOutputs().get(0));
 
         for (int i = 1; i < blockLinkedHashSet.size(); i++) {
             currentBlock = blockLinkedHashSet.get(i);
@@ -80,20 +79,25 @@ public class Validation {
                 System.out.println("Previous Hashes not equal");
                 return false;
             }
+            int lol = calculateDifficulty(currentBlock);
+            if (calculateDifficulty(currentBlock) < currentBlock.getDifficulty()) {
+                System.out.println("Mining in progress or malfunction");
+                return false;
+            }
 //
-        if (currentBlock.getDifficulty() >= calculateDifficulty(currentBlock)) {
-            System.out.println("Mining in progress or malfunction");
-            return false;
-        }
-//
-//        TransactionOutput tempOutput;
-//        for (int j = 0; j < currentBlock.transactions.size(); j++) {
-//            Transaction currentTransaction = currentBlock.transactions.get(j);
-//
-//            if (!currentTransaction.verifiySignature()) {
-//                System.out.println("Signature on Transaction(" + j + ") is wrong");
-//                return false;
-//            }
+            TransactionOutput tempOutput;
+            Iterator<Transaction> transactionIterator = currentBlock.getTransactions().iterator();
+//        for (int j = 0; j < currentBlock.getTransactions().size(); j++) {
+
+
+            while (transactionIterator.hasNext()) {
+                Transaction currentTransaction = transactionIterator.next();
+                String data = currentTransaction.getSender() + currentTransaction.getReceiver() + currentTransaction.getValue();
+
+                if (verifySignature(currentTransaction.getSender(), data, currentTransaction.getSignature())) {
+                    System.out.println("Signature on Transaction(" + currentTransaction.getSignature() + ") is wrong");
+                    return false;
+                }
 //            if (currentTransaction.getInputsValue() != currentTransaction.getOutputsValue()) {
 //                System.out.println("Inputs are note equal to outputs on Transaction(" + j + ")");
 //                return false;
@@ -130,6 +134,7 @@ public class Validation {
 //
 //        }
 //
+            }
         }
         System.out.println("Blockchain is valid");
         return true;
