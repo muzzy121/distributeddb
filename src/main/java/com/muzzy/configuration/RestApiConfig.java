@@ -15,4 +15,5 @@ public class RestApiConfig {
     private String addBlockEndpoint;
     private String getAllFrom;
     private String getAll;
+    private String getAllUtxo;
 }

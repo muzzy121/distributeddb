@@ -3,6 +3,7 @@ package com.muzzy.net.api;
 import com.muzzy.configuration.ConfigLoader;
 import com.muzzy.configuration.RestApiConfig;
 import com.muzzy.domain.BlockVerified;
+import com.muzzy.domain.TransactionOutput;
 import com.muzzy.net.commands.StopMsg;
 import lombok.Getter;
 import lombok.Setter;
@@ -18,6 +19,7 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.LinkedHashSet;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -94,6 +96,24 @@ public class RESTApiControl {
                 ResponseEntity<LinkedHashSet<BlockVerified>> rateResponse =
                         restTemplate.exchange(url,
                                 HttpMethod.GET, null, new ParameterizedTypeReference<LinkedHashSet<BlockVerified>>() {
+                                });
+                return rateResponse.getBody();
+            } catch (RestClientException re) {
+                re.printStackTrace();
+                LOG.info("Can't get Blockchain data!");
+            }
+        }
+        return null;
+    }
+    public Set<TransactionOutput> getAllUtxo() {
+        for (String address: configLoader.getAddresses()){
+            String url = "http://" + address + ":" + restApiConfig.getDstPort() + restApiConfig.getGetAllUtxo();
+            LOG.info("Downloading data from network...");
+            LOG.info(url);
+            try {
+                ResponseEntity<Set<TransactionOutput>> rateResponse =
+                        restTemplate.exchange(url,
+                                HttpMethod.GET, null, new ParameterizedTypeReference<Set<TransactionOutput>>() {
                                 });
                 return rateResponse.getBody();
             } catch (RestClientException re) {

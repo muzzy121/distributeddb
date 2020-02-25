@@ -7,5 +7,6 @@ develop:
     add-block-endpoint: /api/chain/block/add
     get-all-from: /api/chain/block/allafter/
     get-all: /api/chain/block/all
+    get-all-utxo: /api/chain/utxo/all
   port: 8888
   serverport: 8888
