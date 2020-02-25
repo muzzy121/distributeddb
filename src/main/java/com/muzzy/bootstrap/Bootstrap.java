@@ -59,7 +59,16 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
 
 
         Miner.getSystemInfo();
-        //Download transactions
+
+        /**
+         * Downloading transactions
+         */
+        transactionOutputService.clear();
+        transactionOutputService.save(restApiControl.getAllUtxo());
+
+        /**
+         * Downloading block
+         */
         Block block = blockMapService.getLastBlock();
         if (block != null) {
             blockMapService.save(restApiControl.getBlocksFromNetwork(block.getHash()));

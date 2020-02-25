@@ -37,5 +37,8 @@ public abstract class AbstractTransactionOutputMapService<T extends TransactionO
         map.entrySet().removeIf(x -> x.getValue().equals(object));
     }
 
+    protected void clear() {
+        map.clear();
+    }
 }
 

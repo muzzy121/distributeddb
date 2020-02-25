@@ -14,4 +14,6 @@ import java.util.Set;
 public interface TransactionOutputService extends CrudService<TransactionOutput,String> {
     Set<TransactionOutput> getTransctionByReciever(String publicKey);
     BigDecimal getBalance(String publicKey);
+    void clear();
+    void save(Set<TransactionOutput> allUtxo);
 }

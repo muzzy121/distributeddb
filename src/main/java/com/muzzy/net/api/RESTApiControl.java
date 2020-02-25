@@ -80,7 +80,7 @@ public class RESTApiControl {
                                 });
                 return rateResponse.getBody();
             } catch (RestClientException re) {
-                LOG.info("Can't get Blockchain data!");
+                LOG.warn("Can't get Blockchain data!");
             }
         }
         return null;
@@ -100,7 +100,7 @@ public class RESTApiControl {
                 return rateResponse.getBody();
             } catch (RestClientException re) {
                 re.printStackTrace();
-                LOG.info("Can't get Blockchain data!");
+                LOG.warn("Can't get Blockchain data!");
             }
         }
         return null;
@@ -118,7 +118,7 @@ public class RESTApiControl {
                 return rateResponse.getBody();
             } catch (RestClientException re) {
                 re.printStackTrace();
-                LOG.info("Can't get Blockchain data!");
+                LOG.warn("Can't get UTXO list!");
             }
         }
         return null;

@@ -44,6 +44,13 @@ public class TransactionOutputMapService extends AbstractTransactionOutputMapSer
     }
 
     @Override
+    public void save(Set<TransactionOutput> allUtxo) {
+        if(allUtxo != null){
+            allUtxo.forEach(t -> save(t));
+        }
+    }
+
+    @Override
     public void delete(TransactionOutput t) {
         super.delete(t);
     }
@@ -67,5 +74,10 @@ public class TransactionOutputMapService extends AbstractTransactionOutputMapSer
                 .map(TransactionOutput::getValue)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
         return total;
+    }
+
+    @Override
+    public void clear() {
+        super.clear();
     }
 }
