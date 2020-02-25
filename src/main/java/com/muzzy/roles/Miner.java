@@ -4,6 +4,7 @@ import com.muzzy.Main;
 import com.muzzy.cipher.StringUtil;
 import com.muzzy.domain.Block;
 import com.muzzy.domain.BlockVerified;
+import com.muzzy.domain.Transaction;
 import com.muzzy.net.api.RESTApiControl;
 import com.muzzy.service.TransactionOutputService;
 import com.muzzy.service.TransactionService;
@@ -14,6 +15,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+
+import java.util.LinkedHashSet;
 
 @Scope("prototype")
 @Component
@@ -54,7 +57,7 @@ public class Miner implements Runnable {
     public void run() {
         MineRunner.notMined = false;
         block = new BlockVerified(previousHash);
-        block.setTransactions(transactionService.getAll());
+        block.setTransactions((LinkedHashSet<Transaction>) transactionService.getAll());
         block.setDifficulty(DIFFICULTY);
         transactionService.clear();
 

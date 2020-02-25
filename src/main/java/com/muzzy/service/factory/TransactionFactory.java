@@ -99,6 +99,7 @@ public class TransactionFactory {
      */
     public byte[] generateSignature(String privateKey) {
         // TODO: 2020-01-23 Czy sygnatura nie powinna być z datą? Może dodać Pole daty do transakcji, jej utworzenia
+
         String data = transaction.getSender() + transaction.getReceiver() + transaction.getValue();
         return Validation.confirm(privateKey, data);
     }

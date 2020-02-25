@@ -6,9 +6,7 @@ import com.muzzy.domain.Transaction;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.HashSet;
 import java.util.LinkedHashSet;
-import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -24,7 +22,7 @@ class BlockMapServiceTest {
         block.setHash("1");
         block.setPreviousHash("0");
 
-        Set<Transaction> transactions = new HashSet<>();
+        LinkedHashSet<Transaction> transactions = new LinkedHashSet<>();
         transactions.add(new Transaction().builder().transactionId("1").build());
         block.setTransactions(transactions);
         blockMapService.save(block);
@@ -63,7 +61,7 @@ class BlockMapServiceTest {
         Block newBlock = new BlockVerified();
         newBlock.setHash("2");
         newBlock.setPreviousHash("1");
-        Set<Transaction> transactions = new HashSet<>();
+        LinkedHashSet<Transaction> transactions = new LinkedHashSet<>();
         transactions.add(new Transaction().builder().transactionId("1").build());
         newBlock.setTransactions(transactions);
         blockMapService.save(newBlock);
@@ -81,7 +79,7 @@ class BlockMapServiceTest {
         Block newBlock = new BlockVerified();
         newBlock.setHash("2");
         newBlock.setPreviousHash("1");
-        Set<Transaction> transactions = new HashSet<>();
+        LinkedHashSet<Transaction> transactions = new LinkedHashSet<>();
         transactions.add(new Transaction().builder().transactionId("1").build());
         newBlock.setTransactions(transactions);
         blockMapService.save(newBlock);
@@ -106,7 +104,7 @@ class BlockMapServiceTest {
         Block newBlock = new BlockVerified();
         newBlock.setHash("2");
         newBlock.setPreviousHash("1");
-        Set<Transaction> transactions = new HashSet<>();
+        LinkedHashSet<Transaction> transactions = new LinkedHashSet<>();
         transactions.add(new Transaction().builder().transactionId("1").build());
         newBlock.setTransactions(transactions);
         blockMapService.save(newBlock);
@@ -114,7 +112,7 @@ class BlockMapServiceTest {
         Block newBlock2 = new BlockVerified();
         newBlock.setHash("3");
         newBlock.setPreviousHash("2");
-        Set<Transaction> transactions2 = new HashSet<>();
+        LinkedHashSet<Transaction> transactions2 = new LinkedHashSet<>();
         transactions2.add(new Transaction().builder().transactionId("2").build());
         newBlock2.setTransactions(transactions2);
         blockMapService.save(newBlock2);

@@ -16,6 +16,10 @@ public abstract class AbstractBlockMapService<T extends Block,ID extends String>
         map.put(object.getHash(), object);
         return map.get(object.getHash());
     }
+    T saveAll(List<T> object){
+        object.forEach(t -> map.put(t.getHash(), t));
+        return null;
+    }
 
     void deleteById(ID id){
         map.remove(id);

@@ -1,13 +1,16 @@
 package com.muzzy.domain;
 
 import com.muzzy.cipher.StringUtil;
+import com.muzzy.service.controllerservice.Validation;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
 import java.time.ZonedDateTime;
-import java.util.*;
+import java.util.LinkedHashSet;
 
 /**
  * Created by Paweł Mazur
@@ -18,15 +21,17 @@ import java.util.*;
 @Setter
 @NoArgsConstructor
 public abstract class Block implements Serializable {
-//    private Long Id;
+    private static final Logger LOG = LoggerFactory.getLogger(Block.class);
+    //    private Long Id;
     private ZonedDateTime timestamp;
     private Long nonce = 0L;
-//    private List<Transaction> transactions = new ArrayList<>();
-    private Set<Transaction> transactions = new HashSet<>();
+    //    private List<Transaction> transactions = new ArrayList<>();
+    private LinkedHashSet<Transaction> transactions = new LinkedHashSet<>();
     private String hash;
     private String previousHash;
     private Long hashingTime;
     private int difficulty;
+    private String hashRoot;
     //    private long generatingTime;
 
     public Block(String previousHash) {
@@ -38,8 +43,10 @@ public abstract class Block implements Serializable {
      * @param difficulty
      */
     public void mine(int difficulty) {
+        this.hashRoot = StringUtil.getHashRoot(transactions);
         this.difficulty = difficulty;
-        String toHash = this.previousHash + this.timestamp + this.transactions + difficulty;
+        String toHash = this.previousHash  + "/" + this.timestamp.toEpochSecond() + "/" + this.hashRoot + "/" + difficulty;
+        LOG.debug(toHash);
         do {
             this.nonce ++;
             this.hash = StringUtil.applySha256(toHash + this.nonce);
@@ -47,9 +54,13 @@ public abstract class Block implements Serializable {
     }
 
     public void addTransaction(Transaction transaction) {
-        if(transaction == null) return;
+        if(transaction == null) { return; }
         // TODO: 2020-01-28 To weryfikuje jedynie czy transakcja nie jest null, nie sprawdza czy wszytstko jest ustawione poprawnie, refactor
-        transactions.add(transaction);
+        String msg = transaction.getSender() + transaction.getReceiver() + transaction.getValue();
+        boolean verifySignature = Validation.verifySignature(transaction.getSender(), msg, transaction.getSignature());
+        if(verifySignature) {
+            transactions.add(transaction);
+        }
     }
     public Transaction getTransactionById(String hash){
         return transactions.stream().filter(t -> t.getTransactionId().equals(hash)).findFirst().orElse(null);

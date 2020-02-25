@@ -34,6 +34,9 @@ public class Wallet {
         this.encodedPublicKey = publicKey;
         return this;
     }
+    public PublicKey getEncodedPublicKey(){
+        return this.publicKey;
+    }
 
     public Wallet(){
         generateKeyPair();

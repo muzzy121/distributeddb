@@ -52,11 +52,14 @@ public class BlockMapService extends AbstractBlockMapService<Block, String> impl
         //Verify transfered blocks
         //Sum all
 
-
         List<Block> linkedHashSet = getAll().stream().collect(Collectors.toList());
-        LOG.info("Old chain Valid" + Validation.isChainValid(linkedHashSet).toString());
+        LOG.info("Old chain Valid: " + Validation.isChainValid(linkedHashSet).toString());
+        LOG.info("New chain Valid: " + Validation.isChainValid(blocks));
 
-        LOG.info("New chain Valid" + Validation.isChainValid(blocks));
+        if(linkedHashSet.isEmpty()) {
+            super.saveAll(blocks);
+            return null;
+        }
 
         if(linkedHashSet.get(linkedHashSet.size()-1).getHash() == blocks.get(0).getPreviousHash()) {
             LOG.info("Ready to add blocks");

@@ -4,7 +4,7 @@ import com.muzzy.domain.Transaction;
 import com.muzzy.service.TransactionService;
 import org.springframework.stereotype.Service;
 
-import java.util.Set;
+import java.util.LinkedHashSet;
 
 /**
  * Created by Paweł Mazur
@@ -14,7 +14,7 @@ import java.util.Set;
 @Service
 public class TransactionMapService extends AbstractTransactionMapService<Transaction, String> implements TransactionService {
     @Override
-    public Set<Transaction> getAll() {
+    public LinkedHashSet<Transaction> getAll() {
         return super.findAll();
     }
 

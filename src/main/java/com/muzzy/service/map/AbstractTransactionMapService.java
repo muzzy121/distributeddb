@@ -13,8 +13,8 @@ public abstract class AbstractTransactionMapService<T extends Transaction, ID ex
 
     private Map<String, T> map = new HashMap<>();
 
-    Set<T> findAll() {
-        return new HashSet<>(map.values());
+    LinkedHashSet<T> findAll() {
+        return new LinkedHashSet<>(map.values());
     }
 
     T findById(ID id) {

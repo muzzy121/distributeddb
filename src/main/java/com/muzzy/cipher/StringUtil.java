@@ -1,10 +1,12 @@
 package com.muzzy.cipher;
 
+import com.muzzy.domain.Transaction;
+
 import java.security.*;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
-import java.util.Base64;
+import java.util.*;
 
 public class StringUtil {
 
@@ -45,5 +47,23 @@ public class StringUtil {
         PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(privateKeyData);
         KeyFactory kf = KeyFactory.getInstance("RSA");
         return kf.generatePrivate(spec);
+    }
+
+    public static String getHashRoot(LinkedHashSet<Transaction> transactions) {
+        int size = transactions.size();
+        List<String> parents = new ArrayList<>();
+        for (Transaction transaction : transactions) {
+            parents.add(transaction.getTransactionId());
+        }
+        List<String> childs = parents;
+        while (size > 1) {
+            childs = new ArrayList<>();
+            for (int i = 1; i < parents.size(); i++) {
+                childs.add(applySha256(parents.get(i - 1) + parents.get(i)));
+            }
+            size = childs.size();
+            parents = childs;
+        }
+        return (childs.size() == 1) ? childs.get(0) : "";
     }
 }

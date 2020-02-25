@@ -61,7 +61,7 @@ class BlockchainRestControllerTest {
         block.setHash("1");
         block.setPreviousHash("0");
 
-        Set<Transaction> transactions = new HashSet<>();
+        LinkedHashSet<Transaction> transactions = new LinkedHashSet<>();
 
         transactions.add(new Transaction().builder().transactionId("1").sender(publicKey).receiver(publicKey).build());
         block.setTransactions(transactions);

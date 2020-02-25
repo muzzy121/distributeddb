@@ -1,13 +1,11 @@
 package com.muzzy.service.factory;
 
-import com.muzzy.cipher.StringUtil;
 import com.muzzy.domain.AncestorTransaction;
 import com.muzzy.domain.Transaction;
 import com.muzzy.domain.TransactionOutput;
 import com.muzzy.domain.Wallet;
 import com.muzzy.service.TransactionOutputService;
 import com.muzzy.service.controllerservice.Validation;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -32,7 +30,7 @@ public class AncestorTransactionFactory {
                 .transactionId("0")
                 .build();
         ancestorTransaction.getOutputs().add(new TransactionOutput(receiver, value, "0"));
-        generateSignature(ancestorWallet.getPrivateKey(),ancestorTransaction);
+        ancestorTransaction.setSignature(generateSignature(ancestorWallet.getPrivateKey(),ancestorTransaction));
         return ancestorTransaction;
     }
     public byte[] generateSignature(String privateKey, Transaction t) {

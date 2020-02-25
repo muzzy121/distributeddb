@@ -5,12 +5,16 @@ import com.muzzy.cipher.StringUtil;
 import com.muzzy.domain.Block;
 import com.muzzy.domain.Transaction;
 import com.muzzy.domain.TransactionOutput;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import javax.persistence.criteria.CriteriaBuilder;
 import java.security.Signature;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 
 public class Validation {
+    private static final Logger LOG = LoggerFactory.getLogger(Validation.class);
 
     public static byte[] confirm(String privateKey, String input) {
         byte[] output;
@@ -38,7 +42,9 @@ public class Validation {
     }
 
     public static String calculateHash(Block block) {
-        String hash = block.getPreviousHash() + block.getTimestamp() + block.getTransactions() + block.getDifficulty() + block.getNonce();
+        String hashRoot = StringUtil.getHashRoot(block.getTransactions());
+        String hash = block.getPreviousHash() + "/" + block.getTimestamp().toEpochSecond() + "/" + hashRoot + "/" + block.getDifficulty() + block.getNonce();
+        LOG.debug(hash);
         return StringUtil.applySha256(hash);
     }
 
@@ -89,13 +95,12 @@ public class Validation {
             Iterator<Transaction> transactionIterator = currentBlock.getTransactions().iterator();
 //        for (int j = 0; j < currentBlock.getTransactions().size(); j++) {
 
-
             while (transactionIterator.hasNext()) {
                 Transaction currentTransaction = transactionIterator.next();
                 String data = currentTransaction.getSender() + currentTransaction.getReceiver() + currentTransaction.getValue();
-
-                if (verifySignature(currentTransaction.getSender(), data, currentTransaction.getSignature())) {
-                    System.out.println("Signature on Transaction(" + currentTransaction.getSignature() + ") is wrong");
+//                LOG.debug(data);
+                if (!verifySignature(currentTransaction.getSender(), data, currentTransaction.getSignature())) {
+                    LOG.warn("Signature on Transaction(" + currentTransaction.getSignature() + ") is wrong");
                     return false;
                 }
 //            if (currentTransaction.getInputsValue() != currentTransaction.getOutputsValue()) {
@@ -136,7 +141,6 @@ public class Validation {
 //
             }
         }
-        System.out.println("Blockchain is valid");
         return true;
     }
 }
