@@ -44,6 +44,7 @@ public class Validation {
     public static String calculateHash(Block block) {
         String hashRoot = StringUtil.getHashRoot(block.getTransactions());
         String hash = block.getPreviousHash() + "/" + block.getTimestamp().toEpochSecond() + "/" + hashRoot + "/" + block.getDifficulty() + block.getNonce();
+        LOG.debug(hashRoot);
         LOG.debug(hash);
         return StringUtil.applySha256(hash);
     }
@@ -73,24 +74,26 @@ public class Validation {
             currentBlock = blockLinkedHashSet.get(i);
             previousBlock = blockLinkedHashSet.get(i - 1);
 
-//    return true;
-//    }
-//}
-            if (!currentBlock.getHash().equals(calculateHash(currentBlock))) {
-                System.out.println("Current Hashes not equal");
-                return false;
-            }
-            if (!previousBlock.getHash().equals(currentBlock.getPreviousHash())) {
-                System.out.println(previousBlock.getHash() + " " + currentBlock.getPreviousHash());
-                System.out.println("Previous Hashes not equal");
-                return false;
-            }
-            int lol = calculateDifficulty(currentBlock);
-            if (calculateDifficulty(currentBlock) < currentBlock.getDifficulty()) {
-                System.out.println("Mining in progress or malfunction");
-                return false;
-            }
+
+//            if (!currentBlock.getHash().equals(calculateHash(currentBlock))) {
+//                System.out.println("Current Hashes not equal");
+//                return false;
+//            }
+//            if (!previousBlock.getHash().equals(currentBlock.getPreviousHash())) {
+//                System.out.println(previousBlock.getHash() + " " + currentBlock.getPreviousHash());
+//                System.out.println("Previous Hashes not equal");
+//                return false;
+//            }
+//            int lol = calculateDifficulty(currentBlock);
+//            if (calculateDifficulty(currentBlock) < currentBlock.getDifficulty()) {
+//                System.out.println("Mining in progress or malfunction");
+//                return false;
+//            }
 //
+            if (!isBlockValid(previousBlock, currentBlock)) {
+                return false;
+            }
+
             TransactionOutput tempOutput;
             Iterator<Transaction> transactionIterator = currentBlock.getTransactions().iterator();
 //        for (int j = 0; j < currentBlock.getTransactions().size(); j++) {
@@ -142,5 +145,42 @@ public class Validation {
             }
         }
         return true;
+    }
+
+    public static boolean isBlockValid(Block previousBlock, Block currentBlock) {
+        LOG.debug(currentBlock.getHash());
+        LOG.debug(calculateHash(currentBlock));
+        if (!currentBlock.getHash().equals(calculateHash(currentBlock))) {
+            LOG.warn("Current Hashes not equal");
+            return false;
+        }
+        if (!previousBlock.getHash().equals(currentBlock.getPreviousHash())) {
+            LOG.debug(previousBlock.getHash());
+            LOG.debug(currentBlock.getPreviousHash());
+            LOG.warn("Previous Hashes not equal");
+            return false;
+        }
+        int lol = calculateDifficulty(currentBlock);
+        if (calculateDifficulty(currentBlock) < currentBlock.getDifficulty()) {
+            LOG.warn("Mining in progress or malfunction");
+            return false;
+        }
+        return true;
+//        if(!block.getHash().equals(blockDto.getPreviousHash())){
+//            LOG.error("Bad previousHash code");
+//            return null;
+//        }
+//        String hashRoot = StringUtil.getHashRoot(block.getTransactions());
+//        String toHash = block.getPreviousHash() + "/" + block.getTimestamp().toEpochSecond() + "/" + hashRoot + "/" + block.getDifficulty() + block.getNonce();
+//        LOG.debug(toHash);
+//        if(!blockDto.getHash().equals(StringUtil.applySha256(hashRoot))){
+//            LOG.error("Bad hashCode!");
+//            return null;
+//        };
+//        if(blockDto.getTimestamp().isBefore(ZonedDateTime.now().minusMinutes(10))){
+//            LOG.error("Bad timestamp");
+//            return null;
+//        }
+//        return blockDto;
     }
 }

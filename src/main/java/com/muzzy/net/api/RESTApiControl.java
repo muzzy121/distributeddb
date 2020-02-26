@@ -44,11 +44,11 @@ public class RESTApiControl {
 
         for (String address : configLoader.getAddresses()) {
             String url = "http://" + address + ":" + restApiConfig.getDstPort() + restApiConfig.getStopEndpoint();
-            LOG.info(url);
+            LOG.debug(url);
             try {
                 restTemplate.postForLocation(url, request);
             } catch (RestClientException re) {
-                LOG.info("Can't connect!" + re.getMostSpecificCause());
+                LOG.debug("Can't connect!" + re.getMostSpecificCause());
             }
         }
     }
@@ -72,7 +72,7 @@ public class RESTApiControl {
         ) {
             String url = "http://" + address + ":" + restApiConfig.getDstPort() + restApiConfig.getGetAllFrom() + hash;
             LOG.info("Downloading data from network...");
-            LOG.info(url);
+            LOG.debug(url);
             try {
                 ResponseEntity<LinkedHashSet<BlockVerified>> rateResponse =
                         restTemplate.exchange(url,
@@ -91,7 +91,7 @@ public class RESTApiControl {
         ) {
             String url = "http://" + address + ":" + restApiConfig.getDstPort() + restApiConfig.getGetAll();
             LOG.info("Downloading data from network...");
-            LOG.info(url);
+            LOG.debug(url);
             try {
                 ResponseEntity<LinkedHashSet<BlockVerified>> rateResponse =
                         restTemplate.exchange(url,
@@ -99,7 +99,7 @@ public class RESTApiControl {
                                 });
                 return rateResponse.getBody();
             } catch (RestClientException re) {
-                re.printStackTrace();
+//                re.printStackTrace();
                 LOG.warn("Can't get Blockchain data!");
             }
         }
@@ -109,7 +109,7 @@ public class RESTApiControl {
         for (String address: configLoader.getAddresses()){
             String url = "http://" + address + ":" + restApiConfig.getDstPort() + restApiConfig.getGetAllUtxo();
             LOG.info("Downloading data from network...");
-            LOG.info(url);
+            LOG.debug(url);
             try {
                 ResponseEntity<Set<TransactionOutput>> rateResponse =
                         restTemplate.exchange(url,
@@ -117,7 +117,7 @@ public class RESTApiControl {
                                 });
                 return rateResponse.getBody();
             } catch (RestClientException re) {
-                re.printStackTrace();
+//                re.printStackTrace();
                 LOG.warn("Can't get UTXO list!");
             }
         }

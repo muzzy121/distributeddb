@@ -10,7 +10,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.view.RedirectView;
 
 import java.math.BigDecimal;
 
@@ -36,7 +35,7 @@ public class WalletController {
     public String getWalletDetail(@RequestParam(value = "id", required = false)String id , Model model){
         if(id.equals(null) || id.equals("Choose...")) { return "redirect:/wallets"; }
 
-        LOG.info(id);
+        LOG.debug(id);
         Wallet wallet = walletMapService.getById(id);
         BigDecimal balance = transactionOutputService.getBalance(wallet.getPublicKey());
         model.addAttribute("wallet", wallet);

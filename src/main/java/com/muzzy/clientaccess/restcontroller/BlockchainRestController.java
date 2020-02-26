@@ -1,6 +1,5 @@
 package com.muzzy.clientaccess.restcontroller;
 
-import com.muzzy.cipher.StringUtil;
 import com.muzzy.configuration.ConfigLoader;
 import com.muzzy.configuration.RestApiConfig;
 import com.muzzy.domain.Block;
@@ -8,12 +7,12 @@ import com.muzzy.domain.BlockVerified;
 import com.muzzy.net.commands.StopMsg;
 import com.muzzy.roles.Miner;
 import com.muzzy.service.TransactionOutputService;
+import com.muzzy.service.controllerservice.Validation;
 import com.muzzy.service.map.BlockMapService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.ZonedDateTime;
 import java.util.LinkedHashSet;
 
 @RestController
@@ -40,7 +39,7 @@ public class BlockchainRestController {
     }
 
     @RequestMapping(value = "/block/all", method = RequestMethod.GET)
-    public LinkedHashSet<Block> getAllBlocks(){
+    public LinkedHashSet<Block> getAllBlocks() {
 //
 //        ObjectMapper om = new ObjectMapper();
 //        TransactionOutput transaction = transactionOutputService.getAll().stream().findFirst().get();
@@ -50,49 +49,30 @@ public class BlockchainRestController {
 //            e.printStackTrace();
 //        }
         return blockMapService.getAll();
-//        return null;
     }
 
-    @RequestMapping(value = "/block/allafter/{hash}",method = RequestMethod.GET)
-    public LinkedHashSet<Block> getAllFrom(@PathVariable("hash") String hash){
+    @RequestMapping(value = "/block/allafter/{hash}", method = RequestMethod.GET)
+    public LinkedHashSet<Block> getAllFrom(@PathVariable("hash") String hash) {
 
         return blockMapService.getBlocksAfter(hash);
     }
 
     @RequestMapping(value = "/block/add", method = RequestMethod.POST, consumes = JSON)
-    public Block addBlockToChain(@RequestBody BlockVerified blockDto){
-        Block block = blockMapService.getLastBlock();
+    public Block addBlockToChain(@RequestBody BlockVerified blockDto) {
+        Block lastBlock = blockMapService.getLastBlock();
 
-
-        if(!block.getHash().equals(blockDto.getPreviousHash())){
-            LOG.error("Bad previousHash code");
-            return null;
+        boolean blockValid = Validation.isBlockValid(lastBlock, blockDto);
+        if (blockValid) {
+            blockMapService.save(blockDto);
         }
-        String toHash = blockDto.getPreviousHash() + blockDto.getTimestamp() + blockDto.getTransactions();
-        if(!blockDto.getHash().equals(StringUtil.applySha256(toHash + blockDto.getNonce()))){
-            LOG.error("Bad hashCode!");
-            return null;
-        };
-        if(blockDto.getTimestamp().isBefore(ZonedDateTime.now().minusMinutes(10))){
-            LOG.error("Bad timestamp");
-            return null;
-        }
-        return blockDto;
-
-        //Validate block
-        // czy hash jest OK
-//        czy previousHash == lastHash w moim łańcuchu
-//        czy proof of work się zgadza
-
-// Wygenerowanie nowego UTXO!? - > w którym momencie
-
-
-//        return null;
+        return null;
+        // Wygenerowanie nowego UTXO!? - > w którym momencie
     }
+
     @RequestMapping(value = "/block/mining/stop", consumes = JSON, method = RequestMethod.POST)
-    public void stopMining(@RequestBody StopMsg stopMsg){
+    public void stopMining(@RequestBody StopMsg stopMsg) {
         System.out.println();
-        LOG.info("Hash come: "+stopMsg.getSecret());
+        LOG.info("Hash come: " + stopMsg.getSecret());
         Miner.mining = false;
     }
 }

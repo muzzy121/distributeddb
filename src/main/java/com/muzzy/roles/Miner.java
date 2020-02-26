@@ -40,7 +40,6 @@ public class Miner implements Runnable {
     private final TransactionOutputService transactionOutputService;
 
 
-
     private void stop() {
         Main.isStart = false;
     }
@@ -67,6 +66,7 @@ public class Miner implements Runnable {
         }
         MineRunner.notMined = true;
     }
+
     public static void getSystemInfo() {
         long maxMemory = Runtime.getRuntime().maxMemory();
 
@@ -85,16 +85,17 @@ public class Miner implements Runnable {
         int a = 0;
         Integer nonce = 0;
         long startTime = System.currentTimeMillis();
-        String toHash = block.getPreviousHash() + block.getTimestamp() + block.getTransactions();
+        block.setHashRoot(StringUtil.getHashRoot(block.getTransactions()));
+        String toHash = block.getPreviousHash() + "/" + block.getTimestamp().toEpochSecond() + "/" + block.getHashRoot() + "/" + difficulty;
         do {
-            nonce = (int) (Math.random() * 10000000);
-            hashTmp = StringUtil.applySha256(toHash + nonce);
+            block.setNonce((long) (Math.random() * 10000000));
+            hashTmp = StringUtil.applySha256(toHash + block.getNonce());
             if (hashTmp.substring(0, difficulty).matches("[0]{" + difficulty + "}")) {
                 hash = hashTmp;
             }
-        } while (!hash.substring(0, difficulty).matches("[0]{" + difficulty + "}") && mining == true) ;
+        } while (!hash.substring(0, difficulty).matches("[0]{" + difficulty + "}") && mining == true);
 
-        mining =  false;
+        mining = false;
 
         long endTime = System.currentTimeMillis();
         if (hash.substring(0, difficulty).matches("[0]{" + difficulty + "}")) {
@@ -107,9 +108,12 @@ public class Miner implements Runnable {
             block.setHash(hash);
             if (!block.getTransactions().isEmpty()) {
                 blockMapService.save(block);
-                // TODO: 2020-02-19 Test send blocks if done 
+                // TODO: 2020-02-19 Test send blocks if done
+                String hashRoot = StringUtil.getHashRoot(block.getTransactions());
+                LOG.debug(toHash);
+
                 apiControl.sendBlockToAllNodes(block);
-                
+
                 transactionTemporarySet.getTransactionOutputSet().forEach(t -> transactionOutputService.save(t));
                 transactionTemporarySet.cleanAll();
             }
