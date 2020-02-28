@@ -4,6 +4,7 @@ import com.muzzy.cipher.StringUtil;
 import com.muzzy.domain.Transaction;
 import com.muzzy.domain.TransactionInput;
 import com.muzzy.domain.TransactionOutput;
+import com.muzzy.net.api.RESTApiControl;
 import com.muzzy.service.TransactionOutputService;
 import com.muzzy.service.TransactionTemporarySet;
 import com.muzzy.service.controllerservice.Validation;
@@ -23,11 +24,14 @@ public class TransactionFactory {
     private Transaction transaction;
     private TransactionOutputService transactionOutputService;
     private TransactionTemporarySet transactionTemporarySet;
+    private RESTApiControl restApiControl;
 
     @Autowired
-    public TransactionFactory(TransactionOutputService transactionOutputService, TransactionTemporarySet transactionTemporarySet) {
+    public TransactionFactory(TransactionOutputService transactionOutputService, TransactionTemporarySet transactionTemporarySet, RESTApiControl restApiControl) {
         this.transactionOutputService = transactionOutputService;
         this.transactionTemporarySet = transactionTemporarySet;
+        this.restApiControl = restApiControl;
+
     }
 
     public Transaction getTransaction(String privateKey, String sender, String receiver, BigDecimal value) {
@@ -35,6 +39,8 @@ public class TransactionFactory {
          * Ten early exit także trzeba obgadać, chyba że poszukać transakcji która pozwoli zapłacić z całości!?
          * Co będzie wydajniejsze - czy lepiej eliminować małe transackcje z UTXO, czy lepiej wydawać z jednego inputa
          */
+        transactionOutputService.save(restApiControl.getAllUtxo());
+
         if (transactionOutputService.getBalance(sender).compareTo(value) < 0 ) {
             LOG.error("You don't have coins for this transaction");
             return null;

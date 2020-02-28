@@ -9,6 +9,7 @@ import lombok.Setter;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Objects;
 
 @Getter
 @Setter
@@ -39,5 +40,20 @@ public class TransactionOutput implements Comparable<TransactionOutput>, Seriali
     @Override
     public int compareTo(TransactionOutput o) {
         return value.compareTo(o.value);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof TransactionOutput)) return false;
+        TransactionOutput that = (TransactionOutput) o;
+        return Objects.equals(id, that.id) &&
+                Objects.equals(receiver, that.receiver) &&
+                Objects.equals(parentTransactionId, that.parentTransactionId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, receiver, parentTransactionId);
     }
 }

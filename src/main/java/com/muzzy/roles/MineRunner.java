@@ -2,6 +2,8 @@ package com.muzzy.roles;
 
 import com.muzzy.Main;
 import com.muzzy.configuration.ConfigLoader;
+import com.muzzy.configuration.RestApiConfig;
+import com.muzzy.net.api.RESTApiControl;
 import com.muzzy.service.TransactionService;
 import com.muzzy.service.map.BlockMapService;
 import org.springframework.context.ApplicationContext;

@@ -12,6 +12,10 @@ import java.math.BigDecimal;
 
 @Component
 public class TransactionDtoPublic {
+    private String sender;
+    private String receiver;
+    private BigDecimal value;
+
     public String getSender() {
         return sender;
     }
@@ -38,9 +42,5 @@ public class TransactionDtoPublic {
         this.value = value;
         return this;
     }
-
-    private String sender;
-    private String receiver;
-    private BigDecimal value;
 
 }

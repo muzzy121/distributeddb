@@ -58,26 +58,13 @@ public class Miner implements Runnable {
         block = new BlockVerified(previousHash);
         block.setTransactions((LinkedHashSet<Transaction>) transactionService.getAll());
         block.setDifficulty(DIFFICULTY);
-        transactionService.clear();
+
 
         mine(DIFFICULTY);
         if (!block.getTransactions().isEmpty()) {
             LOG.warn("Added " + block.getTransactions().size() + " transactions");
         }
         MineRunner.notMined = true;
-    }
-
-    public static void getSystemInfo() {
-        long maxMemory = Runtime.getRuntime().maxMemory();
-
-        LOG.info("Operating system: " + System.getProperty("os.name"));
-        LOG.info("System architecture: " + System.getProperty("os.arch"));
-        LOG.info("Operating system version: " + System.getProperty("os.Version"));
-        LOG.info("");
-        LOG.info("Available processors (cores): " + Runtime.getRuntime().availableProcessors());
-        LOG.info("Free memory (bytes):" + Runtime.getRuntime().freeMemory());
-        LOG.info("Maximum memory (bytes): " + (maxMemory == Long.MAX_VALUE ? "no limit" : maxMemory));
-        LOG.info("Total memory (bytes): " + Runtime.getRuntime().totalMemory());
     }
 
     public Block mine(int difficulty) {
@@ -106,14 +93,14 @@ public class Miner implements Runnable {
             LOG.info("Hash found: " + hash + " in: " + hashTime / 1000 + "sec.");
             block.setHashingTime(hashTime);
             block.setHash(hash);
+
             if (!block.getTransactions().isEmpty()) {
                 blockMapService.save(block);
                 // TODO: 2020-02-19 Test send blocks if done
                 String hashRoot = StringUtil.getHashRoot(block.getTransactions());
                 LOG.debug(toHash);
-
+                transactionService.clear();
                 apiControl.sendBlockToAllNodes(block);
-
                 transactionTemporarySet.getTransactionOutputSet().forEach(t -> transactionOutputService.save(t));
                 transactionTemporarySet.cleanAll();
             }
@@ -123,4 +110,18 @@ public class Miner implements Runnable {
             return null;
         }
     }
+
+    public static void getSystemInfo() {
+        long maxMemory = Runtime.getRuntime().maxMemory();
+
+        LOG.info("Operating system: " + System.getProperty("os.name"));
+        LOG.info("System architecture: " + System.getProperty("os.arch"));
+        LOG.info("Operating system version: " + System.getProperty("os.Version"));
+        LOG.info("");
+        LOG.info("Available processors (cores): " + Runtime.getRuntime().availableProcessors());
+        LOG.info("Free memory (bytes):" + Runtime.getRuntime().freeMemory());
+        LOG.info("Maximum memory (bytes): " + (maxMemory == Long.MAX_VALUE ? "no limit" : maxMemory));
+        LOG.info("Total memory (bytes): " + Runtime.getRuntime().totalMemory());
+    }
+
 }

@@ -5,6 +5,7 @@ import com.muzzy.service.TransactionService;
 import org.springframework.stereotype.Service;
 
 import java.util.LinkedHashSet;
+import java.util.Set;
 
 /**
  * Created by Paweł Mazur
@@ -41,5 +42,11 @@ public class TransactionMapService extends AbstractTransactionMapService<Transac
     @Override
     public void clear() {
         super.clear();
+    }
+
+    @Override
+    public void save(Set<Transaction> transactions) {
+        transactions.forEach(this::save);
+        // How to verify Transactions (overspend.. etc..)
     }
 }
