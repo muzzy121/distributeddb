@@ -69,6 +69,20 @@ public class RESTApiControl {
             }
         }
     }
+    public void deleteUtxos(Set<TransactionOutput> transactionOutputSet) {
+        HttpEntity<Set<TransactionOutput>> request = new HttpEntity<>(transactionOutputSet);
+
+        for (String address : configLoader.getAddresses()) {
+            String url = "http://" + address + ":" + restApiConfig.getDstPort() + "/utxo/delete";
+            LOG.debug(url);
+            try {
+                restTemplate.postForLocation(url, request);
+            } catch (RestClientException re) {
+                LOG.debug("Can't connect!");
+            }
+        }
+    }
+
 
     public LinkedHashSet<BlockVerified> getBlocksFromNetwork(String hash) {
         for (String address : configLoader.getAddresses()

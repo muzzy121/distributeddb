@@ -98,7 +98,16 @@ public class Miner implements Runnable {
                 blockMapService.save(block);
                 // TODO: 2020-02-19 Test send blocks if done
                 String hashRoot = StringUtil.getHashRoot(block.getTransactions());
+
                 LOG.debug(toHash);
+//                Set<TransactionOutput> toDeleteUtxoList = new HashSet<>();
+
+                transactionService.getAll().stream().map(t -> t.getInputs()).forEach(t -> t.forEach(x -> {
+                    if(x.getUtxo()!=null){
+                        transactionOutputService.delete(x.getUtxo());
+                    }
+                }));
+
                 transactionService.clear();
                 apiControl.sendBlockToAllNodes(block);
                 transactionTemporarySet.getTransactionOutputSet().forEach(t -> transactionOutputService.save(t));

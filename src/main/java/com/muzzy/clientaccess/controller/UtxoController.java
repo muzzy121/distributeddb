@@ -24,7 +24,7 @@ public class UtxoController {
 
     @GetMapping({"/","index"})
     public String getIndexPage(Model model){
-        transactionOutputService.save(restApiControl.getAllUtxo());
+//        transactionOutputService.save(restApiControl.getAllUtxo());
         model.addAttribute("transactions", transactionOutputService.getAll());
         return "transaction/index";
     }

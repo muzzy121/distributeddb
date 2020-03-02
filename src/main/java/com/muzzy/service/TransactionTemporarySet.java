@@ -19,4 +19,5 @@ public class TransactionTemporarySet {
     public void addTransaction(TransactionOutput transactionOutput){
         transactionOutputSet.add(transactionOutput);
     }
+
 }
