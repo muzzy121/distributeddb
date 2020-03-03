@@ -73,18 +73,15 @@ public class TransactionFactory {
         transaction.getOutputs().add(new TransactionOutput(receiver, value, transaction.getTransactionId()));
         transaction.getOutputs().add(new TransactionOutput(sender, change, transaction.getTransactionId()));
 
-        // TODO: 2020-02-01 To miejsce jest do zmiany, dodaje do UTXO transakcje które nie zostały jeszcze dodane do bloku
+        //TODO: 2020-02-01 To miejsce jest do zmiany, dodaje do UTXO transakcje które nie zostały jeszcze dodane do bloku
         //można stworzyć małe listy które będą przechowywać poza klasą takie dane
         //Test ficzera, zamieniam UTXO na tymczasową listę, którą przepiszę do właściwej listy po dodaniu bloku do łańcucha
 
         // spent money wait to add to block
-        transaction.getOutputs().stream().filter(transactionOutput -> transactionOutput.getReceiver().equals(receiver)).forEach(t -> transactionTemporarySet.addTransaction(t));
+        transaction.getOutputs().stream().filter(transactionOutput -> transactionOutput.getReceiver().equals(receiver)).forEach(transactionTemporarySet::addTransaction);
         // redirect change directly to UTXO
-
-
         //to musi trafić do jakiejś kolejki
-
-        transaction.getOutputs().stream().filter(transactionOutput -> !transactionOutput.getReceiver().equals(receiver)).forEach(t -> transactionOutputService.save(t));
+        transaction.getOutputs().stream().filter(transactionOutput -> !transactionOutput.getReceiver().equals(receiver)).forEach(transactionOutputService::save);
         //Kasowanie starych wejść? Kasowanie bloku ze względu na np. jedną nieprawidłową transakcję spowoduje fraud środków
         inputs.stream().filter(i -> i.getUtxo() != null).forEach(y -> transactionOutputService.deleteById(y.getUtxo().getId()));
 
