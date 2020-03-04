@@ -5,6 +5,7 @@ import com.muzzy.service.TransactionOutputService;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -45,6 +46,12 @@ public class TransactionOutputMapService extends AbstractTransactionOutputMapSer
 
     @Override
     public void save(Set<TransactionOutput> allUtxo) {
+        if(allUtxo != null){
+            allUtxo.forEach(t -> save(t));
+        }
+    }
+    @Override
+    public void save(ArrayList<TransactionOutput> allUtxo) {
         if(allUtxo != null){
             allUtxo.forEach(t -> save(t));
         }

@@ -2,6 +2,7 @@ package com.muzzy.clientaccess.controller;
 
 import com.muzzy.domain.Wallet;
 import com.muzzy.service.TransactionOutputService;
+import com.muzzy.service.TransactionService;
 import com.muzzy.service.map.WalletMapService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,10 +21,12 @@ public class WalletController {
 
     private final WalletMapService walletMapService;
     private final TransactionOutputService transactionOutputService;
+    private final TransactionService transactionService;
 
-    public WalletController(WalletMapService walletMapService, TransactionOutputService transactionOutputService) {
+    public WalletController(WalletMapService walletMapService, TransactionOutputService transactionOutputService, TransactionService transactionService) {
         this.walletMapService = walletMapService;
         this.transactionOutputService = transactionOutputService;
+        this.transactionService = transactionService;
     }
 
     @RequestMapping(value = "/wallets", method = RequestMethod.GET)
@@ -37,7 +40,7 @@ public class WalletController {
 
         LOG.debug(id);
         Wallet wallet = walletMapService.getById(id);
-        BigDecimal balance = transactionOutputService.getBalance(wallet.getPublicKey());
+        BigDecimal balance = transactionOutputService.getBalance(wallet.getPublicKey()).subtract(transactionService.getValueOfTransactionsBySender(wallet.getPublicKey()));
         model.addAttribute("wallet", wallet);
         model.addAttribute("balance", balance);
         return "wallet/detail";

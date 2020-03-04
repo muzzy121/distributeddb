@@ -34,7 +34,12 @@
         <tr>
             <th>Locktime</th>
             <td th:text="${block.getTimestamp()}">x</td>
+        </tr>
+        <tr>
+            <th>Hashing Time</th>
+            <td th:text="${block.getHashingTime()/1000} + ' seconds'">x</td>
         </tr><br/>
+        <br/>
         </tbody>
 
 

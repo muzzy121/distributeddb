@@ -17,6 +17,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import java.util.LinkedHashSet;
+import java.util.concurrent.TimeUnit;
 
 @Scope("prototype")
 @Component
@@ -90,7 +91,9 @@ public class Miner implements Runnable {
             apiControl.brakeMiningOnAllNodes(hash);
 
             long hashTime = endTime - startTime;
-            LOG.info("Hash found: " + hash + " in: " + hashTime / 1000 + "sec.");
+            LOG.info("Hash found: " + hash + " in: " + TimeUnit.MILLISECONDS.toSeconds(hashTime) + "sec.");
+
+
             block.setHashingTime(hashTime);
             block.setHash(hash);
 
@@ -98,18 +101,22 @@ public class Miner implements Runnable {
                 blockMapService.save(block);
                 // TODO: 2020-02-19 Test send blocks if done
                 String hashRoot = StringUtil.getHashRoot(block.getTransactions());
-
                 LOG.debug(toHash);
-//                Set<TransactionOutput> toDeleteUtxoList = new HashSet<>();
 
+                //Kasowanie starych wejść? Kasowanie bloku ze względu na np. jedną nieprawidłową transakcję spowoduje fraud środków
                 transactionService.getAll().stream().map(t -> t.getInputs()).forEach(t -> t.forEach(x -> {
                     if(x.getUtxo()!=null){
                         transactionOutputService.delete(x.getUtxo());
                     }
                 }));
 
+                transactionService.getAll().stream().map(t -> t.getOutputs()).forEach(t -> transactionOutputService.save(t));
+
+//              restApiControl.deleteUtxos(inputs);
+
                 transactionService.clear();
                 apiControl.sendBlockToAllNodes(block);
+                //Zapisanie dodanej do bloku transakcji na UTXO
                 transactionTemporarySet.getTransactionOutputSet().forEach(t -> transactionOutputService.save(t));
                 transactionTemporarySet.cleanAll();
             }

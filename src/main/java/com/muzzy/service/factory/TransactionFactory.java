@@ -6,6 +6,7 @@ import com.muzzy.domain.TransactionInput;
 import com.muzzy.domain.TransactionOutput;
 import com.muzzy.net.api.RESTApiControl;
 import com.muzzy.service.TransactionOutputService;
+import com.muzzy.service.TransactionService;
 import com.muzzy.service.TransactionTemporarySet;
 import com.muzzy.service.controllerservice.Validation;
 import org.slf4j.Logger;
@@ -23,12 +24,14 @@ public class TransactionFactory {
     private final Logger LOG = LoggerFactory.getLogger(TransactionFactory.class);
     private Transaction transaction;
     private TransactionOutputService transactionOutputService;
+    private TransactionService transactionService;
     private TransactionTemporarySet transactionTemporarySet;
     private RESTApiControl restApiControl;
 
     @Autowired
-    public TransactionFactory(TransactionOutputService transactionOutputService, TransactionTemporarySet transactionTemporarySet, RESTApiControl restApiControl) {
+    public TransactionFactory(TransactionOutputService transactionOutputService, TransactionService transactionService, TransactionTemporarySet transactionTemporarySet, RESTApiControl restApiControl) {
         this.transactionOutputService = transactionOutputService;
+        this.transactionService = transactionService;
         this.transactionTemporarySet = transactionTemporarySet;
         this.restApiControl = restApiControl;
 
@@ -41,7 +44,12 @@ public class TransactionFactory {
          */
 //        transactionOutputService.save(restApiControl.getAllUtxo());
 
-        if (transactionOutputService.getBalance(sender).compareTo(value) < 0) {
+
+        BigDecimal changeValue = transactionService.getValueOfTransactionsBySender(sender);
+        BigDecimal balance = new BigDecimal(0).add(transactionOutputService.getBalance(sender)).subtract(changeValue);
+        LOG.debug("To spend: " + balance);
+
+        if (balance.compareTo(value) < 0) {
             LOG.error("You don't have coins for this transaction");
             return null;
         }
@@ -81,9 +89,11 @@ public class TransactionFactory {
         transaction.getOutputs().stream().filter(transactionOutput -> transactionOutput.getReceiver().equals(receiver)).forEach(transactionTemporarySet::addTransaction);
         // redirect change directly to UTXO
         //to musi trafić do jakiejś kolejki
-        transaction.getOutputs().stream().filter(transactionOutput -> !transactionOutput.getReceiver().equals(receiver)).forEach(transactionOutputService::save);
+//        transaction.getOutputs().stream().filter(transactionOutput -> !transactionOutput.getReceiver().equals(receiver)).forEach(transactionOutputService::save);
         //Kasowanie starych wejść? Kasowanie bloku ze względu na np. jedną nieprawidłową transakcję spowoduje fraud środków
-        inputs.stream().filter(i -> i.getUtxo() != null).forEach(y -> transactionOutputService.deleteById(y.getUtxo().getId()));
+//        inputs.stream()
+//                .filter(i -> i.getUtxo() != null) //Stream<TransactionInputs>
+//                .forEach(y -> transactionOutputService.deleteById(y.getUtxo().getId())); //Delete all invoked inputs from UTXO Service
 
 //        restApiControl.deleteUtxos(inputs);
 

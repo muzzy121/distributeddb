@@ -4,6 +4,7 @@ import com.muzzy.domain.TransactionOutput;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Set;
 
 /**
@@ -16,4 +17,5 @@ public interface TransactionOutputService extends CrudService<TransactionOutput,
     BigDecimal getBalance(String publicKey);
     void clear();
     void save(Set<TransactionOutput> allUtxo);
+    void save(ArrayList<TransactionOutput> allUtxo);
 }

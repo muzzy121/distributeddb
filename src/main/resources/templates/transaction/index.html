@@ -36,5 +36,17 @@
         <td th:text="${transaction.value}">x</td>
     </tr>
 </table>
+<div th:if="${transactionsToAdd != null}" th:remove="tag">
+<h1>
+    <span class="badge badge-secondary">Transactions ready to add to block</span>
+</h1>
+<table class="table table-stripped">
+    <tr th:each="transaction: ${transactionsToAdd}">
+        <!--/*@thymesVar id="getStringFromKey" type="com.muzzy.cipher"*/-->
+        <td th:text="${transaction.getReceiver()}">x</td>
+        <td th:text="${transaction.value}">x</td>
+    </tr>
+</table>
+</div>
 </body>
 </html>
