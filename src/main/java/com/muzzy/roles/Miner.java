@@ -93,7 +93,6 @@ public class Miner implements Runnable {
             long hashTime = endTime - startTime;
             LOG.info("Hash found: " + hash + " in: " + TimeUnit.MILLISECONDS.toSeconds(hashTime) + "sec.");
 
-
             block.setHashingTime(hashTime);
             block.setHash(hash);
 
@@ -115,10 +114,12 @@ public class Miner implements Runnable {
 //              restApiControl.deleteUtxos(inputs);
 
                 transactionService.clear();
+
                 apiControl.sendBlockToAllNodes(block);
+
                 //Zapisanie dodanej do bloku transakcji na UTXO
-                transactionTemporarySet.getTransactionOutputSet().forEach(t -> transactionOutputService.save(t));
-                transactionTemporarySet.cleanAll();
+//                transactionTemporarySet.getTransactionOutputSet().forEach(t -> transactionOutputService.save(t));
+//                transactionTemporarySet.cleanAll();
             }
             return block;
         } else {

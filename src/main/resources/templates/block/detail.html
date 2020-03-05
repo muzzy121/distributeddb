@@ -33,7 +33,7 @@
         </tr>
         <tr>
             <th>Locktime</th>
-            <td th:text="${block.getTimestamp()}">x</td>
+            <td th:text="${#temporals.format(block.getTimestamp(), 'dd.MM.yyyy HH:mm:ss')}">x</td>
         </tr>
         <tr>
             <th>Hashing Time</th>
