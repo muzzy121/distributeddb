@@ -103,7 +103,6 @@ public class Miner implements Runnable {
                 String hashRoot = StringUtil.getHashRoot(block.getTransactions());
                 LOG.debug(toHash);
 
-                //Kasowanie starych wejść? Kasowanie bloku ze względu na np. jedną nieprawidłową transakcję spowoduje fraud środków
                 block.getTransactions().stream().map(t -> t.getInputs()).forEach(t -> t.forEach(x -> {
                     if(x.getUtxo()!=null){
                         transactionOutputService.delete(x.getUtxo());
@@ -111,17 +110,12 @@ public class Miner implements Runnable {
                 }));
 
                 block.getTransactions().stream().map(t -> t.getOutputs()).forEach(t -> transactionOutputService.save(t));
-
-//              restApiControl.deleteUtxos(inputs);
-
                 apiControl.sendBlockToAllNodes(block);
-
-                //Zapisanie dodanej do bloku transakcji na UTXO
-//                transactionTemporarySet.getTransactionOutputSet().forEach(t -> transactionOutputService.save(t));
-//                transactionTemporarySet.cleanAll();
             }
             return block;
         } else {
+
+//            transactionOutputService.save(apiControl.getAllUtxo());
             LOG.info("Stopped by REST API");
             return null;
         }

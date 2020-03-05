@@ -72,7 +72,7 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
          */
         Block block = blockMapService.getLastBlock();
         if (block != null) {
-            blockMapService.save(restApiControl.getBlocksFromNetwork(block.getHash()));
+            blockMapService.save(restApiControl.getBlocksFromNetworkAfter(block.getHash()));
         } else {
             blockMapService.save(restApiControl.getBlocksFromNetwork());
         }

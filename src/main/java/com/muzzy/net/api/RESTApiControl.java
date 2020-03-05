@@ -36,6 +36,7 @@ public class RESTApiControl {
     //Test template store for transactions
     private final Set<Transaction> transactionTemporarySet = new HashSet<>();
 
+
     public RESTApiControl(ConfigLoader configLoader, RestTemplate restTemplate, TransactionOutputService transactionOutputService) {
         this.configLoader = configLoader;
         this.restApiConfig = configLoader.getApi();
@@ -83,9 +84,7 @@ public class RESTApiControl {
             }
         }
     }
-
-
-    public LinkedHashSet<BlockVerified> getBlocksFromNetwork(String hash) {
+    public LinkedHashSet<BlockVerified> getBlocksFromNetworkAfter(String hash) {
         for (String address : configLoader.getAddresses()
         ) {
             String url = "http://" + address + ":" + restApiConfig.getDstPort() + restApiConfig.getGetAllFrom() + hash;
@@ -143,7 +142,6 @@ public class RESTApiControl {
         }
         /**
          * This is simple sum all UTXOs from network
-         *
          */
         Set<TransactionOutput> transactionOutputs = transactionOutputService.getAll();
         if(!tempUTXO.isEmpty()){
