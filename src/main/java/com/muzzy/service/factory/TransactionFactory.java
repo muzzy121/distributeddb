@@ -86,7 +86,7 @@ public class TransactionFactory {
         //Test ficzera, zamieniam UTXO na tymczasową listę, którą przepiszę do właściwej listy po dodaniu bloku do łańcucha
 
         // spent money wait to add to block
-        transaction.getOutputs().stream().filter(transactionOutput -> transactionOutput.getReceiver().equals(receiver)).forEach(transactionTemporarySet::addTransaction);
+//        transaction.getOutputs().stream().filter(transactionOutput -> transactionOutput.getReceiver().equals(receiver)).forEach(transactionTemporarySet::addTransaction);
         // redirect change directly to UTXO
         //to musi trafić do jakiejś kolejki
 //        transaction.getOutputs().stream().filter(transactionOutput -> !transactionOutput.getReceiver().equals(receiver)).forEach(transactionOutputService::save);
@@ -136,9 +136,9 @@ public class TransactionFactory {
     }
 
     /**
-     * Werify if Signature is proper
+     * Verify if Signature is proper
      * Calculate transaction Hash
-     * Creates and adds TransctionOutputs to List
+     * Creates and adds TransactionOutputs to List
      * Adds new TransactionOutputs to UTXOs
      *
      * @return true when transaction was proceeded success

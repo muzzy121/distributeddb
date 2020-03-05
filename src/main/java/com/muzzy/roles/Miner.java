@@ -58,6 +58,7 @@ public class Miner implements Runnable {
         MineRunner.notMined = false;
         block = new BlockVerified(previousHash);
         block.setTransactions((LinkedHashSet<Transaction>) transactionService.getAll());
+        transactionService.clear();
         block.setDifficulty(DIFFICULTY);
 
 
@@ -103,17 +104,15 @@ public class Miner implements Runnable {
                 LOG.debug(toHash);
 
                 //Kasowanie starych wejść? Kasowanie bloku ze względu na np. jedną nieprawidłową transakcję spowoduje fraud środków
-                transactionService.getAll().stream().map(t -> t.getInputs()).forEach(t -> t.forEach(x -> {
+                block.getTransactions().stream().map(t -> t.getInputs()).forEach(t -> t.forEach(x -> {
                     if(x.getUtxo()!=null){
                         transactionOutputService.delete(x.getUtxo());
                     }
                 }));
 
-                transactionService.getAll().stream().map(t -> t.getOutputs()).forEach(t -> transactionOutputService.save(t));
+                block.getTransactions().stream().map(t -> t.getOutputs()).forEach(t -> transactionOutputService.save(t));
 
 //              restApiControl.deleteUtxos(inputs);
-
-                transactionService.clear();
 
                 apiControl.sendBlockToAllNodes(block);
 
@@ -139,6 +138,6 @@ public class Miner implements Runnable {
         LOG.info("Free memory (bytes):" + Runtime.getRuntime().freeMemory());
         LOG.info("Maximum memory (bytes): " + (maxMemory == Long.MAX_VALUE ? "no limit" : maxMemory));
         LOG.info("Total memory (bytes): " + Runtime.getRuntime().totalMemory());
+        LOG.info("NodeID: " + Main.nodeId);
     }
-
 }

@@ -3,6 +3,7 @@ package com.muzzy.net.api;
 import com.muzzy.configuration.ConfigLoader;
 import com.muzzy.configuration.RestApiConfig;
 import com.muzzy.domain.BlockVerified;
+import com.muzzy.domain.Transaction;
 import com.muzzy.domain.TransactionOutput;
 import com.muzzy.net.commands.StopMsg;
 import com.muzzy.service.TransactionOutputService;
@@ -18,10 +19,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.HashMap;
-import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 @Getter
 @Setter
@@ -34,6 +32,9 @@ public class RESTApiControl {
     private final TransactionOutputService transactionOutputService;
     private final ConfigLoader configLoader;
     private RestApiConfig restApiConfig;
+
+    //Test template store for transactions
+    private final Set<Transaction> transactionTemporarySet = new HashSet<>();
 
     public RESTApiControl(ConfigLoader configLoader, RestTemplate restTemplate, TransactionOutputService transactionOutputService) {
         this.configLoader = configLoader;
@@ -152,17 +153,42 @@ public class RESTApiControl {
         return null;
     }
 
-    public void sendTransactionsToAllNodes(BlockVerified block) {
-        HttpEntity<BlockVerified> request = new HttpEntity<>(block);
-//
-//        for (String address : configLoader.getAddresses()) {
-//            String url = "http://" + address + ":" + restApiConfig.getDstPort() + restApiConfig.getAddBlockEndpoint();
-//            LOG.debug(url);
-//            try {
-//                restTemplate.postForLocation(url, request);
-//            } catch (RestClientException re) {
-//                LOG.debug("Can't connect!");
-//            }
-//        }
+    public void sendTransactionsToAllNodes(Set<Transaction> transactions) {
+        HttpEntity<Set<Transaction>> request = new HttpEntity<>(transactions);
+        for (String address : configLoader.getAddresses()) {
+            String url = "http://" + address + ":" + restApiConfig.getDstPort() + "/api/chain/transactions/add";
+            LOG.debug(url);
+            try {
+                restTemplate.postForLocation(url, request);
+            } catch (RestClientException re) {
+                LOG.debug("Can't connect!");
+            }
+        }
+    }
+
+    public void sendTransactionsToAllNodes(Transaction transaction) {
+        Set<Transaction> transactions = new HashSet<>();
+        transactions.add(transaction);
+        sendTransactionsToAllNodes(transactions);
+    }
+
+    public Set<Transaction> getTransactionsFromAllNodes() {
+        for (String address : configLoader.getAddresses()) {
+            String url = "http://" + address + ":" + restApiConfig.getDstPort() + "/api/chain/transactions/all";
+            LOG.debug(url);
+            try {
+                ResponseEntity<Set<Transaction>> rateResponse =
+                        restTemplate.exchange(url,
+                                HttpMethod.GET, null, new ParameterizedTypeReference<Set<Transaction>>() {
+                                });
+
+                rateResponse.getBody().forEach(t -> transactionTemporarySet.add(t));
+                return transactionTemporarySet;
+            } catch (RestClientException re) {
+//                re.printStackTrace();
+                LOG.warn("Can't get Blockchain data!");
+            }
+        }
+        return null;
     }
 }

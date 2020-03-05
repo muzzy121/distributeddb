@@ -1,5 +1,6 @@
 package com.muzzy.bootstrap;
 
+import com.muzzy.Main;
 import com.muzzy.domain.Block;
 import com.muzzy.domain.BlockVerified;
 import com.muzzy.domain.Transaction;
@@ -58,7 +59,7 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
         Wallet walletC = new Wallet();
 
 
-        Miner.getSystemInfo();
+
 
         /**
          * Downloading transactions
@@ -138,7 +139,8 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
         walletMapService.save(walletA);
         walletMapService.save(walletB);
         walletMapService.save(walletC);
-
+        Main.nodeId = Math.random()*10000000;
+        Miner.getSystemInfo();
     }
 
     @Deprecated

@@ -1,5 +1,6 @@
 package com.muzzy.domain;
 
+import com.muzzy.Main;
 import com.muzzy.cipher.StringUtil;
 import com.muzzy.service.controllerservice.Validation;
 import lombok.Getter;
@@ -31,6 +32,7 @@ public abstract class Block implements Serializable {
     private Long hashingTime;
     private int difficulty;
     private String hashRoot;
+    private double nodeId = Main.nodeId;
 
     public Block(String previousHash) {
         this.previousHash = previousHash;

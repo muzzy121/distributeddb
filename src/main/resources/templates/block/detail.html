@@ -37,9 +37,15 @@
         </tr>
         <tr>
             <th>Hashing Time</th>
-            <td th:text="${block.getHashingTime()/1000} + ' seconds'">x</td>
-        </tr><br/>
+            <td th:if="${block.getHashingTime() != null}" th:text="${block.getHashingTime()/1000} + ' seconds'">0</td>
+        </tr>
+        <tr>
+            <th>Hashing Node</th>
+            <td th:text="${block.getNodeId()}">x</td>
+        </tr>
+
         <br/>
+
         </tbody>
 
 

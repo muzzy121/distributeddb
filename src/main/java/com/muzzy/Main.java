@@ -24,6 +24,7 @@ import java.util.concurrent.Future;
 @SpringBootApplication
 public class Main implements CommandLineRunner {
     public static boolean isStart = false;
+    public static double nodeId;
     private final Logger LOG = LoggerFactory.getLogger(Main.class);
     private Scanner scanner = new Scanner(System.in);
     private ExecutorService executorService;

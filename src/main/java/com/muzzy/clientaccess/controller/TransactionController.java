@@ -4,6 +4,7 @@ import com.muzzy.domain.Block;
 import com.muzzy.domain.Transaction;
 import com.muzzy.domain.Wallet;
 import com.muzzy.dto.TransactionDto;
+import com.muzzy.net.api.RESTApiControl;
 import com.muzzy.service.TransactionService;
 import com.muzzy.service.factory.TransactionFactory;
 import com.muzzy.service.map.BlockMapService;
@@ -31,17 +32,19 @@ public class TransactionController {
     private final TransactionFactory transactionFactory;
     private final TransactionService transactionService;
     private final TransactionValidator transactionValidator;
+    private final RESTApiControl restApiControl;
 
     public TransactionController(BlockMapService blockMapService,
                                  WalletMapService walletMapService,
                                  TransactionFactory transactionFactory,
                                  TransactionService transactionService,
-                                 TransactionValidator transactionValidator) {
+                                 TransactionValidator transactionValidator, RESTApiControl restApiControl) {
         this.blockMapService = blockMapService;
         this.walletMapService = walletMapService;
         this.transactionFactory = transactionFactory;
         this.transactionService = transactionService;
         this.transactionValidator = transactionValidator;
+        this.restApiControl = restApiControl;
     }
 
     @RequestMapping(value = {"/transactions"}, method = RequestMethod.GET)
@@ -119,6 +122,7 @@ public class TransactionController {
         LOG.warn("Ready to add transaction!");
 
         transactionService.save(transaction);
+        restApiControl.sendTransactionsToAllNodes(transaction);
         return "redirect:/index";
     }
 
