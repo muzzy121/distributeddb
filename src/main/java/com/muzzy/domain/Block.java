@@ -22,7 +22,6 @@ import java.util.LinkedHashSet;
 @NoArgsConstructor
 public abstract class Block implements Serializable {
     private static final Logger LOG = LoggerFactory.getLogger(Block.class);
-    //    private Long Id;
     private ZonedDateTime timestamp;
     private Long nonce = 0L;
     //    private List<Transaction> transactions = new ArrayList<>();
@@ -32,7 +31,6 @@ public abstract class Block implements Serializable {
     private Long hashingTime;
     private int difficulty;
     private String hashRoot;
-    //    private long generatingTime;
 
     public Block(String previousHash) {
         this.previousHash = previousHash;

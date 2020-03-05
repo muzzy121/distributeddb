@@ -44,7 +44,7 @@
 
 
     </table>
-    <h3>Transctions in Block:</h3>
+    <h3>Transactions in Block:</h3>
     <table class="table table-striped">
         <tbody th:each="transaction: ${block.getTransactions()}">
         <tr>
@@ -55,7 +55,7 @@
             <th>Sender</th>
             <td th:text="${transaction.getSender()}">x</td>
         </tr>
-            <th>Reciever</th>
+            <th>Receiver</th>
             <td th:text="${transaction.getReceiver()}">x</td>
         <tr>
             <th>Value</th>
