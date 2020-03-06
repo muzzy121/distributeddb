@@ -4,7 +4,6 @@ import com.muzzy.domain.TransactionOutput;
 import com.muzzy.domain.Wallet;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 
 import java.math.BigDecimal;
 import java.util.Set;
@@ -15,22 +14,18 @@ class TransactionOutputMapServiceTest {
     TransactionOutputMapService transactionOutputMapService;
     TransactionOutput transactionOutput;
     String mockPublicKey;
+    Wallet wallet;
 
     @BeforeEach
     void setUp() {
-        Wallet wallet = new Wallet();
+        wallet = new Wallet();
         transactionOutputMapService = new TransactionOutputMapService();
         transactionOutput = new TransactionOutput();
         transactionOutput.setId("1");
-        transactionOutput.setValue(BigDecimal.valueOf(10));
+        transactionOutput.setValue(BigDecimal.valueOf(10F));
         transactionOutput.setReceiver(wallet.getPublicKey());
         transactionOutputMapService.save(transactionOutput);
-        // ---- For getTransctionByReciever and getBalance
-//        Mockito.when(transactionOutputMapService.getTransctionByReciever(Mockito.any(PublicKey.class)))
-//                .thenReturn(transactionOutputMapService.getAll());
 
-        // ---- For getBalance
-        mockPublicKey = Mockito.anyString();
     }
 
     @Test
@@ -70,7 +65,7 @@ class TransactionOutputMapServiceTest {
 
     @Test
     void getBalance() {
-        BigDecimal balance = transactionOutputMapService.getBalance(mockPublicKey);
+        BigDecimal balance = transactionOutputMapService.getBalance(wallet.getPublicKey());
         assertEquals(BigDecimal.valueOf(10F),balance);
     }
 }

@@ -21,25 +21,28 @@ class ValidationTest {
 
     @BeforeEach
     void setUp() {
+        wallet = new Wallet();
         genesisBlock = new BlockVerified("0");
-        genesisBlock.addTransaction(new AncestorTransaction("1", "2", new BigDecimal(100), null, null, "0"));
+
+        AncestorTransaction ancestorTransaction = new AncestorTransaction(wallet.getPublicKey(), "3333", new BigDecimal(100), null, null, "0");
+        String s = ancestorTransaction.getSender() + ancestorTransaction.getReceiver() + ancestorTransaction.getValue();
+        ancestorTransaction.setSignature(Validation.confirm(wallet.getPrivateKey(), s));
+
+        genesisBlock.addTransaction(ancestorTransaction);
         genesisBlock.mine(4);
         block = new BlockVerified(genesisBlock.getHash());
         block.setTimestamp(ZonedDateTime.now());
         block.mine(5);
 
-        wallet = new Wallet();
         transaction = new Transaction().builder()
                 .sender(wallet.getPublicKey())
                 .receiver("2222")
                 .value(new BigDecimal(100))
                 .build();
-
     }
 
     @Test
     void verifySignature() {
-
         String data = transaction.getSender() + transaction.getReceiver() + transaction.getValue();
         byte[] signature = Validation.confirm(wallet.getPrivateKey(), data);
 

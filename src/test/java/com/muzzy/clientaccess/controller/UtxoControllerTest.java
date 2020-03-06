@@ -1,7 +1,9 @@
 package com.muzzy.clientaccess.controller;
 
+import com.muzzy.domain.Transaction;
 import com.muzzy.domain.TransactionOutput;
 import com.muzzy.service.TransactionOutputService;
+import com.muzzy.service.TransactionService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,6 +18,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.nullValue;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -28,6 +31,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class UtxoControllerTest {
     @Mock
     TransactionOutputService transactionOutputService;
+    @Mock
+    TransactionService transactionService;
 
     @InjectMocks
     UtxoController utxoController;
@@ -46,12 +51,15 @@ class UtxoControllerTest {
 
     @Test
     void getIndexPage() throws Exception {
+        Set<Transaction> transactions = new HashSet<>();
         when(transactionOutputService.getAll()).thenReturn(transactionOutputs);
+        when(transactionService.getAll()).thenReturn(transactions);
+
         mockMvc.perform(get("/"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("transaction/index"))
-                .andExpect(model().attribute("transactions", hasSize(2)));
-
+                .andExpect(model().attribute("transactions", hasSize(2)))
+                .andExpect(model().attribute("transactionsToAdd", nullValue()));
         verify(transactionOutputService,times(1)).getAll();
     }
 }

@@ -55,7 +55,7 @@ public class TransactionMapService extends AbstractTransactionMapService<Transac
     @Override
     public BigDecimal getValueOfTransactionsBySender(String sender) {
         return new BigDecimal(getAll().stream()
-                .filter(transaction -> transaction.getSender().equals(sender)) //Stream<Transacrion>
+                .filter(transaction -> transaction.getSender().equals(sender)) //Stream<Transaction>
                 .map(transaction ->transaction.getValue()) //Stream<BigDecimal>
                 .collect(Collectors.summingLong(BigDecimal::longValue)));
     }

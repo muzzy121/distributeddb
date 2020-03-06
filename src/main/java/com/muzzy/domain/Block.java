@@ -1,5 +1,6 @@
 package com.muzzy.domain;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.muzzy.Main;
 import com.muzzy.cipher.StringUtil;
 import com.muzzy.service.controllerservice.Validation;
@@ -21,8 +22,11 @@ import java.util.LinkedHashSet;
 @Getter
 @Setter
 @NoArgsConstructor
+
 public abstract class Block implements Serializable {
     private static final Logger LOG = LoggerFactory.getLogger(Block.class);
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ")
     private ZonedDateTime timestamp;
     private Long nonce = 0L;
     //    private List<Transaction> transactions = new ArrayList<>();

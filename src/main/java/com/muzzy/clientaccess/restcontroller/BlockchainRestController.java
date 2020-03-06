@@ -1,6 +1,5 @@
 package com.muzzy.clientaccess.restcontroller;
 
-import com.muzzy.configuration.ConfigLoader;
 import com.muzzy.configuration.RestApiConfig;
 import com.muzzy.domain.Block;
 import com.muzzy.domain.BlockVerified;
@@ -21,16 +20,16 @@ public class BlockchainRestController {
     private static final String JSON = "application/json";
     private static final Logger LOG = LoggerFactory.getLogger(SimulationController.class);
 
-    private final ConfigLoader configLoader;
+//    private final ConfigLoader configLoader;
     private final BlockMapService blockMapService;
     private final TransactionOutputService transactionOutputService;
     private RestApiConfig restApiConfig;
 
-    public BlockchainRestController(ConfigLoader configLoader, BlockMapService blockMapService, TransactionOutputService transactionOutputService) {
-        this.configLoader = configLoader;
+    public BlockchainRestController(BlockMapService blockMapService, TransactionOutputService transactionOutputService) {
+//        this.configLoader = configLoader;
         this.blockMapService = blockMapService;
         this.transactionOutputService = transactionOutputService;
-        this.restApiConfig = configLoader.getApi();
+//        this.restApiConfig = configLoader.getApi();
     }
 
     @RequestMapping(value = "/block/lasthash", method = RequestMethod.GET)
@@ -64,7 +63,6 @@ public class BlockchainRestController {
             blockDto.getTransactions().stream().map(t -> t.getOutputs()).forEach(t -> transactionOutputService.save(t));
         }
         return null;
-        // Wygenerowanie nowego UTXO!? - > w którym momencie
     }
 
     @RequestMapping(value = "/block/mining/stop", consumes = JSON, method = RequestMethod.POST)
