@@ -108,15 +108,16 @@ public class Miner implements Runnable {
                         transactionOutputService.delete(x.getUtxo());
                     }
                 }));
-
                 block.getTransactions().stream().map(t -> t.getOutputs()).forEach(t -> transactionOutputService.save(t));
                 apiControl.sendBlockToAllNodes(block);
             }
             return block;
         } else {
-
-//            transactionOutputService.save(apiControl.getAllUtxo());
-            LOG.info("Stopped by REST API");
+//            Set<TransactionOutput> allUtxo = apiControl.getAllUtxo();
+//            if (!allUtxo.isEmpty()) {
+//                transactionOutputService.clear();
+//                transactionOutputService.save(allUtxo);
+//            }
             return null;
         }
     }

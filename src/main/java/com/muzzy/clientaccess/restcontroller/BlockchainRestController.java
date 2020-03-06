@@ -40,14 +40,6 @@ public class BlockchainRestController {
 
     @RequestMapping(value = "/block/all", method = RequestMethod.GET)
     public LinkedHashSet<Block> getAllBlocks() {
-//
-//        ObjectMapper om = new ObjectMapper();
-//        TransactionOutput transaction = transactionOutputService.getAll().stream().findFirst().get();
-//        try {
-//            String test = om.writeValueAsString(transaction);
-//        } catch (JsonProcessingException e) {
-//            e.printStackTrace();
-//        }
         return blockMapService.getAll();
     }
 
@@ -64,6 +56,12 @@ public class BlockchainRestController {
         boolean blockValid = Validation.isBlockValid(lastBlock, blockDto);
         if (blockValid) {
             blockMapService.save(blockDto);
+            blockDto.getTransactions().stream().map(t -> t.getInputs()).forEach(t -> t.forEach(x -> {
+                if(x.getUtxo()!=null){
+                    transactionOutputService.delete(x.getUtxo());
+                }
+            }));
+            blockDto.getTransactions().stream().map(t -> t.getOutputs()).forEach(t -> transactionOutputService.save(t));
         }
         return null;
         // Wygenerowanie nowego UTXO!? - > w którym momencie

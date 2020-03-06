@@ -30,14 +30,15 @@ public class BlockchainController {
 
         return "block/index";
     }
+
     @RequestMapping(value = {"/blocks/detail"}, method = RequestMethod.GET)
-    public String getBlockInfo(@RequestParam("id") String id, Model model){
+    public String getBlockInfo(@RequestParam("id") String id, Model model) {
         model.addAttribute("block", blockMapService.getById(id));
         return "block/detail";
     }
 
     @RequestMapping(value = {"/transactions/detail"}, method = RequestMethod.GET)
-    public String getTransactionById(@RequestParam("blockid") String blockId , @RequestParam("id") String id, Model model){
+    public String getTransactionById(@RequestParam("blockid") String blockId, @RequestParam("id") String id, Model model) {
         Block block = blockMapService.getById(blockId);
         Transaction ts = block.getTransactionById(id);
         model.addAttribute("transactionInputs", ts.getInputs());
@@ -46,13 +47,4 @@ public class BlockchainController {
         model.addAttribute("transactionId", id);
         return "transaction/detail";
     }
-
-    // Use for nothing
-//    @PostMapping("/addBlock")
-//    public String doAdd(Model model) {
-////        transactionService.save(transaction);
-////        transactionSet.sendAllTransaction();
-//        model.addAttribute("transactions", transactionOutputService.getAll());
-//        return "index";
-//    }
 }
