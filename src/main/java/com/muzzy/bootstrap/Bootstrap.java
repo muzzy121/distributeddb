@@ -13,6 +13,7 @@ import com.muzzy.service.factory.AncestorTransactionFactory;
 import com.muzzy.service.factory.TransactionFactory;
 import com.muzzy.service.map.BlockMapService;
 import com.muzzy.service.map.WalletMapService;
+import com.muzzy.utils.Serializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,8 @@ import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
+import java.util.LinkedHashSet;
+import java.util.UUID;
 
 /**
  * Load simple data for Functional Tests
@@ -40,7 +43,7 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
     private final RESTApiControl restApiControl;
 
     @Autowired
-    public Bootstrap(BlockMapService blockMapService, TransactionOutputService transactionOutputService, WalletMapService walletMapService, TransactionFactory transactionFactory, AncestorTransactionFactory ancestorTransactionFactory, TransactionTemporarySet transactionTemporarySet, RESTApiControl restApiControl) {
+    public Bootstrap(BlockMapService blockMapService, TransactionOutputService transactionOutputService, WalletMapService walletMapService, TransactionFactory transactionFactory, AncestorTransactionFactory ancestorTransactionFactory, TransactionTemporarySet transactionTemporarySet, RESTApiControl restApiControl, Serializer serializer) {
         this.blockMapService = blockMapService;
         this.transactionOutputService = transactionOutputService;
         this.walletMapService = walletMapService;
@@ -52,13 +55,10 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
 
     @Override
     public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
-
         Wallet ancestorWallet = new Wallet();
         Wallet walletA = new Wallet();
         Wallet walletB = new Wallet();
         Wallet walletC = new Wallet();
-
-
 
 
         /**
@@ -68,8 +68,18 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
         transactionOutputService.save(restApiControl.getAllUtxo());
 
         /**
+         * Getting blocks stored on disk
+         */
+        Serializer<LinkedHashSet<BlockVerified>> serializer = new Serializer<>();
+        LinkedHashSet<BlockVerified> deserialize = new LinkedHashSet<>();
+        if (serializer.deserialize() != null) {
+            deserialize.addAll(serializer.deserialize());
+            blockMapService.save(deserialize);
+        }
+        /**
          * Downloading block
          */
+
         Block block = blockMapService.getLastBlock();
         if (block != null) {
             blockMapService.save(restApiControl.getBlocksFromNetworkAfter(block.getHash()));
@@ -77,8 +87,12 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
             blockMapService.save(restApiControl.getBlocksFromNetwork());
         }
 
-        if (blockMapService.getAll().size() == 0) {
+        /**
+         *
+         * Test purpose - adding first transacrions and blocks
+         */
 
+        if (blockMapService.getAll().size() == 0) {
             Block genesis = new BlockVerified("0");
             LOG.info("Creating and Mining first block... ");
 //------------------
@@ -139,7 +153,7 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
         walletMapService.save(walletA);
         walletMapService.save(walletB);
         walletMapService.save(walletC);
-        Main.nodeId = Math.random()*10000000;
+        Main.nodeId = UUID.randomUUID();
         Miner.getSystemInfo();
     }
 
@@ -168,10 +182,7 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
         if (blockMapService.save(block) == null) {
             LOG.info("Block has no transactions");
         }
-
         transactionTemporarySet.getTransactionOutputSet().forEach(t -> transactionOutputService.save(t));
         transactionTemporarySet.cleanAll();
     }
-
-
 }

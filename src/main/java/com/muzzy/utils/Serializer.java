@@ -1,36 +1,53 @@
 package com.muzzy.utils;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.io.*;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 @Component
-public class Serializer {
+public class Serializer<T> {
+    private static final Logger LOG = LoggerFactory.getLogger(Serializer.class);
+    private final URL url = getClass().getResource("/blockchain/block.chain");
+    private Path path;
 
-    private final String PATH = getClass().getResource("/blockchain/block.chain").toString();
-//    private static String FILE_PATH = "/resources/repo/blockchainfile";
-
-    public void serialize(Object obj) {
+    public void serialize(T obj, URL url) {
         try {
-            FileOutputStream fos = new FileOutputStream(PATH);
+            path = Paths.get(this.url.toURI());
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+        try (FileOutputStream fos = new FileOutputStream(path.toString())) {
             BufferedOutputStream bos = new BufferedOutputStream(fos);
             ObjectOutputStream oos = new ObjectOutputStream(bos);
             oos.writeObject(obj);
             oos.close();
+            LOG.info("Saving data: " + path.toString());
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
+            LOG.error("Empty file!");
             e.printStackTrace();
         }
     }
 
-    public Object deserialize() {
-        Object obj = null;
+    public T deserialize() {
+        T obj = null;
         try {
-            FileInputStream fis = new FileInputStream(PATH);
+            path = Paths.get(url.toURI());
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+        try {
+            FileInputStream fis = new FileInputStream(path.toString());
             BufferedInputStream bis = new BufferedInputStream(fis);
             ObjectInputStream ois = new ObjectInputStream(bis);
-            obj = ois.readObject();
+            obj = (T) ois.readObject();
             ois.close();
         } catch (FileNotFoundException e) {
             e.printStackTrace();

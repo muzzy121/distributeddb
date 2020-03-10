@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import java.io.Serializable;
 import java.time.ZonedDateTime;
 import java.util.LinkedHashSet;
+import java.util.UUID;
 
 /**
  * Created by Paweł Mazur
@@ -36,7 +37,7 @@ public abstract class Block implements Serializable {
     private Long hashingTime;
     private int difficulty;
     private String hashRoot;
-    private double nodeId = Main.nodeId;
+    private UUID nodeId = Main.nodeId;
 
     public Block(String previousHash) {
         this.previousHash = previousHash;
