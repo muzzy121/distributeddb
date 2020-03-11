@@ -1,10 +1,7 @@
 package com.muzzy.bootstrap;
 
 import com.muzzy.Main;
-import com.muzzy.domain.Block;
-import com.muzzy.domain.BlockVerified;
-import com.muzzy.domain.Transaction;
-import com.muzzy.domain.Wallet;
+import com.muzzy.domain.*;
 import com.muzzy.net.api.RESTApiControl;
 import com.muzzy.roles.Miner;
 import com.muzzy.service.TransactionOutputService;
@@ -22,8 +19,12 @@ import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
+import java.net.URL;
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Stream;
 
 /**
  * Load simple data for Functional Tests
@@ -33,6 +34,8 @@ import java.util.UUID;
 public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
     final static Logger LOG = LoggerFactory.getLogger(Bootstrap.class);
     final static int DIFFICULTY = 1;
+    private final URL urlBlockchain = getClass().getResource("/blockchain/block.chain");
+    private final URL urlUtxo = getClass().getResource("/blockchain/utxo.chain");
 
     private final BlockMapService blockMapService;
     private final WalletMapService walletMapService;
@@ -62,18 +65,31 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
 
 
         /**
+         * Getting blocks stored on disk
+         */
+        Serializer<ArrayList<TransactionOutput>> utxoSerializer = new Serializer<>();
+        ArrayList<TransactionOutput> utxoDeserialize = new ArrayList<>();
+        if (utxoSerializer.deserialize(urlUtxo) != null) {
+            utxoDeserialize.addAll(utxoSerializer.deserialize(urlUtxo));
+            transactionOutputService.save(utxoDeserialize);
+        }
+
+        /**
          * Downloading transactions
          */
-        transactionOutputService.clear();
-        transactionOutputService.save(restApiControl.getAllUtxo());
+        Set<TransactionOutput> allUtxo = restApiControl.getAllUtxo();
+        if(allUtxo != null) {
+            transactionOutputService.clear();
+            transactionOutputService.save(allUtxo);
+        }
 
         /**
          * Getting blocks stored on disk
          */
         Serializer<LinkedHashSet<BlockVerified>> serializer = new Serializer<>();
         LinkedHashSet<BlockVerified> deserialize = new LinkedHashSet<>();
-        if (serializer.deserialize() != null) {
-            deserialize.addAll(serializer.deserialize());
+        if (serializer.deserialize(urlBlockchain) != null) {
+            deserialize.addAll(serializer.deserialize(urlBlockchain));
             blockMapService.save(deserialize);
         }
         /**
@@ -182,7 +198,25 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
         if (blockMapService.save(block) == null) {
             LOG.info("Block has no transactions");
         }
-        transactionTemporarySet.getTransactionOutputSet().forEach(t -> transactionOutputService.save(t));
-        transactionTemporarySet.cleanAll();
+        if (block.getTransactions() != null) {
+            // TODO: 2020-02-19 Test send blocks if done
+//            block.getTransactions().stream().map(t -> t.getInputs()).forEach(t -> t.forEach(x -> {
+//                if(x.getUtxo()!=null){
+//                    transactionOutputService.delete(x.getUtxo());
+//                }
+//            }));
+            Stream<ArrayList<TransactionInput>> stream = block.getTransactions().stream().map(t -> t.getInputs());
+
+            stream.forEach(t -> {
+                    if(t !=null){
+                        t.forEach(x -> {
+                        if (x.getUtxo() != null) {
+                            transactionOutputService.delete(x.getUtxo());
+                        }
+                    });}
+                });
+            block.getTransactions().stream().map(t -> t.getOutputs()).forEach(t -> transactionOutputService.save(t));
+        }
+
     }
 }

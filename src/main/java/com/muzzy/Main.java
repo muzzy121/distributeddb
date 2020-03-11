@@ -14,6 +14,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 
+import java.net.URL;
 import java.util.LinkedHashSet;
 import java.util.Scanner;
 import java.util.UUID;
@@ -33,6 +34,7 @@ public class Main implements CommandLineRunner {
     private final Logger LOG = LoggerFactory.getLogger(Main.class);
     private Scanner scanner = new Scanner(System.in);
     private ExecutorService executorService;
+    private final URL url = getClass().getResource("/blockchain/block.chain");
 
     @Autowired
     private ApplicationContext context;
@@ -74,7 +76,7 @@ public class Main implements CommandLineRunner {
             if (s.toLowerCase().equals("save")) {
 //            Main.isStart=true;
                 Serializer<LinkedHashSet<Block>> serializer = new Serializer<LinkedHashSet<Block>>();
-                serializer.serialize(blockMapService.getAll());
+                serializer.serialize(blockMapService.getAll(), url);
             }
         } while (!s.toLowerCase().equals("stop"));
         Main.isStart = false;

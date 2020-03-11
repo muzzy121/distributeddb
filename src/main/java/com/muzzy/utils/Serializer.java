@@ -13,12 +13,11 @@ import java.nio.file.Paths;
 @Component
 public class Serializer<T> {
     private static final Logger LOG = LoggerFactory.getLogger(Serializer.class);
-    private final URL url = getClass().getResource("/blockchain/block.chain");
     private Path path;
 
     public void serialize(T obj, URL url) {
         try {
-            path = Paths.get(this.url.toURI());
+            path = Paths.get(url.toURI());
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
@@ -36,7 +35,7 @@ public class Serializer<T> {
         }
     }
 
-    public T deserialize() {
+    public T deserialize(URL url) {
         T obj = null;
         try {
             path = Paths.get(url.toURI());
