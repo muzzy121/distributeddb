@@ -5,13 +5,12 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.stereotype.Component;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
 @Getter
 @Setter
 @Component
 public class TransactionTemporarySet {
-    private Set<TransactionOutput> transactionOutputSet = new HashSet<>();
+    private ArrayList<TransactionOutput> transactionOutputSet = new ArrayList<>();
 
     public void cleanAll(){
         transactionOutputSet.clear();

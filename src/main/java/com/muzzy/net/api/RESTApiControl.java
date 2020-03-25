@@ -5,8 +5,10 @@ import com.muzzy.configuration.RestApiConfig;
 import com.muzzy.domain.BlockVerified;
 import com.muzzy.domain.Transaction;
 import com.muzzy.domain.TransactionOutput;
+import com.muzzy.domain.Wallet;
 import com.muzzy.net.commands.StopMsg;
 import com.muzzy.service.TransactionOutputService;
+import com.muzzy.service.map.WalletMapService;
 import lombok.Getter;
 import lombok.Setter;
 import org.slf4j.Logger;
@@ -35,13 +37,15 @@ public class RESTApiControl {
 
     //Test template store for transactions
     private final Set<Transaction> transactionTemporarySet = new HashSet<>();
+    private final WalletMapService walletMapService;
 
 
-    public RESTApiControl(ConfigLoader configLoader, RestTemplate restTemplate, TransactionOutputService transactionOutputService) {
+    public RESTApiControl(ConfigLoader configLoader, RestTemplate restTemplate, TransactionOutputService transactionOutputService, WalletMapService walletMapService) {
         this.configLoader = configLoader;
         this.restApiConfig = configLoader.getApi();
         this.restTemplate = restTemplate;
         this.transactionOutputService = transactionOutputService;
+        this.walletMapService = walletMapService;
     }
 
     public void brakeMiningOnAllNodes(String blockHash) {
@@ -71,6 +75,7 @@ public class RESTApiControl {
             }
         }
     }
+
     public void deleteUtxos(Set<TransactionOutput> transactionOutputSet) {
         HttpEntity<Set<TransactionOutput>> request = new HttpEntity<>(transactionOutputSet);
 
@@ -84,6 +89,7 @@ public class RESTApiControl {
             }
         }
     }
+
     public LinkedHashSet<BlockVerified> getBlocksFromNetworkAfter(String hash) {
         for (String address : configLoader.getAddresses()
         ) {
@@ -122,10 +128,11 @@ public class RESTApiControl {
         }
         return null;
     }
-    public Set<TransactionOutput> getAllUtxo() {
-        Map<String,Set<TransactionOutput>> tempUTXO = new HashMap<>();
 
-        for (String address: configLoader.getAddresses()){
+    public Set<TransactionOutput> getAllUtxo() {
+        Map<String, Set<TransactionOutput>> tempUTXO = new HashMap<>();
+
+        for (String address : configLoader.getAddresses()) {
             String url = "http://" + address + ":" + restApiConfig.getDstPort() + restApiConfig.getGetAllUtxo();
             LOG.info("Downloading data from network...");
             LOG.debug(url);
@@ -134,7 +141,7 @@ public class RESTApiControl {
                         restTemplate.exchange(url,
                                 HttpMethod.GET, null, new ParameterizedTypeReference<Set<TransactionOutput>>() {
                                 });
-                tempUTXO.put(address,rateResponse.getBody());
+                tempUTXO.put(address, rateResponse.getBody());
             } catch (RestClientException re) {
 //                re.printStackTrace();
                 LOG.warn("Can't get UTXO list!");
@@ -144,11 +151,11 @@ public class RESTApiControl {
          * This is simple sum all UTXOs from network
          */
         Set<TransactionOutput> transactionOutputs = transactionOutputService.getAll();
-        if(!tempUTXO.isEmpty()){
+        if (!tempUTXO.isEmpty()) {
             tempUTXO.values().stream().forEach(transactionOutputs::addAll);
             return transactionOutputs;
         } else
-        return null;
+            return null;
     }
 
     public void sendTransactionsToAllNodes(Set<Transaction> transactions) {
@@ -180,7 +187,7 @@ public class RESTApiControl {
                                 HttpMethod.GET, null, new ParameterizedTypeReference<Set<Transaction>>() {
                                 });
 
-                rateResponse.getBody().forEach(t -> transactionTemporarySet.add(t));
+                rateResponse.getBody().forEach(transactionTemporarySet::add);
                 return transactionTemporarySet;
             } catch (RestClientException re) {
 //                re.printStackTrace();
@@ -188,5 +195,21 @@ public class RESTApiControl {
             }
         }
         return null;
+    }
+
+    public Set<Wallet> getWalletsFromNodes() {
+        Set<Wallet> wallets = new HashSet<>();
+        for (String address : configLoader.getAddresses()) {
+            String url = "http://" + address + ":" + restApiConfig.getDstPort() + "/api/wallet/all";
+            try {
+                ResponseEntity<Set<Wallet>> rateResponse =
+                        restTemplate.exchange(url, HttpMethod.GET, null, new ParameterizedTypeReference<Set<Wallet>>() {
+                        });
+                rateResponse.getBody().forEach(wallets::add);
+                           } catch (RestClientException re) {
+                LOG.warn("Can't connect");
+            }
+        }
+        return wallets;
     }
 }

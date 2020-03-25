@@ -56,9 +56,23 @@ public class TransactionFactory {
         /**
          * Sortowanie listy, trzeba się zastanowić czy jest ono potrzebne i jak wpływana na wydajność
          */
+
         List<TransactionOutput> transactionOutputList = new ArrayList<TransactionOutput>();
         transactionOutputService.getTransctionByReciever(sender).forEach(transactionOutput -> transactionOutputList.add(transactionOutput));
         Collections.sort(transactionOutputList);
+
+
+        /**
+         * Get transactions from TransactionService
+         */
+//        List<TransactionOutput> transactionOutputFromTransactionService = new ArrayList<>();
+//        transactionOutputFromTransactionService.addAll();
+        if (transactionService.getTransactionOutputsFromLastTransactionBySender(sender) != null) {
+            transactionOutputList.removeAll(transactionTemporarySet.getTransactionOutputSet());
+            transactionOutputList.addAll(transactionService.getTransactionOutputsFromLastTransactionBySender(sender));
+
+        }
+
 
         // Mandatory obj.
         ArrayList<TransactionInput> inputs = new ArrayList<>();
@@ -66,10 +80,12 @@ public class TransactionFactory {
 
 
         // TODO: 2020-01-28 Trzeba sie zastanowić jak to ma działać
+
         for (TransactionOutput utxo : transactionOutputList
         ) {
             inputs.add(new TransactionInput(utxo.getId(), utxo));
             total.add(utxo.getValue());
+            transactionTemporarySet.addTransaction(utxo);
             if (total.compareTo(value) >= 0) break;
         }
 

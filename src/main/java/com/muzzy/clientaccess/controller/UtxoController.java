@@ -21,7 +21,6 @@ public class UtxoController {
 
     @GetMapping({"/", "index"})
     public String getIndexPage(Model model) {
-
         model.addAttribute("transactions", transactionOutputService.getAll());
         model.addAttribute("transactionsToAdd", transactionService.getAll().isEmpty() ? null : transactionService.getAll());
         return "transaction/index";

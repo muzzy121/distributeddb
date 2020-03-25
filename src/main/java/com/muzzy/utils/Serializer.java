@@ -30,8 +30,8 @@ public class Serializer<T> {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
-            LOG.error("Empty file!");
-            e.printStackTrace();
+            LOG.error("Cant save file!");
+//            e.printStackTrace();
         }
     }
 
@@ -51,7 +51,8 @@ public class Serializer<T> {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
-            e.printStackTrace();
+//            e.printStackTrace();
+            LOG.error("Empty or unreadable file");
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }

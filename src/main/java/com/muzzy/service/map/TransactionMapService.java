@@ -1,11 +1,13 @@
 package com.muzzy.service.map;
 
 import com.muzzy.domain.Transaction;
+import com.muzzy.domain.TransactionOutput;
 import com.muzzy.service.TransactionService;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -58,5 +60,18 @@ public class TransactionMapService extends AbstractTransactionMapService<Transac
                 .filter(transaction -> transaction.getSender().equals(sender)) //Stream<Transaction>
                 .map(transaction ->transaction.getValue()) //Stream<BigDecimal>
                 .collect(Collectors.summingLong(BigDecimal::longValue)));
+    }
+
+    @Override
+    public List<TransactionOutput> getTransactionOutputsFromLastTransactionBySender(String sender) {
+        Transaction transaction = this.getAll().stream()
+                .filter(x -> x.getSender().equals(sender))
+                .reduce((f,l) -> l).orElse(null);
+        if (transaction !=null) {
+            List<TransactionOutput> transactionOutputs = transaction.getOutputs().stream()
+                    .filter(t -> t.getReceiver().equals(sender)).collect(Collectors.toList());
+            return transactionOutputs;
+        }
+        return null;
     }
 }

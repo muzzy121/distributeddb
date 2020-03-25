@@ -2,9 +2,7 @@ package com.muzzy.roles;
 
 import com.muzzy.Main;
 import com.muzzy.cipher.StringUtil;
-import com.muzzy.domain.Block;
-import com.muzzy.domain.BlockVerified;
-import com.muzzy.domain.Transaction;
+import com.muzzy.domain.*;
 import com.muzzy.net.api.RESTApiControl;
 import com.muzzy.service.TransactionOutputService;
 import com.muzzy.service.TransactionService;
@@ -16,15 +14,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 @Scope("prototype")
 @Component
 public class Miner implements Runnable {
     private static final Logger LOG = LoggerFactory.getLogger(Miner.class);
     private String tNumber = "";
-    private int DIFFICULTY = 5;
     private BlockVerified block;
     private String hash = "999999999";
     private static String hashTmp = "";
@@ -39,7 +40,6 @@ public class Miner implements Runnable {
     private final TransactionService transactionService;
     private final TransactionTemporarySet transactionTemporarySet;
     private final TransactionOutputService transactionOutputService;
-
 
     private void stop() {
         Main.isStart = false;
@@ -59,10 +59,10 @@ public class Miner implements Runnable {
         block = new BlockVerified(previousHash);
         block.setTransactions((LinkedHashSet<Transaction>) transactionService.getAll());
         transactionService.clear();
-        block.setDifficulty(DIFFICULTY);
+        block.setDifficulty(Main.DIFFICULTY);
 
 
-        mine(DIFFICULTY);
+        mine(Main.DIFFICULTY);
         if (!block.getTransactions().isEmpty()) {
             LOG.warn("Added " + block.getTransactions().size() + " transactions");
         }
@@ -99,27 +99,63 @@ public class Miner implements Runnable {
 
             if (!block.getTransactions().isEmpty()) {
                 blockMapService.save(block);
-                // TODO: 2020-02-19 Test send blocks if done
+                /**
+                 * Test Hashing transaction in Blocks
+                 */
                 String hashRoot = StringUtil.getHashRoot(block.getTransactions());
                 LOG.debug(toHash);
 
-                block.getTransactions().stream().map(t -> t.getInputs()).forEach(t -> t.forEach(x -> {
-                    if(x.getUtxo()!=null){
-                        transactionOutputService.delete(x.getUtxo());
+                /**
+                 * Remove transactionsOutputs from UTXO that where used for new transactions and successfully added to block
+                 */
+
+                ArrayList arrayList = new ArrayList<>();
+                List<ArrayList<TransactionInput>> arrayListStream = block.getTransactions().stream().map(t -> t.getInputs()).collect(Collectors.toList());
+                for (ArrayList<TransactionInput> inputs :
+                        arrayListStream) {
+                    if (inputs != null) {
+                        for (TransactionInput ti :
+                                inputs) {
+                            if (ti != null) {
+                                transactionOutputService.delete(ti.getUtxo());
+                            }
+                        }
                     }
-                }));
-                block.getTransactions().stream().map(t -> t.getOutputs()).forEach(t -> transactionOutputService.save(t));
+                }
+
+                List<TransactionOutput> finalList = getTransactionOutputs();
+                finalList.forEach(t -> transactionOutputService.save(t));
                 apiControl.sendBlockToAllNodes(block);
             }
-            return block;
-        } else {
-//            Set<TransactionOutput> allUtxo = apiControl.getAllUtxo();
-//            if (!allUtxo.isEmpty()) {
-//                transactionOutputService.clear();
-//                transactionOutputService.save(allUtxo);
-//            }
-            return null;
         }
+        return block;
+    }
+
+    /**
+     * Generate new TransactionOutputs from Transactions successfully added to Block
+     */
+    private List<TransactionOutput> getTransactionOutputs() {
+
+        List<TransactionOutput> collectUtxo = new ArrayList<>();
+        List<TransactionOutput> finalList = new ArrayList<>();
+
+        block.getTransactions().stream()
+                .map(t -> t.getOutputs())
+                .forEach(u -> u.stream().forEach(collectUtxo::add));
+        List<String> senders = collectUtxo.stream()
+                .map(t -> t.getReceiver())
+                .distinct()
+                .collect(Collectors.toList());
+
+        Comparator<TransactionOutput> minComparator = Comparator.comparing(TransactionOutput::getValue);
+
+        senders.forEach(s -> {
+            finalList.add(collectUtxo.stream()
+                    .filter(t -> t.getReceiver().equals(s))
+                    .min(minComparator)
+                    .orElse(null));
+        });
+        return finalList;
     }
 
     public static void getSystemInfo() {
@@ -127,8 +163,6 @@ public class Miner implements Runnable {
 
         LOG.info("Operating system: " + System.getProperty("os.name"));
         LOG.info("System architecture: " + System.getProperty("os.arch"));
-        LOG.info("Operating system version: " + System.getProperty("os.Version"));
-        LOG.info("");
         LOG.info("Available processors (cores): " + Runtime.getRuntime().availableProcessors());
         LOG.info("Free memory (bytes):" + Runtime.getRuntime().freeMemory());
         LOG.info("Maximum memory (bytes): " + (maxMemory == Long.MAX_VALUE ? "no limit" : maxMemory));

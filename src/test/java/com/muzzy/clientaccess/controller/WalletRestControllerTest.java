@@ -32,7 +32,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Created by Pawel Mazur on 30.01.2020
  */
 @ExtendWith(MockitoExtension.class)
-class WalletControllerTest {
+class WalletRestControllerTest {
     @Mock
     WalletMapService walletMapService;
 

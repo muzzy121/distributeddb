@@ -58,16 +58,15 @@ public abstract class Block implements Serializable {
         } while (!hash.substring(0, difficulty).matches("[0]{" + difficulty + "}"));
     }
 
+    public Transaction getTransactionById(String hash){
+        return transactions.stream().filter(t -> t.getTransactionId().equals(hash)).findFirst().orElse(null);
+    }
     public void addTransaction(Transaction transaction) {
         if(transaction == null) { return; }
-        // TODO: 2020-01-28 To weryfikuje jedynie czy transakcja nie jest null, nie sprawdza czy wszytstko jest ustawione poprawnie, refactor
         String msg = transaction.getSender() + transaction.getReceiver() + transaction.getValue();
         boolean verifySignature = Validation.verifySignature(transaction.getSender(), msg, transaction.getSignature());
         if(verifySignature) {
             transactions.add(transaction);
         }
-    }
-    public Transaction getTransactionById(String hash){
-        return transactions.stream().filter(t -> t.getTransactionId().equals(hash)).findFirst().orElse(null);
     }
 }

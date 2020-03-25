@@ -2,8 +2,6 @@ package com.muzzy.roles;
 
 import com.muzzy.Main;
 import com.muzzy.configuration.ConfigLoader;
-import com.muzzy.configuration.RestApiConfig;
-import com.muzzy.net.api.RESTApiControl;
 import com.muzzy.service.TransactionService;
 import com.muzzy.service.map.BlockMapService;
 import org.springframework.context.ApplicationContext;
@@ -52,8 +50,8 @@ public class MineRunner implements Callable<Integer> {
         Future future = executorService.submit(context.getBean(Miner.class));
         executorService.shutdown();
 
-        while (Main.isStart) {
-            if (i++ % 100000000 == 0) {
+        while (Main.isStart == true) {
+            if (i++ % 1000000000 == 0) {
                 System.out.print(".");
             }
             if (notMined == true) {
